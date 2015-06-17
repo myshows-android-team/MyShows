@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
         if (MyShowsClient.get(this).isLogin()) {
             startActivity(new Intent(this, MainActivity.class));
         } else {
-            findViewById(R.id.loginButton).setOnClickListener((view -> {
+            findViewById(R.id.loginButton).setOnClickListener(view -> {
                 String login = ((EditText) findViewById(R.id.login)).getText().toString();
                 String password = ((EditText) findViewById(R.id.password)).getText().toString();
                 MyShowsClient.get(this).authentication(login, password, isLogin -> {
@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show();
                     }
                 });
-            }));
+            });
         }
     }
 }
