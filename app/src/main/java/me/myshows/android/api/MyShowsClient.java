@@ -10,6 +10,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.util.HashSet;
 import java.util.Set;
 
+import me.myshows.android.BuildConfig;
 import retrofit.Callback;
 import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
@@ -27,6 +28,8 @@ public class MyShowsClient {
     private static final String PREFERENCE_NAME = "myshows_api_preference";
     private static final String MYSHOWS_COOKIES = "myshows_cookies_token";
     private static final String API_URL = "http://api.myshows.ru";
+    private static final String SET_COOKIE = "Set-Cookie";
+    private static final String COOKIE = "Cookie";
 
     private static MyShowsClient client;
 
@@ -37,8 +40,8 @@ public class MyShowsClient {
         this.context = context;
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setRequestInterceptor(request -> request.addHeader("Cookie", TextUtils.join("; ", getCookies())))
+                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+                .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join("; ", getCookies())))
                 .build()
                 .create(MyShowsApi.class);
     }
@@ -55,7 +58,6 @@ public class MyShowsClient {
         Callback<Response> responseCallback = new ResponseCallback() {
             @Override
             public void failure(RetrofitError error) {
-                saveCookies(new HashSet<>());
                 callback.getResponse(false);
             }
 
@@ -63,7 +65,7 @@ public class MyShowsClient {
             public void success(Response response) {
                 Set<String> cookieValues = new HashSet<>();
                 for (Header header : response.getHeaders()) {
-                    if ("Set-Cookie".equals(header.getName())) {
+                    if (SET_COOKIE.equals(header.getName())) {
                         cookieValues.add(parseSetCookie(header.getValue()));
                     }
                 }
