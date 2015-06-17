@@ -50,7 +50,7 @@ public class MyShowsClient {
         return client;
     }
 
-    public void authentication(String login, String password, MyShowsCallback<Boolean> callback) {
+    public void authentication(String login, String password, MyShowsCallback callback) {
         String md5Password = new String(Hex.encodeHex(DigestUtils.md5(password)));
         Callback<Response> responseCallback = new ResponseCallback() {
             @Override
@@ -95,8 +95,8 @@ public class MyShowsClient {
         return preferences.getStringSet(MYSHOWS_COOKIES, new HashSet<>());
     }
 
-    public interface MyShowsCallback<E> {
+    public interface MyShowsCallback {
 
-        void getResponse(E response);
+        void getResponse(boolean response);
     }
 }
