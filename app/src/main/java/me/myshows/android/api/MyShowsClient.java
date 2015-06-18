@@ -24,24 +24,24 @@ import retrofit.client.Response;
  */
 public class MyShowsClient {
 
+    public static final String COOKIE_DELIMITER = ";";
     private static final String TAG = MyShowsClient.class.getSimpleName();
     private static final String PREFERENCE_NAME = "myshows_api_preference";
     private static final String MYSHOWS_COOKIES = "myshows_cookies_token";
     private static final String API_URL = "http://api.myshows.ru";
     private static final String SET_COOKIE = "Set-Cookie";
     private static final String COOKIE = "Cookie";
-
     private static MyShowsClient client;
 
     private final MyShowsApi api;
-    private final Context context;
+    private final SharedPreferences preferences;
 
     private MyShowsClient(Context context) {
-        this.context = context;
+        this.preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
-                .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join("; ", getCookies())))
+                .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join(COOKIE_DELIMITER, getCookies())))
                 .build()
                 .create(MyShowsApi.class);
     }
@@ -82,18 +82,16 @@ public class MyShowsClient {
     }
 
     private String parseSetCookie(String setCookieValue) {
-        return setCookieValue.substring(0, setCookieValue.indexOf(";"));
+        return setCookieValue.substring(0, setCookieValue.indexOf(COOKIE_DELIMITER));
     }
 
     private void saveCookies(Set<String> cookieValues) {
-        SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putStringSet(MYSHOWS_COOKIES, cookieValues);
         editor.apply();
     }
 
     private Set<String> getCookies() {
-        SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return preferences.getStringSet(MYSHOWS_COOKIES, new HashSet<>());
     }
 

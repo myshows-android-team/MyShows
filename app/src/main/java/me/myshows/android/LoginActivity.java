@@ -20,19 +20,24 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         if (MyShowsClient.get(this).isLogin()) {
-            startActivity(new Intent(this, MainActivity.class));
+            userHasLogin();
         } else {
             findViewById(R.id.loginButton).setOnClickListener(view -> {
                 String login = ((EditText) findViewById(R.id.login)).getText().toString();
                 String password = ((EditText) findViewById(R.id.password)).getText().toString();
                 MyShowsClient.get(this).authentication(login, password, isLogin -> {
                     if (isLogin) {
-                        startActivity(new Intent(this, MainActivity.class));
+                        userHasLogin();
                     } else {
                         Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show();
                     }
                 });
             });
         }
+    }
+
+    private void userHasLogin() {
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
