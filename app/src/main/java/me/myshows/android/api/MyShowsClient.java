@@ -24,11 +24,11 @@ import retrofit.client.Response;
  */
 public class MyShowsClient {
 
-    public static final String COOKIE_DELIMITER = ";";
     private static final String TAG = MyShowsClient.class.getSimpleName();
     private static final String PREFERENCE_NAME = "myshows_api_preference";
     private static final String MYSHOWS_COOKIES = "myshows_cookies_token";
     private static final String API_URL = "http://api.myshows.ru";
+    private static final String COOKIE_DELIMITER = ";";
     private static final String SET_COOKIE = "Set-Cookie";
     private static final String COOKIE = "Cookie";
     private static MyShowsClient client;
