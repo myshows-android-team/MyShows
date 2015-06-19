@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">MyShows</string>
+
+    <string name="app_name" translatable="false">MyShows</string>
+
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="login_button">Login</string>
+    <string name="incorrect_login_or_password">Incorrect login or password</string>
+
 </resources>

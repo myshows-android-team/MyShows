@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="login_button">Вход</string>
+    <string name="incorrect_login_or_password">Неправильные логин или пароль</string>
+
+</resources>
