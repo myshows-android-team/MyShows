@@ -3,7 +3,6 @@ package me.myshows.android.api;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
 import android.text.TextUtils;
 
 import org.apache.commons.codec.binary.Hex;
@@ -55,7 +54,6 @@ public class MyShowsClient {
         return client;
     }
 
-    @UiThread
     public void authentication(String login, String password, MyShowsCallback callback) {
         String md5Password = new String(Hex.encodeHex(DigestUtils.md5(password)));
         Callback<Response> responseCallback = new ResponseCallback() {
