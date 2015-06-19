@@ -2,6 +2,8 @@ package me.myshows.android.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.text.TextUtils;
 
 import org.apache.commons.codec.binary.Hex;
@@ -25,8 +27,8 @@ import retrofit.client.Response;
 public class MyShowsClient {
 
     private static final String TAG = MyShowsClient.class.getSimpleName();
-    private static final String PREFERENCE_NAME = "myshows_api_preference";
-    private static final String MYSHOWS_COOKIES = "myshows_cookies_token";
+    private static final String PREFERENCE_NAME = "my_shows_api_preference";
+    private static final String MY_SHOWS_COOKIES = "my_shows_cookies_token";
     private static final String API_URL = "http://api.myshows.ru";
     private static final String COOKIE_DELIMITER = ";";
     private static final String SET_COOKIE = "Set-Cookie";
@@ -53,6 +55,7 @@ public class MyShowsClient {
         return client;
     }
 
+    @UiThread
     public void authentication(String login, String password, MyShowsCallback callback) {
         String md5Password = new String(Hex.encodeHex(DigestUtils.md5(password)));
         Callback<Response> responseCallback = new ResponseCallback() {
@@ -77,8 +80,7 @@ public class MyShowsClient {
     }
 
     public boolean isLogin() {
-        Set<String> cookies = getCookies();
-        return cookies != null && !cookies.isEmpty();
+        return !getCookies().isEmpty();
     }
 
     private String parseSetCookie(String setCookieValue) {
@@ -87,12 +89,13 @@ public class MyShowsClient {
 
     private void saveCookies(Set<String> cookieValues) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putStringSet(MYSHOWS_COOKIES, cookieValues);
+        editor.putStringSet(MY_SHOWS_COOKIES, cookieValues);
         editor.apply();
     }
 
+    @NonNull
     private Set<String> getCookies() {
-        return preferences.getStringSet(MYSHOWS_COOKIES, new HashSet<>());
+        return preferences.getStringSet(MY_SHOWS_COOKIES, new HashSet<>());
     }
 
     public interface MyShowsCallback {

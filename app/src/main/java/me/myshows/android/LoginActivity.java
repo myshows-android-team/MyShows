@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void userHasLogin() {
-        finish();
         startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 }
