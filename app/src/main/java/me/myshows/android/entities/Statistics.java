@@ -1,5 +1,6 @@
 package me.myshows.android.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -18,6 +19,7 @@ public class Statistics {
     private final float remainingDays;
     private final float watchedDays;
 
+    @JsonCreator
     public Statistics(@JsonProperty("watchedHours") float watchedHours, @JsonProperty("remainingHours") float remainingHours,
                       @JsonProperty("watchedEpisodes") int watchedEpisodes, @JsonProperty("remainingEpisodes") int remainingEpisodes,
                       @JsonProperty("totalEpisodes") int totalEpisodes, @JsonProperty("totalDays") int totalDays,

@@ -3,8 +3,10 @@ package me.myshows.android;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.Map;
+
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.entities.User;
+import me.myshows.android.entities.Show;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -19,15 +21,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MyShowsClient.get(getApplicationContext()).profile(new Callback<User>() {
-            @Override
-            public void success(User user, Response response) {
 
+        // test
+        MyShowsClient.get(getApplicationContext()).profileShows(new Callback<Map<String, Show>>() {
+            @Override
+            public void success(Map<String, Show> stringShowMap, Response response) {
             }
 
             @Override
             public void failure(RetrofitError error) {
-
             }
         });
     }

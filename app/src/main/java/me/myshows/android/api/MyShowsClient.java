@@ -9,9 +9,11 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
+import me.myshows.android.entities.Show;
 import me.myshows.android.entities.User;
 import retrofit.Callback;
 import retrofit.ResponseCallback;
@@ -83,6 +85,10 @@ public class MyShowsClient {
 
     public void profile(Callback<User> callback) {
         api.profile(callback);
+    }
+
+    public void profileShows(Callback<Map<String, Show>> callback) {
+        api.profileShows(callback);
     }
 
     public boolean isLogin() {
