@@ -1,8 +1,20 @@
 <resources>
 
+    <!-- Login strings -->
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="login_button">Вход</string>
     <string name="incorrect_login_or_password">Неправильные логин или пароль</string>
+
+    <!-- Navigation strings -->
+    <string name="my_series">Мои сериалы</string>
+    <string name="calendar">Календарь</string>
+    <string name="profile">Профиль</string>
+    <string name="friends">Друзья</string>
+    <string name="favorites">Избранное</string>
+    <string name="recommendation">Рекомендации</string>
+    <string name="achievements">Достижения</string>
+    <string name="settings">Настройки</string>
+    <string name="about">О программе</string>
 
 </resources>
