@@ -12,12 +12,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
+import me.myshows.android.entities.User;
 import retrofit.Callback;
 import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
+import retrofit.converter.JacksonConverter;
 
 /**
  * @author Whiplash
@@ -32,6 +34,7 @@ public class MyShowsClient {
     private static final String COOKIE_DELIMITER = ";";
     private static final String SET_COOKIE = "Set-Cookie";
     private static final String COOKIE = "Cookie";
+
     private static MyShowsClient client;
 
     private final MyShowsApi api;
@@ -41,6 +44,7 @@ public class MyShowsClient {
         this.preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
+                .setConverter(new JacksonConverter())
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join(COOKIE_DELIMITER, getCookies())))
                 .build()
@@ -75,6 +79,10 @@ public class MyShowsClient {
             }
         };
         api.login(login, md5Password, responseCallback);
+    }
+
+    public void profile(Callback<User> callback) {
+        api.profile(callback);
     }
 
     public boolean isLogin() {

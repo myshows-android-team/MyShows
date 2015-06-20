@@ -1,5 +1,6 @@
 package me.myshows.android.api;
 
+import me.myshows.android.entities.User;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.GET;
@@ -15,5 +16,5 @@ public interface MyShowsApi {
     void login(@Query("login") String login, @Query("password") String md5Password, Callback<Response> callback);
 
     @GET("/profile/")
-    void profile(Callback<Response> callback);
+    void profile(Callback<User> callback);
 }
