@@ -28,9 +28,9 @@
             android:icon="@drawable/tmp_nav_icon"
             android:title="@string/recommendation" />
         <item
-            android:id="@+id/nav_achievements"
+            android:id="@+id/nav_awards"
             android:icon="@drawable/tmp_nav_icon"
-            android:title="@string/achievements" />
+            android:title="@string/awards" />
     </group>
 
     <group android:id="@+id/secondary">

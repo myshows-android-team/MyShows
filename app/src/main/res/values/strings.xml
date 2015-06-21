@@ -9,13 +9,13 @@
     <string name="incorrect_login_or_password">Incorrect login or password</string>
     
     <!-- Navigation strings -->
-    <string name="my_series">My Series</string>
+    <string name="my_series">My series</string>
     <string name="calendar">Calendar</string>
     <string name="profile">Profile</string>
     <string name="friends">Friends</string>
     <string name="favorites">Favorites</string>
     <string name="recommendation">Recommendation</string>
-    <string name="achievements">Achievements</string>
+    <string name="awards">Awards</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
 
