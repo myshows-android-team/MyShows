@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Whiplash
  * @date 20.06.2015
  */
-public class Show {
+public class UserShow {
 
     private final int showId;
     private final String title;
@@ -21,11 +21,11 @@ public class Show {
     private final String image;
 
     @JsonCreator
-    public Show(@JsonProperty("showId") int showId, @JsonProperty("title") String title,
-                @JsonProperty("ruTitle") String ruTitle, @JsonProperty("runtime") int runtime,
-                @JsonProperty("showStatus") String showStatus, @JsonProperty("watchStatus") String watchStatus,
-                @JsonProperty("watchedEpisodes") int watchedEpisodes, @JsonProperty("totalEpisodes") int totalEpisodes,
-                @JsonProperty("rating") int rating, @JsonProperty("image") String image) {
+    public UserShow(@JsonProperty("showId") int showId, @JsonProperty("title") String title,
+                    @JsonProperty("ruTitle") String ruTitle, @JsonProperty("runtime") int runtime,
+                    @JsonProperty("showStatus") String showStatus, @JsonProperty("watchStatus") String watchStatus,
+                    @JsonProperty("watchedEpisodes") int watchedEpisodes, @JsonProperty("totalEpisodes") int totalEpisodes,
+                    @JsonProperty("rating") int rating, @JsonProperty("image") String image) {
         this.showId = showId;
         this.title = title;
         this.ruTitle = ruTitle;

@@ -15,8 +15,8 @@ import java.util.Set;
 import me.myshows.android.BuildConfig;
 import me.myshows.android.entities.EpisodePreview;
 import me.myshows.android.entities.EpisodeRating;
-import me.myshows.android.entities.Show;
 import me.myshows.android.entities.User;
+import me.myshows.android.entities.UserShow;
 import retrofit.Callback;
 import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
@@ -89,7 +89,7 @@ public class MyShowsClient {
         api.profile(callback);
     }
 
-    public void profileShows(Callback<Map<String, Show>> callback) {
+    public void profileShows(Callback<Map<String, UserShow>> callback) {
         api.profileShows(callback);
     }
 
