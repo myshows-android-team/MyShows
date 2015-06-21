@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <dimen name="default_padding">16dp</dimen>
+    
+    <!-- Navigation drawer dimens -->
+    <dimen name="nav_header_height">168dp</dimen>
+    <dimen name="nav_avatar_size">64dp</dimen>
+    <dimen name="nav_avatar_top_margin">0dp</dimen>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Navigation drawer dimens -->
+    <dimen name="nav_header_height">192dp</dimen>
+    <dimen name="nav_avatar_top_margin">24dp</dimen>
+
+</resources>
