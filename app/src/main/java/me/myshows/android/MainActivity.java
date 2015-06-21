@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.Map;
 
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.entities.Show;
+import me.myshows.android.entities.Episode;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -23,9 +23,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // test
-        MyShowsClient.get(getApplicationContext()).profileShows(new Callback<Map<String, Show>>() {
+        MyShowsClient.get(getApplicationContext()).profileEpisodesOfShow(5317, new Callback<Map<String, Episode>>() {
             @Override
-            public void success(Map<String, Show> stringShowMap, Response response) {
+            public void success(Map<String, Episode> stringEpisodeMap, Response response) {
+                stringEpisodeMap.size();
             }
 
             @Override

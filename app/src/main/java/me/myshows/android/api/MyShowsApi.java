@@ -2,11 +2,13 @@ package me.myshows.android.api;
 
 import java.util.Map;
 
+import me.myshows.android.entities.Episode;
 import me.myshows.android.entities.Show;
 import me.myshows.android.entities.User;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -23,4 +25,7 @@ public interface MyShowsApi {
 
     @GET("/profile/shows/")
     void profileShows(Callback<Map<String, Show>> callback);
+
+    @GET("/profile/shows/{show_id}/")
+    void profileEpisodesOfShow(@Path("show_id") int showId, Callback<Map<String, Episode>> callback);
 }

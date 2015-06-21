@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
+import me.myshows.android.entities.Episode;
 import me.myshows.android.entities.Show;
 import me.myshows.android.entities.User;
 import retrofit.Callback;
@@ -89,6 +90,10 @@ public class MyShowsClient {
 
     public void profileShows(Callback<Map<String, Show>> callback) {
         api.profileShows(callback);
+    }
+
+    public void profileEpisodesOfShow(int showId, Callback<Map<String, Episode>> callback) {
+        api.profileEpisodesOfShow(showId, callback);
     }
 
     public boolean isLogin() {
