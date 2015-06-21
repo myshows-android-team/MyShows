@@ -5,31 +5,31 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_my_series"
-            android:icon="@drawable/tmp_nav_icon"
-            android:title="@string/my_series" />
+            android:icon="@drawable/nav_my_series"
+            android:title="@string/my_series"/>
         <item
             android:id="@+id/nav_calendar"
-            android:icon="@drawable/tmp_nav_icon"
+            android:icon="@drawable/nav_calendar"
             android:title="@string/calendar" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/tmp_nav_icon"
+            android:icon="@drawable/nav_profile"
             android:title="@string/profile" />
         <item
             android:id="@+id/nav_friends"
-            android:icon="@drawable/tmp_nav_icon"
+            android:icon="@drawable/nav_friends"
             android:title="@string/friends" />
         <item
             android:id="@+id/nav_favorites"
-            android:icon="@drawable/tmp_nav_icon"
+            android:icon="@drawable/nav_favorites"
             android:title="@string/favorites" />
         <item
             android:id="@+id/nav_recommendation"
-            android:icon="@drawable/tmp_nav_icon"
+            android:icon="@drawable/nav_recommedation"
             android:title="@string/recommendation" />
         <item
             android:id="@+id/nav_awards"
-            android:icon="@drawable/tmp_nav_icon"
+            android:icon="@drawable/nav_awards"
             android:title="@string/awards" />
     </group>
 
