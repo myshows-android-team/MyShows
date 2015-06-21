@@ -2,7 +2,8 @@ package me.myshows.android.api;
 
 import java.util.Map;
 
-import me.myshows.android.entities.Episode;
+import me.myshows.android.entities.EpisodePreview;
+import me.myshows.android.entities.EpisodeRating;
 import me.myshows.android.entities.Show;
 import me.myshows.android.entities.User;
 import retrofit.Callback;
@@ -27,5 +28,11 @@ public interface MyShowsApi {
     void profileShows(Callback<Map<String, Show>> callback);
 
     @GET("/profile/shows/{show_id}/")
-    void profileEpisodesOfShow(@Path("show_id") int showId, Callback<Map<String, Episode>> callback);
+    void profileEpisodesOfShow(@Path("show_id") int showId, Callback<Map<String, EpisodeRating>> callback);
+
+    @GET("/profile/episodes/unwatched/")
+    void profileUnwatchedEpisodes(Callback<Map<String, EpisodePreview>> callback);
+
+    @GET("/profile/episodes/next/")
+    void profileNextEpisodes(Callback<Map<String, EpisodePreview>> callback);
 }
