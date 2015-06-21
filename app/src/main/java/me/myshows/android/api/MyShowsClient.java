@@ -15,6 +15,7 @@ import java.util.Set;
 import me.myshows.android.BuildConfig;
 import me.myshows.android.entities.EpisodePreview;
 import me.myshows.android.entities.EpisodeRating;
+import me.myshows.android.entities.Show;
 import me.myshows.android.entities.User;
 import me.myshows.android.entities.UserShow;
 import retrofit.Callback;
@@ -103,6 +104,10 @@ public class MyShowsClient {
 
     public void profileNextEpisodes(Callback<Map<String, EpisodePreview>> callback) {
         api.profileNextEpisodes(callback);
+    }
+
+    public void showInformation(int showId, Callback<Show> callback) {
+        api.showInformation(showId, callback);
     }
 
     public boolean isLogin() {
