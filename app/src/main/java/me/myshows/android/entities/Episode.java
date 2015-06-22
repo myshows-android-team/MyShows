@@ -48,7 +48,6 @@ public class Episode {
         return title;
     }
 
-
     @JsonProperty("seasonNumber")
     public int getSeasonNumber() {
         return seasonNumber;
