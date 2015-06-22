@@ -9,15 +9,22 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
+import me.myshows.android.entities.EpisodePreview;
+import me.myshows.android.entities.EpisodeRating;
+import me.myshows.android.entities.Show;
+import me.myshows.android.entities.User;
+import me.myshows.android.entities.UserShow;
 import retrofit.Callback;
 import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
+import retrofit.converter.JacksonConverter;
 
 /**
  * @author Whiplash
@@ -32,6 +39,7 @@ public class MyShowsClient {
     private static final String COOKIE_DELIMITER = ";";
     private static final String SET_COOKIE = "Set-Cookie";
     private static final String COOKIE = "Cookie";
+
     private static MyShowsClient client;
 
     private final MyShowsApi api;
@@ -41,6 +49,7 @@ public class MyShowsClient {
         this.preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
+                .setConverter(new JacksonConverter())
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join(COOKIE_DELIMITER, getCookies())))
                 .build()
@@ -75,6 +84,30 @@ public class MyShowsClient {
             }
         };
         api.login(login, md5Password, responseCallback);
+    }
+
+    public void profile(Callback<User> callback) {
+        api.profile(callback);
+    }
+
+    public void profileShows(Callback<Map<String, UserShow>> callback) {
+        api.profileShows(callback);
+    }
+
+    public void profileEpisodesOfShow(int showId, Callback<Map<String, EpisodeRating>> callback) {
+        api.profileEpisodesOfShow(showId, callback);
+    }
+
+    public void profileUnwatchedEpisodes(Callback<Map<String, EpisodePreview>> callback) {
+        api.profileUnwatchedEpisodes(callback);
+    }
+
+    public void profileNextEpisodes(Callback<Map<String, EpisodePreview>> callback) {
+        api.profileNextEpisodes(callback);
+    }
+
+    public void showInformation(int showId, Callback<Show> callback) {
+        api.showInformation(showId, callback);
     }
 
     public boolean isLogin() {
