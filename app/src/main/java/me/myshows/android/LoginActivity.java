@@ -7,6 +7,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import me.myshows.android.api.MyShowsClient;
+import me.myshows.android.api.MyShowsClientImpl;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * @author Whiplash
@@ -19,13 +21,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if (MyShowsClient.get(this).isLogin()) {
+        MyShowsClient client = MyShowsClientImpl.get(getApplicationContext(), AndroidSchedulers.mainThread());
+
+        if (client.isLogin()) {
             userHasLogin();
         } else {
             findViewById(R.id.loginButton).setOnClickListener(view -> {
                 String login = ((EditText) findViewById(R.id.login)).getText().toString();
                 String password = ((EditText) findViewById(R.id.password)).getText().toString();
-                MyShowsClient.get(this).authentication(login, password, isLogin -> {
+                client.authentication(login, password, isLogin -> {
                     if (isLogin) {
                         userHasLogin();
                     } else {
