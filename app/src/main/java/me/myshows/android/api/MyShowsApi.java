@@ -7,11 +7,11 @@ import me.myshows.android.entities.EpisodeRating;
 import me.myshows.android.entities.Show;
 import me.myshows.android.entities.User;
 import me.myshows.android.entities.UserShow;
-import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
 /**
  * @author Whiplash
@@ -20,23 +20,23 @@ import retrofit.http.Query;
 public interface MyShowsApi {
 
     @GET("/profile/login")
-    void login(@Query("login") String login, @Query("password") String md5Password, Callback<Response> callback);
+    Observable<Response> login(@Query("login") String login, @Query("password") String md5Password);
 
     @GET("/profile/")
-    void profile(Callback<User> callback);
+    Observable<User> profile();
 
     @GET("/profile/shows/")
-    void profileShows(Callback<Map<String, UserShow>> callback);
+    Observable<Map<String, UserShow>> profileShows();
 
     @GET("/profile/shows/{show_id}/")
-    void profileEpisodesOfShow(@Path("show_id") int showId, Callback<Map<String, EpisodeRating>> callback);
+    Observable<Map<String, EpisodeRating>> profileEpisodesOfShow(@Path("show_id") int showId);
 
     @GET("/profile/episodes/unwatched/")
-    void profileUnwatchedEpisodes(Callback<Map<String, EpisodePreview>> callback);
+    Observable<Map<String, EpisodePreview>> profileUnwatchedEpisodes();
 
     @GET("/profile/episodes/next/")
-    void profileNextEpisodes(Callback<Map<String, EpisodePreview>> callback);
+    Observable<Map<String, EpisodePreview>> profileNextEpisodes();
 
     @GET("/shows/{show_id}")
-    void showInformation(@Path("show_id") int showId, Callback<Show> callback);
+    Observable<Show> showInformation(@Path("show_id") int showId);
 }

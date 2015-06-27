@@ -9,7 +9,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
@@ -18,13 +17,11 @@ import me.myshows.android.entities.EpisodeRating;
 import me.myshows.android.entities.Show;
 import me.myshows.android.entities.User;
 import me.myshows.android.entities.UserShow;
-import retrofit.Callback;
-import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
 import retrofit.client.Header;
-import retrofit.client.Response;
 import retrofit.converter.JacksonConverter;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * @author Whiplash
@@ -65,49 +62,51 @@ public class MyShowsClient {
 
     public void authentication(String login, String password, MyShowsCallback callback) {
         String md5Password = new String(Hex.encodeHex(DigestUtils.md5(password)));
-        Callback<Response> responseCallback = new ResponseCallback() {
-            @Override
-            public void failure(RetrofitError error) {
-                callback.getResponse(false);
-            }
-
-            @Override
-            public void success(Response response) {
-                Set<String> cookieValues = new HashSet<>();
-                for (Header header : response.getHeaders()) {
-                    if (SET_COOKIE.equals(header.getName())) {
-                        cookieValues.add(parseSetCookie(header.getValue()));
-                    }
-                }
-                saveCookies(cookieValues);
-                callback.getResponse(true);
-            }
-        };
-        api.login(login, md5Password, responseCallback);
+        api.login(login, md5Password)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        response -> {
+                            Set<String> cookieValues = new HashSet<>();
+                            for (Header header : response.getHeaders()) {
+                                if (SET_COOKIE.equals(header.getName())) {
+                                    cookieValues.add(parseSetCookie(header.getValue()));
+                                }
+                            }
+                            saveCookies(cookieValues);
+                            callback.getResponse(true);
+                        },
+                        e -> {
+                            e.printStackTrace();
+                            callback.getResponse(false);
+                        });
     }
 
-    public void profile(Callback<User> callback) {
-        api.profile(callback);
+    public Observable<User> profile() {
+        return api.profile();
     }
 
-    public void profileShows(Callback<Map<String, UserShow>> callback) {
-        api.profileShows(callback);
+    public Observable<UserShow> profileShows() {
+        return api.profileShows()
+                .concatMap(m -> Observable.from(m.values()));
     }
 
-    public void profileEpisodesOfShow(int showId, Callback<Map<String, EpisodeRating>> callback) {
-        api.profileEpisodesOfShow(showId, callback);
+    public Observable<EpisodeRating> profileEpisodesOfShow(int showId) {
+        return api.profileEpisodesOfShow(showId)
+                .concatMap(m -> Observable.from(m.values()));
     }
 
-    public void profileUnwatchedEpisodes(Callback<Map<String, EpisodePreview>> callback) {
-        api.profileUnwatchedEpisodes(callback);
+    public Observable<EpisodePreview> profileUnwatchedEpisodes() {
+        return api.profileUnwatchedEpisodes()
+                .concatMap(m -> Observable.from(m.values()));
     }
 
-    public void profileNextEpisodes(Callback<Map<String, EpisodePreview>> callback) {
-        api.profileNextEpisodes(callback);
+    public Observable<EpisodePreview> profileNextEpisodes() {
+        return api.profileNextEpisodes()
+                .concatMap(m -> Observable.from(m.values()));
     }
 
-    public void showInformation(int showId, Callback<Show> callback) {
-        api.showInformation(showId, callback);
+    public Observable<Show> showInformation(int showId) {
+        return api.showInformation(showId);
     }
 
     public boolean isLogin() {
