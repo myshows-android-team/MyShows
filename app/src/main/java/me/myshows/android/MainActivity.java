@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -16,6 +17,8 @@ import rx.android.schedulers.AndroidSchedulers;
  * @date 18.06.2015
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private ImageView avatar;
     private TextView username;
@@ -36,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
                     Glide.with(this)
                             .load(user.getAvatarUrl())
                             .into(avatar);
+                });
+
+        client.showInformation(6)
+                .subscribe(show -> {
+                    show.requestImageUrl()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(url -> Toast.makeText(this, url, Toast.LENGTH_LONG).show());
                 });
     }
 }
