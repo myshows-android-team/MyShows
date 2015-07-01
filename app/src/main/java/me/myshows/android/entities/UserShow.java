@@ -3,6 +3,8 @@ package me.myshows.android.entities;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import rx.Observable;
+
 /**
  * @author Whiplash
  * @date 20.06.2015
@@ -86,5 +88,9 @@ public class UserShow {
     @JsonProperty("image")
     public String getImage() {
         return image;
+    }
+
+    public Observable<String> requestImageUrl() {
+        return ImageRequester.requestImageUrl(showId);
     }
 }

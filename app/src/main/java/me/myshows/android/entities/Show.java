@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
+import rx.Observable;
+
 /**
  * @author Whiplash
  * @date 22.06.2015
@@ -148,5 +150,9 @@ public class Show {
     @JsonProperty("watching")
     public int getWatching() {
         return watching;
+    }
+
+    public Observable<String> requestImageUrl() {
+        return ImageRequester.requestImageUrl(id);
     }
 }
