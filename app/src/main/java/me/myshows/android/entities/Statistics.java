@@ -14,7 +14,7 @@ public class Statistics {
     private final int watchedEpisodes;
     private final int remainingEpisodes;
     private final int totalEpisodes;
-    private final int totalDays;
+    private final float totalDays;
     private final float totalHours;
     private final float remainingDays;
     private final float watchedDays;
@@ -22,7 +22,7 @@ public class Statistics {
     @JsonCreator
     public Statistics(@JsonProperty("watchedHours") float watchedHours, @JsonProperty("remainingHours") float remainingHours,
                       @JsonProperty("watchedEpisodes") int watchedEpisodes, @JsonProperty("remainingEpisodes") int remainingEpisodes,
-                      @JsonProperty("totalEpisodes") int totalEpisodes, @JsonProperty("totalDays") int totalDays,
+                      @JsonProperty("totalEpisodes") int totalEpisodes, @JsonProperty("totalDays") float totalDays,
                       @JsonProperty("totalHours") float totalHours, @JsonProperty("remainingDays") float remainingDays,
                       @JsonProperty("watchedDays") float watchedDays) {
         this.watchedHours = watchedHours;
@@ -62,7 +62,7 @@ public class Statistics {
     }
 
     @JsonProperty("totalDays")
-    public int getTotalDays() {
+    public float getTotalDays() {
         return totalDays;
     }
 
