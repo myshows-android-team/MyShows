@@ -51,6 +51,8 @@ public class ListShowView extends CardView {
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
+        // temporary workaround
+        image.setImageResource(R.drawable.tmp_placeholder);
         subscription = show.requestImageUrl()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(url -> Glide.with(getContext())
