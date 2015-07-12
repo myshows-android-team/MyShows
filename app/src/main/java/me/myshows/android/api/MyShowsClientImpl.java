@@ -19,6 +19,7 @@ import me.myshows.android.entities.User;
 import me.myshows.android.entities.UserShow;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
+import retrofit.client.Response;
 import retrofit.converter.JacksonConverter;
 import rx.Observable;
 import rx.Scheduler;
@@ -30,9 +31,10 @@ import rx.schedulers.Schedulers;
  */
 public class MyShowsClientImpl implements MyShowsClient {
 
-    private static final String TAG = MyShowsClientImpl.class.getSimpleName();
     private static final String PREFERENCE_NAME = "my_shows_api_preference";
     private static final String MY_SHOWS_COOKIES = "my_shows_cookies_token";
+    private static final String MY_SHOWS_LOGIN = "my_shows_login_token";
+    private static final String MY_SHOWS_PASSWORD = "my_shows_password_hash_token";
     private static final String API_URL = "http://api.myshows.ru";
     private static final String COOKIE_DELIMITER = ";";
     private static final String SET_COOKIE = "Set-Cookie";
@@ -72,30 +74,24 @@ public class MyShowsClientImpl implements MyShowsClient {
     }
 
     @Override
-    public void authentication(String login, String password, MyShowsClient.MyShowsCallback callback) {
+    public Observable<Boolean> authentication(String login, String password) {
         String md5Password = new String(Hex.encodeHex(DigestUtils.md5(password)));
-        api.login(login, md5Password)
-                .observeOn(observerScheduler)
-                .subscribe(
-                        response -> {
-                            Set<String> cookieValues = new HashSet<>();
-                            for (Header header : response.getHeaders()) {
-                                if (SET_COOKIE.equals(header.getName())) {
-                                    cookieValues.add(parseSetCookie(header.getValue()));
-                                }
-                            }
-                            saveCookies(cookieValues);
-                            callback.getResponse(true);
-                        },
-                        e -> {
-                            e.printStackTrace();
-                            callback.getResponse(false);
-                        });
+        return getAuthenticationObserver(login, md5Password);
     }
 
     @Override
-    public boolean isLogin() {
-        return !getCookies().isEmpty();
+    public Observable<Boolean> authentication() {
+        return getAuthenticationObserver(getLogin(), getPassword());
+    }
+
+    private Observable<Boolean> getAuthenticationObserver(String login, String md5Password) {
+        return api.login(login, md5Password)
+                .observeOn(observerScheduler)
+                .map(response -> {
+                    saveCredential(login, md5Password);
+                    saveCookies(extractCookies(response));
+                    return true;
+                });
     }
 
     @Override
@@ -141,6 +137,36 @@ public class MyShowsClientImpl implements MyShowsClient {
     @Override
     public void setObserverScheduler(Scheduler scheduler) {
         this.observerScheduler = scheduler;
+    }
+
+    @Override
+    public boolean hasCredential() {
+        return !getLogin().isEmpty() && !getPassword().isEmpty();
+    }
+
+    private void saveCredential(String login, String md5Password) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(MY_SHOWS_LOGIN, login);
+        editor.putString(MY_SHOWS_PASSWORD, md5Password);
+        editor.apply();
+    }
+
+    private String getLogin() {
+        return preferences.getString(MY_SHOWS_LOGIN, "");
+    }
+
+    private String getPassword() {
+        return preferences.getString(MY_SHOWS_PASSWORD, "");
+    }
+
+    private Set<String> extractCookies(Response response) {
+        Set<String> cookieValues = new HashSet<>();
+        for (Header header : response.getHeaders()) {
+            if (SET_COOKIE.equals(header.getName())) {
+                cookieValues.add(parseSetCookie(header.getValue()));
+            }
+        }
+        return cookieValues;
     }
 
     private String parseSetCookie(String setCookieValue) {

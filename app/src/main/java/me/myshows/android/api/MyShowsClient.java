@@ -13,15 +13,16 @@ import rx.Scheduler;
  */
 public interface MyShowsClient {
 
-    interface MyShowsCallback {
-        void getResponse(boolean response);
-    }
-
     void setObserverScheduler(Scheduler scheduler);
 
-    void authentication(String login, String password, MyShowsClient.MyShowsCallback callback);
+    boolean hasCredential();
 
-    boolean isLogin();
+    Observable<Boolean> authentication(String login, String password);
+
+    /**
+     * Tried to authenticate using credentials from shared preference.
+     */
+    Observable<Boolean> authentication();
 
     Observable<User> profile();
 
