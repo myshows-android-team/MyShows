@@ -46,8 +46,8 @@ public class ListShowView extends CardView {
 
     public void bind(UserShow show) {
         title.setText(show.getTitle());
-        int p = (int) Math.min(100, ((double) show.getWatchedEpisodes()) / show.getTotalEpisodes() * 100);
-        progress.setProgress(p);
+        progress.setMax(show.getTotalEpisodes());
+        progress.setProgress(show.getWatchedEpisodes());
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
