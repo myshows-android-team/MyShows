@@ -59,6 +59,5 @@ public class ListShowView extends CardView {
                         .load(url)
                         .centerCrop()
                         .into(image));
-
     }
 }

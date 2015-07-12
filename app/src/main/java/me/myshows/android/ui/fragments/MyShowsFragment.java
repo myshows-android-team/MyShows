@@ -105,7 +105,6 @@ public class MyShowsFragment extends Fragment {
 
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-
             int position = parent.getChildAdapterPosition(view);
             int topOffset = position == 0 ? offset : 0;
             outRect.set(0, topOffset, 0, offset);
