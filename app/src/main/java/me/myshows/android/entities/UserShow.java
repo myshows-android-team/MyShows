@@ -22,6 +22,8 @@ public class UserShow {
     private final int rating;
     private final String image;
 
+    private String cachedImageUrl;
+
     @JsonCreator
     public UserShow(@JsonProperty("showId") int showId, @JsonProperty("title") String title,
                     @JsonProperty("ruTitle") String ruTitle, @JsonProperty("runtime") int runtime,
@@ -91,6 +93,14 @@ public class UserShow {
     }
 
     public Observable<String> requestImageUrl() {
-        return ImageRequester.requestImageUrl(showId);
+        if (cachedImageUrl != null) {
+            return Observable.just(cachedImageUrl);
+        }
+        return ImageRequester.requestImageUrl(showId)
+                // TODO: remove this stuff
+                .map(s -> {
+                    cachedImageUrl = s;
+                    return s;
+                });
     }
 }
