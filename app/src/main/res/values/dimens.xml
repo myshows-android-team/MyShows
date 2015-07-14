@@ -10,7 +10,10 @@
 
     <!-- List show view dimens -->
     <dimen name="list_show_card_height">240dp</dimen>
-    <dimen name="list_show_progress_height">2dp</dimen>
+    <dimen name="list_show_progress_height">3dp</dimen>
     <dimen name="list_show_text_height">50dp</dimen>
-    <dimen name="list_show_text_size">22sp</dimen>
+    <!-- list_show_card_height / 2 -->
+    <dimen name="list_show_gradient_height">120dp</dimen>
+    <dimen name="list_show_shadow_height">4dp</dimen>
+    <dimen name="list_show_text_size">18sp</dimen>
 </resources>

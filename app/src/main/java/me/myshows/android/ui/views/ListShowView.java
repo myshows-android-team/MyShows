@@ -2,6 +2,7 @@ package me.myshows.android.ui.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -22,6 +23,7 @@ public class ListShowView extends FrameLayout {
     private ImageView image;
     private TextView title;
     private ProgressBar progress;
+    private View shadow;
 
     private Subscription subscription;
 
@@ -42,15 +44,17 @@ public class ListShowView extends FrameLayout {
         image = (ImageView) findViewById(R.id.image);
         title = (TextView) findViewById(R.id.title);
         progress = (ProgressBar) findViewById(R.id.progress);
+        shadow = findViewById(R.id.shadow);
     }
 
-    public void bind(UserShow show) {
+    public void bind(UserShow show, int position) {
         title.setText(show.getTitle());
         progress.setMax(show.getTotalEpisodes());
         progress.setProgress(show.getWatchedEpisodes());
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
+        shadow.setVisibility(position == 0 ? GONE : VISIBLE);
         // temporary workaround
         image.setImageResource(R.drawable.tmp_placeholder);
         subscription = ViewObservable.bindView(this, show.requestImageUrl())

@@ -72,7 +72,7 @@ public class MyShowsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ShowHolder holder, int position) {
-            holder.bind(shows.get(position));
+            holder.bind(shows.get(position), position);
         }
 
         @Override
@@ -87,8 +87,8 @@ public class MyShowsFragment extends Fragment {
             super(itemView);
         }
 
-        public void bind(UserShow show) {
-            ((ListShowView) itemView).bind(show);
+        public void bind(UserShow show, int position) {
+            ((ListShowView) itemView).bind(show, position);
         }
     }
 }

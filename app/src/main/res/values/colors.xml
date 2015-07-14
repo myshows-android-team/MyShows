@@ -3,9 +3,10 @@
     <color name="primary">#CC0000</color>
     <color name="primaryDark">#A00000</color>
     <color name="accent">@color/primary</color>
+    <color name="white_80_opacity">#CCFFFFFF</color>
+    <color name="black_80_opacity">#CC000000</color>
 
     <!-- List show view colors -->
-    <color name="list_show_progress_background">@android:color/white</color>
-    <color name="list_show_text_background">#80000000</color>
-    <color name="list_show_text_color">@android:color/white</color>
+    <color name="list_show_progress_background">@color/white_80_opacity</color>
+    <color name="list_show_text_color">@color/white_80_opacity</color>
 </resources>
