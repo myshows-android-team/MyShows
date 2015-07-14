@@ -17,14 +17,6 @@
         android:layout_gravity="bottom"
         android:orientation="vertical">
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:id="@+id/progress"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/list_show_progress_height"
-            android:minHeight="0dp"
-            android:progressDrawable="@drawable/progress_drawable" />
-
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
@@ -38,6 +30,14 @@
             android:paddingRight="@dimen/default_padding"
             android:textColor="@color/list_show_text_color"
             android:textSize="@dimen/list_show_text_size" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_show_progress_height"
+            android:minHeight="0dp"
+            android:progressDrawable="@drawable/progress_drawable" />
 
     </LinearLayout>
 
