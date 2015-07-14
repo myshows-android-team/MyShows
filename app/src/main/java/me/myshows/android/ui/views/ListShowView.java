@@ -1,8 +1,8 @@
 package me.myshows.android.ui.views;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,7 +17,7 @@ import rx.android.view.ViewObservable;
 /**
  * Created by warrior on 06.07.15.
  */
-public class ListShowView extends CardView {
+public class ListShowView extends FrameLayout {
 
     private ImageView image;
     private TextView title;

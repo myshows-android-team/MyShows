@@ -1,6 +1,5 @@
 package me.myshows.android.ui.fragments;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,9 +31,7 @@ public class MyShowsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.my_shows_fragment, container, false);
 
-        int offset = getActivity().getResources().getDimensionPixelSize(R.dimen.default_padding);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.addItemDecoration(new ShowDecorator(offset));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
@@ -92,22 +89,6 @@ public class MyShowsFragment extends Fragment {
 
         public void bind(UserShow show) {
             ((ListShowView) itemView).bind(show);
-        }
-    }
-
-    private static class ShowDecorator extends RecyclerView.ItemDecoration {
-
-        private final int offset;
-
-        public ShowDecorator(int offset) {
-            this.offset = offset;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view);
-            int topOffset = position == 0 ? offset : 0;
-            outRect.set(0, topOffset, 0, offset);
         }
     }
 }
