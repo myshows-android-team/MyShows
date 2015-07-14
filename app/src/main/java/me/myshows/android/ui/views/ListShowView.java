@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import me.myshows.android.R;
 import me.myshows.android.entities.UserShow;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.ViewObservable;
 
 /**
  * Created by warrior on 06.07.15.
@@ -53,8 +53,7 @@ public class ListShowView extends CardView {
         }
         // temporary workaround
         image.setImageResource(R.drawable.tmp_placeholder);
-        subscription = show.requestImageUrl()
-                .observeOn(AndroidSchedulers.mainThread())
+        subscription = ViewObservable.bindView(this, show.requestImageUrl())
                 .subscribe(url -> Glide.with(getContext())
                         .load(url)
                         .centerCrop()
