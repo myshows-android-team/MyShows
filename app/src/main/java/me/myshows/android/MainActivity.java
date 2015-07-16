@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.yandex.metrica.YandexMetrica;
 
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.MyShowsClientImpl;
@@ -24,6 +25,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String YA_METRICA_APP_ID = "63078";
 
     private DrawerLayout drawerLayout;
     private ImageView avatar;
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        YandexMetrica.initialize(getApplicationContext(), YA_METRICA_APP_ID);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -60,6 +64,18 @@ public class MainActivity extends AppCompatActivity {
                             .load(user.getAvatarUrl())
                             .into(avatar);
                 });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YandexMetrica.onPauseActivity(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        YandexMetrica.onResumeActivity(this);
     }
 
     @Override
