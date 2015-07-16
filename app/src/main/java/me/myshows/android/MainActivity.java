@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.MyShowsClientImpl;
+import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**

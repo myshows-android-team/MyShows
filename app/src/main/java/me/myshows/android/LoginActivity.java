@@ -1,13 +1,16 @@
 package me.myshows.android;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.MyShowsClientImpl;
+import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -26,7 +29,11 @@ public class LoginActivity extends AppCompatActivity {
         client = MyShowsClientImpl.get(getApplicationContext(), AndroidSchedulers.mainThread());
 
         if (client.hasCredential()) {
-            processAuthenticationObserver(client.authentication());
+            if (hasInternetConnection()) {
+                processAuthenticationObserver(client.authentication());
+            } else {
+                changeActivity();
+            }
         }
 
         findViewById(R.id.loginButton).setOnClickListener(view -> {
@@ -36,14 +43,21 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private boolean hasInternetConnection() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
     private void processAuthenticationObserver(Observable<Boolean> observable) {
         observable.subscribe(
-                state -> userHasLogin(),
+                state -> changeActivity(),
                 e -> Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show()
         );
     }
 
-    private void userHasLogin() {
+    private void changeActivity() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
