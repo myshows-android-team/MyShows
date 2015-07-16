@@ -1,8 +1,6 @@
-package me.myshows.android.api;
+package me.myshows.android.api.impl;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import org.apache.commons.codec.binary.Hex;
@@ -12,6 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
+import me.myshows.android.api.ClientStorage;
+import me.myshows.android.api.MyShowsApi;
+import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.entities.EpisodePreview;
 import me.myshows.android.entities.EpisodeRating;
 import me.myshows.android.entities.Show;
@@ -31,10 +32,6 @@ import rx.schedulers.Schedulers;
  */
 public class MyShowsClientImpl implements MyShowsClient {
 
-    private static final String PREFERENCE_NAME = "my_shows_api_preference";
-    private static final String MY_SHOWS_COOKIES = "my_shows_cookies_token";
-    private static final String MY_SHOWS_LOGIN = "my_shows_login_token";
-    private static final String MY_SHOWS_PASSWORD = "my_shows_password_hash_token";
     private static final String API_URL = "http://api.myshows.ru";
     private static final String COOKIE_DELIMITER = ";";
     private static final String SET_COOKIE = "Set-Cookie";
@@ -43,17 +40,17 @@ public class MyShowsClientImpl implements MyShowsClient {
     private static MyShowsClientImpl client;
 
     private final MyShowsApi api;
-    private final SharedPreferences preferences;
+    private final ClientStorage storage;
 
     private Scheduler observerScheduler = Schedulers.immediate();
 
     private MyShowsClientImpl(Context context) {
-        this.preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        this.storage = new PreferenceStorage(context);
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
                 .setConverter(new JacksonConverter())
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
-                .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join(COOKIE_DELIMITER, getCookies())))
+                .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join(COOKIE_DELIMITER, storage.getCookies())))
                 .build()
                 .create(MyShowsApi.class);
     }
@@ -81,15 +78,17 @@ public class MyShowsClientImpl implements MyShowsClient {
 
     @Override
     public Observable<Boolean> authentication() {
-        return getAuthenticationObserver(getLogin(), getPassword());
+        storage.setCookies(new HashSet<>());
+        return getAuthenticationObserver(storage.getLogin(), storage.getPasswordHash());
     }
 
     private Observable<Boolean> getAuthenticationObserver(String login, String md5Password) {
         return api.login(login, md5Password)
                 .observeOn(observerScheduler)
                 .map(response -> {
-                    saveCredential(login, md5Password);
-                    saveCookies(extractCookies(response));
+                    storage.setLogin(login);
+                    storage.setPasswordHash(md5Password);
+                    storage.setCookies(extractCookies(response));
                     return true;
                 });
     }
@@ -141,22 +140,7 @@ public class MyShowsClientImpl implements MyShowsClient {
 
     @Override
     public boolean hasCredential() {
-        return !getLogin().isEmpty() && !getPassword().isEmpty();
-    }
-
-    private void saveCredential(String login, String md5Password) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(MY_SHOWS_LOGIN, login);
-        editor.putString(MY_SHOWS_PASSWORD, md5Password);
-        editor.apply();
-    }
-
-    private String getLogin() {
-        return preferences.getString(MY_SHOWS_LOGIN, "");
-    }
-
-    private String getPassword() {
-        return preferences.getString(MY_SHOWS_PASSWORD, "");
+        return storage.containsCredential();
     }
 
     private Set<String> extractCookies(Response response) {
@@ -171,16 +155,5 @@ public class MyShowsClientImpl implements MyShowsClient {
 
     private String parseSetCookie(String setCookieValue) {
         return setCookieValue.substring(0, setCookieValue.indexOf(COOKIE_DELIMITER));
-    }
-
-    private void saveCookies(Set<String> cookieValues) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putStringSet(MY_SHOWS_COOKIES, cookieValues);
-        editor.apply();
-    }
-
-    @NonNull
-    private Set<String> getCookies() {
-        return preferences.getStringSet(MY_SHOWS_COOKIES, new HashSet<>());
     }
 }
