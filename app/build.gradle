@@ -34,7 +34,9 @@ def retrofitVersion = '1.9.0'
 
 dependencies {
     compile "com.android.support:appcompat-v7:$supportVersion"
+    compile "com.android.support:cardview-v7:$supportVersion"
     compile "com.android.support:design:$supportVersion"
+    compile "com.android.support:recyclerview-v7:$supportVersion"
     compile "com.android.support:support-annotations:$supportVersion"
 
     compile 'de.hdodenhof:circleimageview:1.3.0'

@@ -1,5 +1,7 @@
 package me.myshows.android.entities;
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -15,6 +17,8 @@ import rx.schedulers.Schedulers;
  */
 class ImageRequester {
 
+    private static final String TAG = ImageRequester.class.getSimpleName();
+
     private static final String REQUEST_URL = "http://myshows.me/view/%d/";
     private static final String SELECT_QUERY = "div.presentBlockImg";
     private static final String ATTR_NAME = "style";
@@ -26,13 +30,14 @@ class ImageRequester {
 
     public static Observable<String> requestImageUrl(int showId) {
         return Observable.just(showId)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .flatMap(id -> {
                     try {
                         // TODO: persist url before return
                         return Observable.just(getImageUrl(id));
                     } catch (IOException e) {
-                        return Observable.error(e);
+                        Log.e(TAG, e.getMessage(), e);
+                        return Observable.just(null);
                     }
                 });
     }
