@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         client = MyShowsClientImpl.get(getApplicationContext(), AndroidSchedulers.mainThread());
 
-        if (client.hasCredential()) {
+        if (client.hasCredentials()) {
             if (hasInternetConnection()) {
                 processAuthenticationObserver(client.authentication());
             } else {

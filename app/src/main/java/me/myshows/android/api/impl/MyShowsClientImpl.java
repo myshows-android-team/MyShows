@@ -140,7 +140,7 @@ public class MyShowsClientImpl implements MyShowsClient {
     }
 
     @Override
-    public boolean hasCredential() {
+    public boolean hasCredentials() {
         return storage.getCredentials() != null;
     }
 

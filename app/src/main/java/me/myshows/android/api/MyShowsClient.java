@@ -15,7 +15,7 @@ public interface MyShowsClient {
 
     void setObserverScheduler(Scheduler scheduler);
 
-    boolean hasCredential();
+    boolean hasCredentials();
 
     Observable<Boolean> authentication(String login, String password);
 
