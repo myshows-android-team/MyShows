@@ -20,11 +20,6 @@ public interface MyShowsClient {
 
     Observable<Boolean> authentication(Credentials credentials);
 
-    /**
-     * Tried to authenticate using credentials from shared preference.
-     */
-    Observable<Boolean> authentication();
-
     Observable<User> profile();
 
     Observable<UserShow> profileShows();

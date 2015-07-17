@@ -1,6 +1,5 @@
 package me.myshows.android.api.impl;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.HashSet;
@@ -9,7 +8,7 @@ import java.util.Set;
 import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
-import me.myshows.android.api.MyShowsClient;
+import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.entities.EpisodePreview;
 import me.myshows.android.entities.EpisodeRating;
 import me.myshows.android.entities.Show;
@@ -27,7 +26,7 @@ import rx.schedulers.Schedulers;
  * @author Whiplash
  * @date 14.06.2015
  */
-public class MyShowsClientImpl implements MyShowsClient {
+public class MyShowsClientImpl extends StorageMyShowsClient {
 
     private static final String API_URL = "http://api.myshows.ru";
     private static final String COOKIE_DELIMITER = ";";
@@ -37,12 +36,11 @@ public class MyShowsClientImpl implements MyShowsClient {
     private static MyShowsClientImpl client;
 
     private final MyShowsApi api;
-    private final ClientStorage storage;
 
     private Scheduler observerScheduler = Schedulers.immediate();
 
-    private MyShowsClientImpl(Context context) {
-        this.storage = new PreferenceStorage(context);
+    private MyShowsClientImpl(ClientStorage storage) {
+        super(storage);
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
                 .setConverter(new JacksonConverter())
@@ -52,16 +50,16 @@ public class MyShowsClientImpl implements MyShowsClient {
                 .create(MyShowsApi.class);
     }
 
-    public static MyShowsClientImpl get(Context context) {
+    public static MyShowsClientImpl get(ClientStorage storage) {
         if (client == null) {
-            client = new MyShowsClientImpl(context);
+            client = new MyShowsClientImpl(storage);
         }
         return client;
     }
 
-    public static MyShowsClientImpl get(Context context, Scheduler observerScheduler) {
+    public static MyShowsClientImpl get(ClientStorage storage, Scheduler observerScheduler) {
         if (client == null) {
-            client = new MyShowsClientImpl(context);
+            client = new MyShowsClientImpl(storage);
         }
         client.setObserverScheduler(observerScheduler);
         return client;
@@ -76,12 +74,6 @@ public class MyShowsClientImpl implements MyShowsClient {
                     storage.putCookies(extractCookies(response));
                     return true;
                 });
-    }
-
-    @Override
-    public Observable<Boolean> authentication() {
-        storage.putCookies(new HashSet<>()); // reset cookie otherwise API returns 401
-        return authentication(storage.getCredentials());
     }
 
     @Override

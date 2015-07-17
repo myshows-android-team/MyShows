@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
+import me.myshows.android.api.impl.PreferenceStorage;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -48,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        MyShowsClient client = MyShowsClientImpl.get(getApplicationContext(), AndroidSchedulers.mainThread());
+        MyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
+                AndroidSchedulers.mainThread());
 
         username = (TextView) findViewById(R.id.nav_username);
         avatar = (ImageView) findViewById(R.id.nav_avatar);

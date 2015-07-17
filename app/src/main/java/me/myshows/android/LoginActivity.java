@@ -9,9 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import me.myshows.android.api.MyShowsClient;
+import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.api.impl.MyShowsClientImpl;
+import me.myshows.android.api.impl.PreferenceStorage;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -21,13 +22,14 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    private MyShowsClient client;
+    private StorageMyShowsClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        client = MyShowsClientImpl.get(getApplicationContext(), AndroidSchedulers.mainThread());
+        client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
+                AndroidSchedulers.mainThread());
 
         if (client.hasCredentials()) {
             if (hasInternetConnection()) {
