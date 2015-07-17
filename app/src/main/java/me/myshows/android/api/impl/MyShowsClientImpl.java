@@ -78,16 +78,17 @@ public class MyShowsClientImpl implements MyShowsClient {
 
     @Override
     public Observable<Boolean> authentication() {
-        storage.setCookies(new HashSet<>());
-        return getAuthenticationObserver(storage.getLogin(), storage.getPasswordHash());
+        storage.setCookies(new HashSet<>()); // reset cookie otherwise API returns 401
+        Credentials credentials = storage.getCredentials();
+        return getAuthenticationObserver(credentials.getLogin(), credentials.getPasswordHash());
     }
 
     private Observable<Boolean> getAuthenticationObserver(String login, String md5Password) {
         return api.login(login, md5Password)
                 .observeOn(observerScheduler)
                 .map(response -> {
-                    storage.setLogin(login);
-                    storage.setPasswordHash(md5Password);
+                    Credentials credentials = new Credentials(login, md5Password, false);
+                    storage.setCredentials(credentials);
                     storage.setCookies(extractCookies(response));
                     return true;
                 });
@@ -140,7 +141,7 @@ public class MyShowsClientImpl implements MyShowsClient {
 
     @Override
     public boolean hasCredential() {
-        return storage.containsCredential();
+        return storage.getCredentials() != null;
     }
 
     private Set<String> extractCookies(Response response) {

@@ -3,6 +3,7 @@ package me.myshows.android.api.impl;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,27 +23,25 @@ public class PreferenceStorage implements ClientStorage {
         this.preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
-    @NonNull
+    @Nullable
     @Override
-    public String getLogin() {
-        return preferences.getString(MY_SHOWS_LOGIN, "");
+    public Credentials getCredentials() {
+        if (preferences.contains(MY_SHOWS_LOGIN) && preferences.contains(MY_SHOWS_PASSWORD)) {
+            String login = preferences.getString(MY_SHOWS_LOGIN, null);
+            String passwordHash = preferences.getString(MY_SHOWS_PASSWORD, null);
+            return new Credentials(login, passwordHash, false);
+        }
+        return null;
     }
 
     @Override
-    public void setLogin(String login) {
-        setStringValue(MY_SHOWS_LOGIN, login);
+    public void setCredentials(Credentials credentials) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(MY_SHOWS_LOGIN, credentials.getLogin());
+        editor.putString(MY_SHOWS_PASSWORD, credentials.getPasswordHash());
+        editor.apply();
     }
 
-    @NonNull
-    @Override
-    public String getPasswordHash() {
-        return preferences.getString(MY_SHOWS_PASSWORD, "");
-    }
-
-    @Override
-    public void setPasswordHash(String passwordHash) {
-        setStringValue(MY_SHOWS_PASSWORD, passwordHash);
-    }
 
     @NonNull
     @Override
@@ -54,17 +53,6 @@ public class PreferenceStorage implements ClientStorage {
     public void setCookies(Set<String> cookieValues) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putStringSet(MY_SHOWS_COOKIES, cookieValues);
-        editor.apply();
-    }
-
-    @Override
-    public boolean containsCredential() {
-        return preferences.contains(MY_SHOWS_LOGIN) && preferences.contains(MY_SHOWS_PASSWORD);
-    }
-
-    private void setStringValue(String token, String value) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(token, value);
         editor.apply();
     }
 }

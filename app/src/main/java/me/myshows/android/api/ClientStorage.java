@@ -2,19 +2,15 @@ package me.myshows.android.api;
 
 import java.util.Set;
 
+import me.myshows.android.api.impl.Credentials;
+
 public interface ClientStorage {
 
-    String getLogin();
+    Credentials getCredentials();
 
-    void setLogin(String login);
-
-    String getPasswordHash();
-
-    void setPasswordHash(String passwordHash);
+    void setCredentials(Credentials credentials);
 
     Set<String> getCookies();
 
     void setCookies(Set<String> cookies);
-
-    boolean containsCredential();
 }
