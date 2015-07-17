@@ -8,7 +8,7 @@ public class Credentials {
     private final String login;
     private final String passwordHash;
 
-    public Credentials(String login, String passwordHash) {
+    Credentials(String login, String passwordHash) {
         this.login = login;
         this.passwordHash = passwordHash;
     }

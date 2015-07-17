@@ -66,13 +66,13 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
-    public Observable<Boolean> authentication(Credentials credentials) {
+    public Observable<Void> authentication(Credentials credentials) {
         return api.login(credentials.getLogin(), credentials.getPasswordHash())
                 .observeOn(observerScheduler)
-                .map(response -> {
+                .flatMap(response -> {
                     storage.putCredentials(credentials);
                     storage.putCookies(extractCookies(response));
-                    return true;
+                    return Observable.empty();
                 });
     }
 
