@@ -8,17 +8,13 @@ public class Credentials {
     private final String login;
     private final String passwordHash;
 
-    public Credentials(String login, String password) {
-        this(login, password, true);
+    public Credentials(String login, String passwordHash) {
+        this.login = login;
+        this.passwordHash = passwordHash;
     }
 
-    Credentials(String login, String password, boolean calculateHash) {
-        this.login = login;
-        if (calculateHash) {
-            this.passwordHash = new String(Hex.encodeHex(DigestUtils.md5(password)));
-        } else {
-            this.passwordHash = password;
-        }
+    public static Credentials getCredentials(String login, String password) {
+        return new Credentials(login, new String(Hex.encodeHex(DigestUtils.md5(password))));
     }
 
     public String getLogin() {

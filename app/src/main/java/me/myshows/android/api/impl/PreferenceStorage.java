@@ -29,13 +29,13 @@ public class PreferenceStorage implements ClientStorage {
         if (preferences.contains(MY_SHOWS_LOGIN) && preferences.contains(MY_SHOWS_PASSWORD)) {
             String login = preferences.getString(MY_SHOWS_LOGIN, null);
             String passwordHash = preferences.getString(MY_SHOWS_PASSWORD, null);
-            return new Credentials(login, passwordHash, false);
+            return new Credentials(login, passwordHash);
         }
         return null;
     }
 
     @Override
-    public void setCredentials(Credentials credentials) {
+    public void putCredentials(Credentials credentials) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(MY_SHOWS_LOGIN, credentials.getLogin());
         editor.putString(MY_SHOWS_PASSWORD, credentials.getPasswordHash());
@@ -50,7 +50,7 @@ public class PreferenceStorage implements ClientStorage {
     }
 
     @Override
-    public void setCookies(Set<String> cookieValues) {
+    public void putCookies(Set<String> cookieValues) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putStringSet(MY_SHOWS_COOKIES, cookieValues);
         editor.apply();

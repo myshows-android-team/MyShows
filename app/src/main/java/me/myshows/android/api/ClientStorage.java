@@ -8,9 +8,9 @@ public interface ClientStorage {
 
     Credentials getCredentials();
 
-    void setCredentials(Credentials credentials);
+    void putCredentials(Credentials credentials);
 
     Set<String> getCookies();
 
-    void setCookies(Set<String> cookies);
+    void putCookies(Set<String> cookies);
 }

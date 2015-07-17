@@ -1,5 +1,6 @@
 package me.myshows.android.api;
 
+import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.entities.EpisodePreview;
 import me.myshows.android.entities.EpisodeRating;
 import me.myshows.android.entities.Show;
@@ -17,7 +18,7 @@ public interface MyShowsClient {
 
     boolean hasCredentials();
 
-    Observable<Boolean> authentication(String login, String password);
+    Observable<Boolean> authentication(Credentials credentials);
 
     /**
      * Tried to authenticate using credentials from shared preference.

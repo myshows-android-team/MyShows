@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import me.myshows.android.api.MyShowsClient;
+import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -39,7 +40,8 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.loginButton).setOnClickListener(view -> {
             String login = ((EditText) findViewById(R.id.login)).getText().toString();
             String password = ((EditText) findViewById(R.id.password)).getText().toString();
-            processAuthenticationObserver(client.authentication(login, password));
+            Credentials credentials = Credentials.getCredentials(login, password);
+            processAuthenticationObserver(client.authentication(credentials));
         });
     }
 

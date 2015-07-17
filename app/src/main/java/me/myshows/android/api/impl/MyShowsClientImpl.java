@@ -3,9 +3,6 @@ package me.myshows.android.api.impl;
 import android.content.Context;
 import android.text.TextUtils;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -71,27 +68,20 @@ public class MyShowsClientImpl implements MyShowsClient {
     }
 
     @Override
-    public Observable<Boolean> authentication(String login, String password) {
-        String md5Password = new String(Hex.encodeHex(DigestUtils.md5(password)));
-        return getAuthenticationObserver(login, md5Password);
+    public Observable<Boolean> authentication(Credentials credentials) {
+        return api.login(credentials.getLogin(), credentials.getPasswordHash())
+                .observeOn(observerScheduler)
+                .map(response -> {
+                    storage.putCredentials(credentials);
+                    storage.putCookies(extractCookies(response));
+                    return true;
+                });
     }
 
     @Override
     public Observable<Boolean> authentication() {
-        storage.setCookies(new HashSet<>()); // reset cookie otherwise API returns 401
-        Credentials credentials = storage.getCredentials();
-        return getAuthenticationObserver(credentials.getLogin(), credentials.getPasswordHash());
-    }
-
-    private Observable<Boolean> getAuthenticationObserver(String login, String md5Password) {
-        return api.login(login, md5Password)
-                .observeOn(observerScheduler)
-                .map(response -> {
-                    Credentials credentials = new Credentials(login, md5Password, false);
-                    storage.setCredentials(credentials);
-                    storage.setCookies(extractCookies(response));
-                    return true;
-                });
+        storage.putCookies(new HashSet<>()); // reset cookie otherwise API returns 401
+        return authentication(storage.getCredentials());
     }
 
     @Override
