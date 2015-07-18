@@ -25,6 +25,8 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class MyShowsFragment extends Fragment {
 
+    private RecyclerView recyclerView;
+
     private Subscription subscription;
 
     @Nullable
@@ -32,20 +34,11 @@ public class MyShowsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.my_shows_fragment, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        MyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getActivity()),
-                AndroidSchedulers.mainThread());
-
-        subscription = client.profileShows()
-                .observeOn(AndroidSchedulers.mainThread())
-                .toList()
-                .subscribe(shows -> {
-                    ShowAdapter adapter = new ShowAdapter(shows);
-                    recyclerView.setAdapter(adapter);
-                });
+        loadData();
 
         return view;
     }
@@ -56,6 +49,18 @@ public class MyShowsFragment extends Fragment {
             subscription.unsubscribe();
         }
         super.onDestroyView();
+    }
+
+    private void loadData() {
+        MyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getActivity()),
+                AndroidSchedulers.mainThread());
+        subscription = client.profileShows()
+                .observeOn(AndroidSchedulers.mainThread())
+                .toList()
+                .subscribe(shows -> {
+                    ShowAdapter adapter = new ShowAdapter(shows);
+                    recyclerView.setAdapter(adapter);
+                });
     }
 
     private static class ShowAdapter extends RecyclerView.Adapter<ShowHolder> {
