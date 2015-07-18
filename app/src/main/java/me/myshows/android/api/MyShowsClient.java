@@ -1,5 +1,6 @@
 package me.myshows.android.api;
 
+import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.entities.EpisodePreview;
 import me.myshows.android.entities.EpisodeRating;
 import me.myshows.android.entities.Show;
@@ -13,15 +14,11 @@ import rx.Scheduler;
  */
 public interface MyShowsClient {
 
-    interface MyShowsCallback {
-        void getResponse(boolean response);
-    }
-
     void setObserverScheduler(Scheduler scheduler);
 
-    void authentication(String login, String password, MyShowsClient.MyShowsCallback callback);
+    boolean hasCredentials();
 
-    boolean isLogin();
+    Observable<Boolean> authentication(Credentials credentials);
 
     Observable<User> profile();
 

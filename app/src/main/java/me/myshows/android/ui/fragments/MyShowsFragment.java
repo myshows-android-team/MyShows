@@ -13,7 +13,8 @@ import java.util.List;
 
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.MyShowsClientImpl;
+import me.myshows.android.api.impl.MyShowsClientImpl;
+import me.myshows.android.api.impl.PreferenceStorage;
 import me.myshows.android.entities.UserShow;
 import me.myshows.android.ui.views.ListShowView;
 import rx.Subscription;
@@ -35,7 +36,9 @@ public class MyShowsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        MyShowsClient client = MyShowsClientImpl.get(getActivity());
+        MyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getActivity()),
+                AndroidSchedulers.mainThread());
+
         subscription = client.profileShows()
                 .observeOn(AndroidSchedulers.mainThread())
                 .toList()
