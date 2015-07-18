@@ -13,7 +13,7 @@ public class Credentials {
         this.passwordHash = passwordHash;
     }
 
-    public static Credentials getCredentials(String login, String password) {
+    public static Credentials make(String login, String password) {
         return new Credentials(login, new String(Hex.encodeHex(DigestUtils.md5(password))));
     }
 

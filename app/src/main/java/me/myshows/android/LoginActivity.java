@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.loginButton).setOnClickListener(view -> {
             String login = ((EditText) findViewById(R.id.login)).getText().toString();
             String password = ((EditText) findViewById(R.id.password)).getText().toString();
-            Credentials credentials = Credentials.getCredentials(login, password);
+            Credentials credentials = Credentials.make(login, password);
             processAuthenticationObserver(client.authentication(credentials));
         });
     }
