@@ -1,4 +1,4 @@
-package me.myshows.android;
+package me.myshows.android.ui.activities;
 
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.api.impl.PreferenceStorage;

@@ -1,4 +1,4 @@
-package me.myshows.android;
+package me.myshows.android.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import me.myshows.android.R;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.api.impl.MyShowsClientImpl;
