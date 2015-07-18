@@ -18,7 +18,7 @@ public interface MyShowsClient {
 
     boolean hasCredentials();
 
-    Observable<Void> authentication(Credentials credentials);
+    Observable<Boolean> authentication(Credentials credentials);
 
     Observable<User> profile();
 

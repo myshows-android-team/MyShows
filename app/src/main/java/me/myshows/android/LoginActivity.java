@@ -54,13 +54,14 @@ public class LoginActivity extends AppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    private void processAuthenticationObserver(Observable<Void> observable) {
-        observable.subscribe(
-                v -> {
-                },
-                e -> Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show(),
-                this::changeActivity
-        );
+    private void processAuthenticationObserver(Observable<Boolean> observable) {
+        observable.subscribe(result -> {
+            if (result) {
+                changeActivity();
+            } else {
+                Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void changeActivity() {

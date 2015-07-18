@@ -15,7 +15,7 @@ public abstract class StorageMyShowsClient implements MyShowsClient {
     /**
      * Tried to authenticate using storage.
      */
-    public Observable<Void> authentication() {
+    public Observable<Boolean> authentication() {
         storage.putCookies(new HashSet<>()); // reset cookie otherwise API returns 401
         return authentication(storage.getCredentials());
     }
