@@ -15,6 +15,7 @@ import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.api.impl.PreferenceStorage;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -23,13 +24,13 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    private StorageMyShowsClient client;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
+        StorageMyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
                 AndroidSchedulers.mainThread());
 
         if (client.hasCredentials()) {
@@ -48,6 +49,14 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+        super.onDestroy();
+    }
+
     private boolean hasInternetConnection() {
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -56,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void processAuthenticationObserver(Observable<Boolean> observable) {
-        observable.subscribe(result -> {
+        subscription = observable.subscribe(result -> {
             if (result) {
                 changeActivity();
             } else {
