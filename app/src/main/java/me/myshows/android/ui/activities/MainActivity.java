@@ -1,4 +1,4 @@
-package me.myshows.android;
+package me.myshows.android.ui.activities;
 
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.api.impl.PreferenceStorage;
@@ -37,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,19 +48,11 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        MyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
-                AndroidSchedulers.mainThread());
-
-        username = (TextView) findViewById(R.id.nav_username);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         avatar = (ImageView) findViewById(R.id.nav_avatar);
+        username = (TextView) findViewById(R.id.nav_username);
 
-        subscription = client.profile()
-                .subscribe(user -> {
-                    username.setText(user.getLogin());
-                    Glide.with(this)
-                            .load(user.getAvatarUrl())
-                            .into(avatar);
-                });
+        loadData();
     }
 
     @Override
@@ -80,5 +71,17 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadData() {
+        MyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
+                AndroidSchedulers.mainThread());
+        subscription = client.profile()
+                .subscribe(user -> {
+                    username.setText(user.getLogin());
+                    Glide.with(this)
+                            .load(user.getAvatarUrl())
+                            .into(avatar);
+                });
     }
 }

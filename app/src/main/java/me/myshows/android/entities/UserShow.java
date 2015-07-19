@@ -3,12 +3,16 @@ package me.myshows.android.entities;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
+
 import rx.Observable;
 
 /**
  * @author Whiplash
  * @date 20.06.2015
  */
+@Parcel(Parcel.Serialization.BEAN)
 public class UserShow {
 
     private final int showId;
@@ -24,6 +28,7 @@ public class UserShow {
 
     private String cachedImageUrl;
 
+    @ParcelConstructor
     @JsonCreator
     public UserShow(@JsonProperty("showId") int showId, @JsonProperty("title") String title,
                     @JsonProperty("ruTitle") String ruTitle, @JsonProperty("runtime") int runtime,
@@ -102,5 +107,15 @@ public class UserShow {
                     cachedImageUrl = s;
                     return s;
                 });
+    }
+
+    // just for Parceler lib
+    public String getCachedImageUrl() {
+        return cachedImageUrl;
+    }
+
+    // just for Parceler lib
+    public void setCachedImageUrl(String cachedImageUrl) {
+        this.cachedImageUrl = cachedImageUrl;
     }
 }
