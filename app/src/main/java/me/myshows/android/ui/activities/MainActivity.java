@@ -39,6 +39,8 @@ import rx.android.schedulers.AndroidSchedulers;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final String TITLE_ID = "titleId";
     
     private static final SparseIntArray MENU_ITEM_ID_TO_TITLE = new SparseIntArray();
     private static final SparseArray<Class<? extends Fragment>> MENU_ITEM_ID_TO_FRAGMENT = new SparseArray<>();
@@ -67,16 +69,21 @@ public class MainActivity extends AppCompatActivity {
 
     private Subscription subscription;
 
+    private int currentTitleId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         fragmentManager = getSupportFragmentManager();
-        if (savedInstanceState == null) {
+        boolean isFirstCreation = savedInstanceState == null;
+        if (isFirstCreation) {
             fragmentManager.beginTransaction()
                     .add(R.id.content, new MyShowsFragment(), MyShowsFragment.class.getSimpleName())
                     .commit();
+        } else {
+            currentTitleId = savedInstanceState.getInt(TITLE_ID);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -84,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        setupNavigationDrawer(navigationView);
+        setupNavigationDrawer(navigationView, isFirstCreation);
 
         avatar = (ImageView) findViewById(R.id.nav_avatar);
         username = (TextView) findViewById(R.id.nav_username);
@@ -110,6 +117,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(TITLE_ID, currentTitleId);
+        super.onSaveInstanceState(outState);
+    }
+
     private void setupActionBar(Toolbar toolbar) {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -119,21 +132,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupNavigationDrawer(NavigationView navigationView) {
-        navigationView.getMenu()
-                .findItem(R.id.nav_my_series)
-                .setChecked(true);
-        setActionBarTitle(R.string.my_series);
+    private void setupNavigationDrawer(NavigationView navigationView, boolean isFirstCreation) {
+        if (isFirstCreation) {
+            navigationView.getMenu()
+                    .findItem(R.id.nav_my_series)
+                    .setChecked(true);
+            setActionBarTitle(R.string.my_series);
+        } else {
+            setActionBarTitle(currentTitleId);
+        }
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     Class<? extends Fragment> fragmentClass = MENU_ITEM_ID_TO_FRAGMENT.get(menuItem.getItemId());
                     if (fragmentClass != null && !menuItem.isChecked()) {
-                        int titleRes = MENU_ITEM_ID_TO_TITLE.get(menuItem.getItemId());
-                        setActionBarTitle(titleRes);
+                        setActionBarTitle(MENU_ITEM_ID_TO_TITLE.get(menuItem.getItemId()));
                         Fragment fragment = getFragment(fragmentClass);
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content, fragment, fragmentClass.getSimpleName())
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                .addToBackStack(null)
                                 .commit();
                         menuItem.setChecked(true);
                     }
@@ -153,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
     private void setActionBarTitle(@StringRes int resId) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            currentTitleId = resId;
             actionBar.setTitle(resId);
         }
     }
