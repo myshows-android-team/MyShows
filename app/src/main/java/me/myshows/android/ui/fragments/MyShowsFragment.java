@@ -1,5 +1,7 @@
 package me.myshows.android.ui.fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 import me.myshows.android.R;
@@ -16,6 +20,7 @@ import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.api.impl.PreferenceStorage;
 import me.myshows.android.entities.UserShow;
+import me.myshows.android.ui.activities.ShowActivity;
 import me.myshows.android.ui.views.ListShowView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -97,6 +102,12 @@ public class MyShowsFragment extends Fragment {
 
         public void bind(UserShow show, int position) {
             ((ListShowView) itemView).bind(show, position);
+            itemView.setOnClickListener(v -> {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, ShowActivity.class);
+                intent.putExtra(ShowActivity.SHOW, Parcels.wrap(show));
+                context.startActivity(intent);
+            });
         }
     }
 }
