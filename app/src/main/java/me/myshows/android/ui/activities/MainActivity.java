@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,23 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TITLE_ID = "titleId";
     
-    private static final SparseIntArray MENU_ITEM_ID_TO_TITLE = new SparseIntArray();
-    private static final SparseArray<Class<? extends Fragment>> MENU_ITEM_ID_TO_FRAGMENT = new SparseArray<>();
+    private static final SparseArray<FragmentInfo> MENU_ITEM_ID_TO_FRAGMENT_INFO = new SparseArray<>();
     
     static {
-        MENU_ITEM_ID_TO_TITLE.put(R.id.nav_my_series, R.string.my_series);
-        MENU_ITEM_ID_TO_TITLE.put(R.id.nav_calendar, R.string.calendar);
-        MENU_ITEM_ID_TO_TITLE.put(R.id.nav_profile, R.string.profile);
-        MENU_ITEM_ID_TO_TITLE.put(R.id.nav_friends, R.string.friends);
-        MENU_ITEM_ID_TO_TITLE.put(R.id.nav_favorites, R.string.favorites);
-        MENU_ITEM_ID_TO_TITLE.put(R.id.nav_ratings, R.string.ratings);
-
-        MENU_ITEM_ID_TO_FRAGMENT.put(R.id.nav_my_series, MyShowsFragment.class);
-        MENU_ITEM_ID_TO_FRAGMENT.put(R.id.nav_calendar, CalendarFragment.class);
-        MENU_ITEM_ID_TO_FRAGMENT.put(R.id.nav_profile, ProfileFragment.class);
-        MENU_ITEM_ID_TO_FRAGMENT.put(R.id.nav_friends, FriendsFragment.class);
-        MENU_ITEM_ID_TO_FRAGMENT.put(R.id.nav_favorites, FavoritesFragment.class);
-        MENU_ITEM_ID_TO_FRAGMENT.put(R.id.nav_ratings, RatingsFragment.class);
+        MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_my_series, FragmentInfo.make(MyShowsFragment.class, R.string.my_series));
+        MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_calendar, FragmentInfo.make(CalendarFragment.class, R.string.calendar));
+        MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_profile, FragmentInfo.make(ProfileFragment.class, R.string.profile));
+        MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_friends, FragmentInfo.make(FriendsFragment.class, R.string.friends));
+        MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_favorites, FragmentInfo.make(FavoritesFragment.class, R.string.favorites));
+        MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_ratings, FragmentInfo.make(RatingsFragment.class, R.string.ratings));
     }
 
     private FragmentManager fragmentManager;
@@ -143,12 +134,12 @@ public class MainActivity extends AppCompatActivity {
         }
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    Class<? extends Fragment> fragmentClass = MENU_ITEM_ID_TO_FRAGMENT.get(menuItem.getItemId());
-                    if (fragmentClass != null && !menuItem.isChecked()) {
-                        setActionBarTitle(MENU_ITEM_ID_TO_TITLE.get(menuItem.getItemId()));
-                        Fragment fragment = getFragment(fragmentClass);
+                    FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
+                    if (info != null && !menuItem.isChecked()) {
+                        setActionBarTitle(info.titleId);
+                        Fragment fragment = getFragment(info.fragmentClass);
                         fragmentManager.beginTransaction()
-                                .replace(R.id.content, fragment, fragmentClass.getSimpleName())
+                                .replace(R.id.content, fragment, info.fragmentClass.getSimpleName())
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .addToBackStack(null)
                                 .commit();
@@ -185,5 +176,19 @@ public class MainActivity extends AppCompatActivity {
                             .load(user.getAvatarUrl())
                             .into(avatar);
                 });
+    }
+
+    private static class FragmentInfo {
+        public final Class<? extends Fragment> fragmentClass;
+        @StringRes public final int titleId;
+
+        public FragmentInfo(Class<? extends Fragment> fragmentClass, @StringRes int titleId) {
+            this.fragmentClass = fragmentClass;
+            this.titleId = titleId;
+        }
+
+        public static FragmentInfo make(Class<? extends Fragment> clazz, @StringRes int titleId) {
+            return new FragmentInfo(clazz, titleId);
+        }
     }
 }
