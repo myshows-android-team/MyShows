@@ -1,4 +1,4 @@
-package me.myshows.android.entities;
+package me.myshows.android.entity;
 
 import android.util.Log;
 

@@ -2,11 +2,11 @@ package me.myshows.android.api;
 
 import java.util.Map;
 
-import me.myshows.android.entities.EpisodePreview;
-import me.myshows.android.entities.EpisodeRating;
-import me.myshows.android.entities.Show;
-import me.myshows.android.entities.User;
-import me.myshows.android.entities.UserShow;
+import me.myshows.android.entity.EpisodePreview;
+import me.myshows.android.entity.EpisodeRating;
+import me.myshows.android.entity.Show;
+import me.myshows.android.entity.User;
+import me.myshows.android.entity.UserShow;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;

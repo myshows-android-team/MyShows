@@ -1,11 +1,11 @@
 package me.myshows.android.api;
 
 import me.myshows.android.api.impl.Credentials;
-import me.myshows.android.entities.EpisodePreview;
-import me.myshows.android.entities.EpisodeRating;
-import me.myshows.android.entities.Show;
-import me.myshows.android.entities.User;
-import me.myshows.android.entities.UserShow;
+import me.myshows.android.entity.EpisodePreview;
+import me.myshows.android.entity.EpisodeRating;
+import me.myshows.android.entity.Show;
+import me.myshows.android.entity.User;
+import me.myshows.android.entity.UserShow;
 import rx.Observable;
 import rx.Scheduler;
 

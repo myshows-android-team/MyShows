@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import org.parceler.Parcels;
 
 import me.myshows.android.R;
-import me.myshows.android.entities.UserShow;
+import me.myshows.android.entity.UserShow;
 import rx.android.view.ViewObservable;
 
 /**
