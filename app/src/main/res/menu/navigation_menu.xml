@@ -24,13 +24,9 @@
             android:icon="@drawable/nav_favorites"
             android:title="@string/favorites" />
         <item
-            android:id="@+id/nav_recommendation"
-            android:icon="@drawable/nav_recommedation"
-            android:title="@string/recommendation" />
-        <item
-            android:id="@+id/nav_awards"
-            android:icon="@drawable/nav_awards"
-            android:title="@string/awards" />
+            android:id="@+id/nav_ratings"
+            android:icon="@drawable/tmp_nav_icon"
+            android:title="@string/ratings" />
     </group>
 
     <group android:id="@+id/secondary">

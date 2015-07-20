@@ -30,7 +30,7 @@ android {
     }
 }
 
-def supportVersion = '22.2.0'
+def supportVersion = '22.2.1'
 def retrofitVersion = '1.9.0'
 def parcelerVersion = '1.0.1'
 
