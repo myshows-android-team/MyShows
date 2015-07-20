@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String TITLE_ID = "titleId";
+    private static final String MENU_ITEM_ID = "menuItemId";
     
     private static final SparseArray<FragmentInfo> MENU_ITEM_ID_TO_FRAGMENT_INFO = new SparseArray<>();
     
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Subscription subscription;
 
-    private int currentTitleId;
+    private int currentItemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,13 +72,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         fragmentManager = getSupportFragmentManager();
-        boolean isFirstCreation = savedInstanceState == null;
-        if (isFirstCreation) {
+        if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
                     .add(R.id.content, new MyShowsFragment(), MyShowsFragment.class.getSimpleName())
                     .commit();
+            currentItemId = R.id.nav_my_series;
         } else {
-            currentTitleId = savedInstanceState.getInt(TITLE_ID);
+            currentItemId = savedInstanceState.getInt(MENU_ITEM_ID);
         }
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        setupNavigationDrawer(navigationView, isFirstCreation);
+        setupNavigationDrawer(navigationView);
 
         avatar = (ImageView) findViewById(R.id.nav_avatar);
         username = (TextView) findViewById(R.id.nav_username);
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(TITLE_ID, currentTitleId);
+        outState.putInt(MENU_ITEM_ID, currentItemId);
         super.onSaveInstanceState(outState);
     }
 
@@ -124,24 +124,21 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setTitle(MENU_ITEM_ID_TO_FRAGMENT_INFO.get(currentItemId).titleId);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
-    private void setupNavigationDrawer(NavigationView navigationView, boolean isFirstCreation) {
-        if (isFirstCreation) {
-            navigationView.getMenu()
-                    .findItem(R.id.nav_my_series)
+    private void setupNavigationDrawer(NavigationView navigationView) {
+        navigationView.getMenu()
+                    .findItem(currentItemId)
                     .setChecked(true);
-            setActionBarTitle(R.string.my_series);
-        } else {
-            setActionBarTitle(currentTitleId);
-        }
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
                     if (info != null && !menuItem.isChecked()) {
+                        currentItemId = menuItem.getItemId();
                         setActionBarTitle(info.titleId);
                         Fragment fragment = getFragment(info.fragmentClass);
                         fragmentManager.beginTransaction()
@@ -167,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
     private void setActionBarTitle(@StringRes int resId) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            currentTitleId = resId;
             actionBar.setTitle(resId);
             resetAppBarOffset();
         }
