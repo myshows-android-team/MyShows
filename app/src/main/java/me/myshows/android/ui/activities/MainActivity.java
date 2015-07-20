@@ -2,6 +2,8 @@ package me.myshows.android.ui.activities;
 
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
 
     private DrawerLayout drawerLayout;
+    private CoordinatorLayout coordinatorLayout;
+    private AppBarLayout appbarLayout;
     private ImageView avatar;
     private TextView username;
 
@@ -77,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
             currentTitleId = savedInstanceState.getInt(TITLE_ID);
         }
 
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
+        appbarLayout = (AppBarLayout) findViewById(R.id.appbar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setupActionBar(toolbar);
 
@@ -163,6 +169,16 @@ public class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             currentTitleId = resId;
             actionBar.setTitle(resId);
+            resetAppBarOffset();
+        }
+    }
+
+    private void resetAppBarOffset() {
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        if (behavior != null) {
+            behavior.setTopAndBottomOffset(0);
+            behavior.onNestedPreScroll(coordinatorLayout, appbarLayout, null, 0, -1, new int[2]);
         }
     }
 
