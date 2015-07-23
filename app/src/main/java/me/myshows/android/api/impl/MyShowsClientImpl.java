@@ -10,9 +10,9 @@ import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.entity.EpisodePreview;
-import me.myshows.android.entity.EpisodeRating;
 import me.myshows.android.entity.Show;
 import me.myshows.android.entity.User;
+import me.myshows.android.entity.UserEpisode;
 import me.myshows.android.entity.UserShow;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
@@ -96,7 +96,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
-    public Observable<EpisodeRating> profileEpisodesOfShow(int showId) {
+    public Observable<UserEpisode> profileEpisodesOfShow(int showId) {
         return api.profileEpisodesOfShow(showId)
                 .concatMap(m -> Observable.from(m.values()))
                 .observeOn(observerScheduler);

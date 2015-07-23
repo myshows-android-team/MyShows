@@ -2,9 +2,9 @@ package me.myshows.android.api;
 
 import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.entity.EpisodePreview;
-import me.myshows.android.entity.EpisodeRating;
 import me.myshows.android.entity.Show;
 import me.myshows.android.entity.User;
+import me.myshows.android.entity.UserEpisode;
 import me.myshows.android.entity.UserShow;
 import rx.Observable;
 import rx.Scheduler;
@@ -24,7 +24,7 @@ public interface MyShowsClient {
 
     Observable<UserShow> profileShows();
 
-    Observable<EpisodeRating> profileEpisodesOfShow(int showId);
+    Observable<UserEpisode> profileEpisodesOfShow(int showId);
 
     Observable<EpisodePreview> profileUnwatchedEpisodes();
 

@@ -1,17 +1,21 @@
 package me.myshows.android.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
-
-import rx.Observable;
 
 /**
  * @author Whiplash
  * @date 22.06.2015
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Show {
+
+    private static final String IMAGE_URL = "http://media.myshows.me/shows/%s/%s/%s/%s";
+    private static final String NORMAL = "normal";
+    private static final String SMALL = "small";
 
     private final int id;
     private final String title;
@@ -31,8 +35,8 @@ public class Show {
     private final int[] genres;
     private final Map<String, Episode> episodes;
     private final int watching;
-
-    private String cachedImageUrl;
+    private final String[] images;
+    private final String description;
 
     @JsonCreator
     public Show(@JsonProperty("id") int id, @JsonProperty("title") String title,
@@ -43,7 +47,8 @@ public class Show {
                 @JsonProperty("imdbId") int imdbId, @JsonProperty("voted") int voted,
                 @JsonProperty("rating") float rating, @JsonProperty("runtime") int runtime,
                 @JsonProperty("image") String image, @JsonProperty("genres") int[] genres,
-                @JsonProperty("episodes") Map<String, Episode> episodes, @JsonProperty("watching") int watching) {
+                @JsonProperty("episodes") Map<String, Episode> episodes, @JsonProperty("watching") int watching,
+                @JsonProperty("images") String[] images, @JsonProperty("description") String description) {
         this.id = id;
         this.title = title;
         this.ruTitle = ruTitle;
@@ -62,6 +67,8 @@ public class Show {
         this.genres = genres;
         this.episodes = episodes;
         this.watching = watching;
+        this.images = images;
+        this.description = description;
     }
 
     @JsonProperty("id")
@@ -154,15 +161,29 @@ public class Show {
         return watching;
     }
 
-    public Observable<String> requestImageUrl() {
-        if (cachedImageUrl != null) {
-            return Observable.just(cachedImageUrl);
+    @JsonProperty("images")
+    public String[] getImages() {
+        return images;
+    }
+
+    @JsonProperty("description")
+    public String getDescription() {
+        return description;
+    }
+
+    public String getNormalImage() {
+        return getImageUrl(NORMAL);
+    }
+
+    public String getSmallImage() {
+        return getImageUrl(SMALL);
+    }
+
+    private String getImageUrl(String size) {
+        if (images == null || images.length == 0) {
+            return image;
         }
-        return ImageRequester.requestImageUrl(id)
-                // TODO: remove this stuff
-                .map(s -> {
-                    cachedImageUrl = s;
-                    return s;
-                });
+        String hash = images[0];
+        return String.format(IMAGE_URL, size, hash.substring(0, 1), hash.substring(0, 2), hash);
     }
 }

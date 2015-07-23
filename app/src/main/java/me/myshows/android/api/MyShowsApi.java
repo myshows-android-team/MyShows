@@ -3,9 +3,9 @@ package me.myshows.android.api;
 import java.util.Map;
 
 import me.myshows.android.entity.EpisodePreview;
-import me.myshows.android.entity.EpisodeRating;
 import me.myshows.android.entity.Show;
 import me.myshows.android.entity.User;
+import me.myshows.android.entity.UserEpisode;
 import me.myshows.android.entity.UserShow;
 import retrofit.client.Response;
 import retrofit.http.GET;
@@ -29,7 +29,7 @@ public interface MyShowsApi {
     Observable<Map<String, UserShow>> profileShows();
 
     @GET("/profile/shows/{show_id}/")
-    Observable<Map<String, EpisodeRating>> profileEpisodesOfShow(@Path("show_id") int showId);
+    Observable<Map<String, UserEpisode>> profileEpisodesOfShow(@Path("show_id") int showId);
 
     @GET("/profile/episodes/unwatched/")
     Observable<Map<String, EpisodePreview>> profileUnwatchedEpisodes();

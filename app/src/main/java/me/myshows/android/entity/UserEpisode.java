@@ -7,15 +7,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Whiplash
  * @date 21.06.2015
  */
-public class EpisodeRating {
+public class UserEpisode {
 
     private final int id;
     private final String watchDate;
     private final int rating;
 
     @JsonCreator
-    public EpisodeRating(@JsonProperty("id") int id, @JsonProperty("watchDate") String watchDate,
-                         @JsonProperty("rating") int rating) {
+    public UserEpisode(@JsonProperty("id") int id, @JsonProperty("watchDate") String watchDate,
+                       @JsonProperty("rating") int rating) {
         this.id = id;
         this.watchDate = watchDate;
         this.rating = rating;
