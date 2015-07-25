@@ -1,17 +1,16 @@
 package me.myshows.android.dao.entity;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.realm.RealmList;
 import me.myshows.android.entity.Episode;
-import me.myshows.android.entity.NextEpisodePreview;
+import me.myshows.android.entity.NextEpisode;
 import me.myshows.android.entity.Show;
 import me.myshows.android.entity.Statistics;
-import me.myshows.android.entity.UnwatchedEpisodePreview;
+import me.myshows.android.entity.UnwatchedEpisode;
 import me.myshows.android.entity.User;
 import me.myshows.android.entity.UserEpisode;
 import me.myshows.android.entity.UserShow;
@@ -25,10 +24,11 @@ public class PersistentEntityConverter {
         this.marshaller = marshaller;
     }
 
+    @SuppressWarnings("unchecked")
     public User toUser(PersistentUser persistentUser) {
         try {
-            List<User> friends = toUserList(persistentUser.getFriends());
-            List<User> followers = toUserList(persistentUser.getFollowers());
+            List<User> friends = marshaller.deserialize(persistentUser.getFriends(), List.class);
+            List<User> followers = marshaller.deserialize(persistentUser.getFollowers(), List.class);
             Statistics stats = marshaller.deserialize(persistentUser.getStats(), Statistics.class);
             return new User(persistentUser.getLogin(), persistentUser.getAvatarUrl(),
                     persistentUser.getWastedTime(), persistentUser.getGender(),
@@ -40,8 +40,8 @@ public class PersistentEntityConverter {
 
     public PersistentUser fromUser(User user) {
         try {
-            RealmList<PersistentUser> friends = fromUserList(user.getFriends());
-            RealmList<PersistentUser> followers = fromUserList(user.getFollowers());
+            byte[] friends = marshaller.serialize(user.getFriends());
+            byte[] followers = marshaller.serialize(user.getFollowers());
             byte[] stats = marshaller.serialize(user.getStats());
             return new PersistentUser(user.getLogin(), user.getAvatarUrl(), user.getWastedTime(),
                     user.getGender(), friends, followers, stats);
@@ -75,29 +75,29 @@ public class PersistentEntityConverter {
                 userEpisode.getRating());
     }
 
-    public NextEpisodePreview toNextEpisodePreview(PersistentNextEpisodePreview persistentNextEpisodePreview) {
-        return new NextEpisodePreview(persistentNextEpisodePreview.getEpisodeId(),
+    public NextEpisode toNextEpisodePreview(PersistentNextEpisode persistentNextEpisode) {
+        return new NextEpisode(persistentNextEpisode.getEpisodeId(),
+                persistentNextEpisode.getTitle(), persistentNextEpisode.getShowId(),
+                persistentNextEpisode.getSeasonNumber(), persistentNextEpisode.getEpisodeNumber(),
+                persistentNextEpisode.getAirDate());
+    }
+
+    public PersistentNextEpisode fromNextEpisodePreview(NextEpisode nextEpisode) {
+        return new PersistentNextEpisode(nextEpisode.getEpisodeId(),
+                nextEpisode.getTitle(), nextEpisode.getShowId(),
+                nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber(),
+                nextEpisode.getAirDate());
+    }
+
+    public UnwatchedEpisode toUnwatchedEpisodePreview(PersistentUnwatchedEpisode persistentNextEpisodePreview) {
+        return new UnwatchedEpisode(persistentNextEpisodePreview.getEpisodeId(),
                 persistentNextEpisodePreview.getTitle(), persistentNextEpisodePreview.getShowId(),
                 persistentNextEpisodePreview.getSeasonNumber(), persistentNextEpisodePreview.getEpisodeNumber(),
                 persistentNextEpisodePreview.getAirDate());
     }
 
-    public PersistentNextEpisodePreview fromNextEpisodePreview(NextEpisodePreview nextEpisodePreview) {
-        return new PersistentNextEpisodePreview(nextEpisodePreview.getEpisodeId(),
-                nextEpisodePreview.getTitle(), nextEpisodePreview.getShowId(),
-                nextEpisodePreview.getSeasonNumber(), nextEpisodePreview.getEpisodeNumber(),
-                nextEpisodePreview.getAirDate());
-    }
-
-    public UnwatchedEpisodePreview toUnwatchedEpisodePreview(PersistentUnwatchedEpisodePreview persistentNextEpisodePreview) {
-        return new UnwatchedEpisodePreview(persistentNextEpisodePreview.getEpisodeId(),
-                persistentNextEpisodePreview.getTitle(), persistentNextEpisodePreview.getShowId(),
-                persistentNextEpisodePreview.getSeasonNumber(), persistentNextEpisodePreview.getEpisodeNumber(),
-                persistentNextEpisodePreview.getAirDate());
-    }
-
-    public PersistentUnwatchedEpisodePreview fromUnwatchedEpisodePreview(UnwatchedEpisodePreview nextEpisodePreview) {
-        return new PersistentUnwatchedEpisodePreview(nextEpisodePreview.getEpisodeId(),
+    public PersistentUnwatchedEpisode fromUnwatchedEpisodePreview(UnwatchedEpisode nextEpisodePreview) {
+        return new PersistentUnwatchedEpisode(nextEpisodePreview.getEpisodeId(),
                 nextEpisodePreview.getTitle(), nextEpisodePreview.getShowId(),
                 nextEpisodePreview.getSeasonNumber(), nextEpisodePreview.getEpisodeNumber(),
                 nextEpisodePreview.getAirDate());
@@ -148,28 +148,6 @@ public class PersistentEntityConverter {
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state");
         }
-    }
-
-    private List<User> toUserList(RealmList<PersistentUser> persistentUsers) {
-        if (persistentUsers == null) {
-            return null;
-        }
-        List<User> users = new ArrayList<>();
-        for (PersistentUser persistentUser : persistentUsers) {
-            users.add(toUser(persistentUser));
-        }
-        return users;
-    }
-
-    private RealmList<PersistentUser> fromUserList(List<User> users) {
-        if (users == null) {
-            return null;
-        }
-        RealmList<PersistentUser> persistentUsers = new RealmList<>();
-        for (User user : users) {
-            persistentUsers.add(fromUser(user));
-        }
-        return persistentUsers;
     }
 
     private Map<String, Episode> toEpisodeMap(RealmList<PersistentEpisode> persistentEpisodes) {

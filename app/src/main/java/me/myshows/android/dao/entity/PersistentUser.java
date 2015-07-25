@@ -1,6 +1,5 @@
 package me.myshows.android.dao.entity;
 
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
@@ -13,16 +12,15 @@ public class PersistentUser extends RealmObject {
     private String avatarUrl;
     private int wastedTime;
     private String gender;
-    private RealmList<PersistentUser> friends;
-    private RealmList<PersistentUser> followers;
+    private byte[] friends;
+    private byte[] followers;
     private byte[] stats;
 
     public PersistentUser() {
     }
 
     public PersistentUser(String login, String avatarUrl, int wastedTime, String gender,
-                          RealmList<PersistentUser> friends, RealmList<PersistentUser> followers,
-                          byte[] stats) {
+                          byte[] friends, byte[] followers, byte[] stats) {
         this.login = login;
         this.avatarUrl = avatarUrl;
         this.wastedTime = wastedTime;
@@ -64,19 +62,19 @@ public class PersistentUser extends RealmObject {
         this.gender = gender;
     }
 
-    public RealmList<PersistentUser> getFriends() {
+    public byte[] getFriends() {
         return friends;
     }
 
-    public void setFriends(RealmList<PersistentUser> friends) {
+    public void setFriends(byte[] friends) {
         this.friends = friends;
     }
 
-    public RealmList<PersistentUser> getFollowers() {
+    public byte[] getFollowers() {
         return followers;
     }
 
-    public void setFollowers(RealmList<PersistentUser> followers) {
+    public void setFollowers(byte[] followers) {
         this.followers = followers;
     }
 

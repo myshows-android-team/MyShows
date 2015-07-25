@@ -2,9 +2,9 @@ package me.myshows.android.api;
 
 import java.util.Map;
 
-import me.myshows.android.entity.NextEpisodePreview;
+import me.myshows.android.entity.NextEpisode;
 import me.myshows.android.entity.Show;
-import me.myshows.android.entity.UnwatchedEpisodePreview;
+import me.myshows.android.entity.UnwatchedEpisode;
 import me.myshows.android.entity.User;
 import me.myshows.android.entity.UserEpisode;
 import me.myshows.android.entity.UserShow;
@@ -33,10 +33,10 @@ public interface MyShowsApi {
     Observable<Map<String, UserEpisode>> profileEpisodesOfShow(@Path("show_id") int showId);
 
     @GET("/profile/episodes/unwatched/")
-    Observable<Map<String, UnwatchedEpisodePreview>> profileUnwatchedEpisodes();
+    Observable<Map<String, UnwatchedEpisode>> profileUnwatchedEpisodes();
 
     @GET("/profile/episodes/next/")
-    Observable<Map<String, NextEpisodePreview>> profileNextEpisodes();
+    Observable<Map<String, NextEpisode>> profileNextEpisodes();
 
     @GET("/shows/{show_id}")
     Observable<Show> showInformation(@Path("show_id") int showId);

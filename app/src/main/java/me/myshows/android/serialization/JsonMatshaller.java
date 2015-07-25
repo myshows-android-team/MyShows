@@ -8,6 +8,7 @@ public class JsonMatshaller implements Marshaller {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Override
     public byte[] serialize(Object object) throws IOException {
         return objectMapper.writeValueAsBytes(object);
     }

@@ -15,15 +15,15 @@ import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.dao.RealmManager;
 import me.myshows.android.dao.entity.PersistentEntityConverter;
-import me.myshows.android.dao.entity.PersistentNextEpisodePreview;
+import me.myshows.android.dao.entity.PersistentNextEpisode;
 import me.myshows.android.dao.entity.PersistentShow;
-import me.myshows.android.dao.entity.PersistentUnwatchedEpisodePreview;
+import me.myshows.android.dao.entity.PersistentUnwatchedEpisode;
 import me.myshows.android.dao.entity.PersistentUser;
 import me.myshows.android.dao.entity.PersistentUserEpisode;
 import me.myshows.android.dao.entity.PersistentUserShow;
-import me.myshows.android.entity.NextEpisodePreview;
+import me.myshows.android.entity.NextEpisode;
 import me.myshows.android.entity.Show;
-import me.myshows.android.entity.UnwatchedEpisodePreview;
+import me.myshows.android.entity.UnwatchedEpisode;
 import me.myshows.android.entity.User;
 import me.myshows.android.entity.UserEpisode;
 import me.myshows.android.entity.UserShow;
@@ -152,12 +152,12 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
-    public Observable<List<UnwatchedEpisodePreview>> profileUnwatchedEpisodes() {
-        return Observable.<List<UnwatchedEpisodePreview>>create(subscriber -> {
-            Class<PersistentUnwatchedEpisodePreview> clazz = PersistentUnwatchedEpisodePreview.class;
-            List<UnwatchedEpisodePreview> unwatchedEpisodePreviews = manager.getEntities(clazz, converter::toUnwatchedEpisodePreview);
-            if (unwatchedEpisodePreviews != null) {
-                subscriber.onNext(unwatchedEpisodePreviews);
+    public Observable<List<UnwatchedEpisode>> profileUnwatchedEpisodes() {
+        return Observable.<List<UnwatchedEpisode>>create(subscriber -> {
+            Class<PersistentUnwatchedEpisode> clazz = PersistentUnwatchedEpisode.class;
+            List<UnwatchedEpisode> unwatchedEpisodes = manager.getEntities(clazz, converter::toUnwatchedEpisodePreview);
+            if (unwatchedEpisodes != null) {
+                subscriber.onNext(unwatchedEpisodes);
             }
             api.profileUnwatchedEpisodes()
                     .subscribe(
@@ -169,10 +169,10 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
-    public Observable<List<NextEpisodePreview>> profileNextEpisodes() {
-        return Observable.<List<NextEpisodePreview>>create(subscriber -> {
-            Class<PersistentNextEpisodePreview> clazz = PersistentNextEpisodePreview.class;
-            List<NextEpisodePreview> unwatchedEpisodePreviews = manager.getEntities(clazz, converter::toNextEpisodePreview);
+    public Observable<List<NextEpisode>> profileNextEpisodes() {
+        return Observable.<List<NextEpisode>>create(subscriber -> {
+            Class<PersistentNextEpisode> clazz = PersistentNextEpisode.class;
+            List<NextEpisode> unwatchedEpisodePreviews = manager.getEntities(clazz, converter::toNextEpisodePreview);
             if (unwatchedEpisodePreviews != null) {
                 subscriber.onNext(unwatchedEpisodePreviews);
             }

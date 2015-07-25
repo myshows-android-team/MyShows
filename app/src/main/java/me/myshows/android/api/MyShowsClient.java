@@ -3,9 +3,9 @@ package me.myshows.android.api;
 import java.util.List;
 
 import me.myshows.android.api.impl.Credentials;
-import me.myshows.android.entity.NextEpisodePreview;
+import me.myshows.android.entity.NextEpisode;
 import me.myshows.android.entity.Show;
-import me.myshows.android.entity.UnwatchedEpisodePreview;
+import me.myshows.android.entity.UnwatchedEpisode;
 import me.myshows.android.entity.User;
 import me.myshows.android.entity.UserEpisode;
 import me.myshows.android.entity.UserShow;
@@ -29,9 +29,9 @@ public interface MyShowsClient {
 
     Observable<List<UserEpisode>> profileEpisodesOfShow(int showId);
 
-    Observable<List<UnwatchedEpisodePreview>> profileUnwatchedEpisodes();
+    Observable<List<UnwatchedEpisode>> profileUnwatchedEpisodes();
 
-    Observable<List<NextEpisodePreview>> profileNextEpisodes();
+    Observable<List<NextEpisode>> profileNextEpisodes();
 
     Observable<Show> showInformation(int showId);
 }

@@ -11,9 +11,9 @@ import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
-public class RealmManager {
+public final class RealmManager {
 
-    protected final Context context;
+    private final Context context;
 
     public RealmManager(Context context) {
         this.context = context;
@@ -76,7 +76,9 @@ public class RealmManager {
     private <E extends RealmObject> RealmQuery<E> equalTo(RealmQuery<E> query, String field, Object value) {
         if (value instanceof Integer) {
             return query.equalTo(field, (int) value);
+        } else if (value instanceof String) {
+            return query.equalTo(field, (String) value);
         }
-        return query.equalTo(field, (String) value);
+        throw new IllegalArgumentException("Unreached statement");
     }
 }
