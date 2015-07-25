@@ -16,7 +16,7 @@ import org.parceler.Parcels;
 import java.util.List;
 
 import me.myshows.android.R;
-import me.myshows.android.api.MyShowsClient;
+import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.api.impl.PreferenceStorage;
 import me.myshows.android.entity.UserShow;
@@ -57,15 +57,16 @@ public class MyShowsFragment extends Fragment {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getActivity()),
-                AndroidSchedulers.mainThread());
+        StorageMyShowsClient client = MyShowsClientImpl.get(getActivity(),
+                new PreferenceStorage(getActivity()), AndroidSchedulers.mainThread());
         subscription = client.profileShows()
                 .observeOn(AndroidSchedulers.mainThread())
                 .toList()
                 .subscribe(shows -> {
-                    ShowAdapter adapter = new ShowAdapter(shows);
-                    recyclerView.setAdapter(adapter);
-                });
+                            ShowAdapter adapter = new ShowAdapter(shows);
+                            recyclerView.setAdapter(adapter);
+                        }
+                );
     }
 
     private static class ShowAdapter extends RecyclerView.Adapter<ShowHolder> {

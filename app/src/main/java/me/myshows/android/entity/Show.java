@@ -13,6 +13,10 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Show {
 
+    private static final String IMAGE_URL = "http://media.myshows.me/shows/%s/%s/%s/%s";
+    private static final String NORMAL = "normal";
+    private static final String SMALL = "small";
+
     private final int id;
     private final String title;
     private final String ruTitle;
@@ -165,5 +169,21 @@ public class Show {
     @JsonProperty("description")
     public String getDescription() {
         return description;
+    }
+
+    public String getNormalImageUrl() {
+        return getImageUrl(NORMAL);
+    }
+
+    public String getSmallImageUrl() {
+        return getImageUrl(SMALL);
+    }
+
+    private String getImageUrl(String size) {
+        if (images == null || images.length == 0) {
+            return image;
+        }
+        String hash = images[0];
+        return String.format(IMAGE_URL, size, hash.substring(0, 1), hash.substring(0, 2), hash);
     }
 }

@@ -30,8 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        StorageMyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
-                AndroidSchedulers.mainThread());
+        StorageMyShowsClient client = MyShowsClientImpl.get(getApplicationContext(),
+                new PreferenceStorage(getApplicationContext()), AndroidSchedulers.mainThread());
 
         if (client.hasCredentials()) {
             if (hasInternetConnection()) {

@@ -136,6 +136,9 @@ public class PersistentEntityConverter {
     }
 
     private List<User> toUserList(RealmList<PersistentUser> persistentUsers) {
+        if (persistentUsers == null) {
+            return null;
+        }
         List<User> users = new ArrayList<>();
         for (PersistentUser persistentUser : persistentUsers) {
             users.add(toUser(persistentUser));
@@ -144,6 +147,9 @@ public class PersistentEntityConverter {
     }
 
     private RealmList<PersistentUser> fromUserList(List<User> users) {
+        if (users == null) {
+            return null;
+        }
         RealmList<PersistentUser> persistentUsers = new RealmList<>();
         for (User user : users) {
             persistentUsers.add(fromUser(user));
@@ -152,6 +158,9 @@ public class PersistentEntityConverter {
     }
 
     private Map<String, Episode> toEpisodeMap(RealmList<PersistentEpisode> persistentEpisodes) {
+        if (persistentEpisodes == null) {
+            return null;
+        }
         Map<String, Episode> episodes = new HashMap<>();
         for (PersistentEpisode persistentEpisode : persistentEpisodes) {
             Episode episode = toEpisode(persistentEpisode);
@@ -161,6 +170,9 @@ public class PersistentEntityConverter {
     }
 
     private RealmList<PersistentEpisode> fromEpisodeMap(Map<String, Episode> episodes) {
+        if (episodes == null) {
+            return null;
+        }
         RealmList<PersistentEpisode> persistentEpisodes = new RealmList<>();
         for (Episode episode : episodes.values()) {
             persistentEpisodes.add(fromEpisode(episode));
