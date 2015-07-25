@@ -8,9 +8,10 @@ import java.util.Map;
 
 import io.realm.RealmList;
 import me.myshows.android.entity.Episode;
-import me.myshows.android.entity.EpisodePreview;
+import me.myshows.android.entity.NextEpisodePreview;
 import me.myshows.android.entity.Show;
 import me.myshows.android.entity.Statistics;
+import me.myshows.android.entity.UnwatchedEpisodePreview;
 import me.myshows.android.entity.User;
 import me.myshows.android.entity.UserEpisode;
 import me.myshows.android.entity.UserShow;
@@ -74,18 +75,32 @@ public class PersistentEntityConverter {
                 userEpisode.getRating());
     }
 
-    public EpisodePreview toEpisodePreview(PersistentEpisodePreview persistentEpisodePreview) {
-        return new EpisodePreview(persistentEpisodePreview.getEpisodeId(),
-                persistentEpisodePreview.getTitle(), persistentEpisodePreview.getShowId(),
-                persistentEpisodePreview.getSeasonNumber(), persistentEpisodePreview.getEpisodeNumber(),
-                persistentEpisodePreview.getAirDate());
+    public NextEpisodePreview toNextEpisodePreview(PersistentNextEpisodePreview persistentNextEpisodePreview) {
+        return new NextEpisodePreview(persistentNextEpisodePreview.getEpisodeId(),
+                persistentNextEpisodePreview.getTitle(), persistentNextEpisodePreview.getShowId(),
+                persistentNextEpisodePreview.getSeasonNumber(), persistentNextEpisodePreview.getEpisodeNumber(),
+                persistentNextEpisodePreview.getAirDate());
     }
 
-    public PersistentEpisodePreview fromEpisodePreview(EpisodePreview episodePreview) {
-        return new PersistentEpisodePreview(episodePreview.getEpisodeId(),
-                episodePreview.getTitle(), episodePreview.getShowId(),
-                episodePreview.getSeasonNumber(), episodePreview.getEpisodeNumber(),
-                episodePreview.getAirDate());
+    public PersistentNextEpisodePreview fromNextEpisodePreview(NextEpisodePreview nextEpisodePreview) {
+        return new PersistentNextEpisodePreview(nextEpisodePreview.getEpisodeId(),
+                nextEpisodePreview.getTitle(), nextEpisodePreview.getShowId(),
+                nextEpisodePreview.getSeasonNumber(), nextEpisodePreview.getEpisodeNumber(),
+                nextEpisodePreview.getAirDate());
+    }
+
+    public UnwatchedEpisodePreview toUnwatchedEpisodePreview(PersistentUnwatchedEpisodePreview persistentNextEpisodePreview) {
+        return new UnwatchedEpisodePreview(persistentNextEpisodePreview.getEpisodeId(),
+                persistentNextEpisodePreview.getTitle(), persistentNextEpisodePreview.getShowId(),
+                persistentNextEpisodePreview.getSeasonNumber(), persistentNextEpisodePreview.getEpisodeNumber(),
+                persistentNextEpisodePreview.getAirDate());
+    }
+
+    public PersistentUnwatchedEpisodePreview fromUnwatchedEpisodePreview(UnwatchedEpisodePreview nextEpisodePreview) {
+        return new PersistentUnwatchedEpisodePreview(nextEpisodePreview.getEpisodeId(),
+                nextEpisodePreview.getTitle(), nextEpisodePreview.getShowId(),
+                nextEpisodePreview.getSeasonNumber(), nextEpisodePreview.getEpisodeNumber(),
+                nextEpisodePreview.getAirDate());
     }
 
     public Episode toEpisode(PersistentEpisode persistentEpisode) {

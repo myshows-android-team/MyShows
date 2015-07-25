@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @date 22.06.2015
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EpisodePreview {
+public class UnwatchedEpisodePreview {
 
     private final int episodeId;
     private final String title;
@@ -19,9 +19,9 @@ public class EpisodePreview {
     private final String airDate;
 
     @JsonCreator
-    public EpisodePreview(@JsonProperty("episodeId") int episodeId, @JsonProperty("title") String title,
-                          @JsonProperty("showId") int showId, @JsonProperty("seasonNumber") int seasonNumber,
-                          @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate) {
+    public UnwatchedEpisodePreview(@JsonProperty("episodeId") int episodeId, @JsonProperty("title") String title,
+                                   @JsonProperty("showId") int showId, @JsonProperty("seasonNumber") int seasonNumber,
+                                   @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate) {
         this.episodeId = episodeId;
         this.title = title;
         this.showId = showId;

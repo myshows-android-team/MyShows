@@ -2,7 +2,7 @@ package me.myshows.android.dao;
 
 import io.realm.RealmObject;
 
-public interface PersistConverter<T> {
+public interface ToPersistConverter<T> {
 
     RealmObject toRealmObject(T entity);
 }

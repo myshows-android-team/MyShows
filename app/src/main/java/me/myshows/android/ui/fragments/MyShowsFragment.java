@@ -61,7 +61,6 @@ public class MyShowsFragment extends Fragment {
                 new PreferenceStorage(getActivity()), AndroidSchedulers.mainThread());
         subscription = client.profileShows()
                 .observeOn(AndroidSchedulers.mainThread())
-                .toList()
                 .subscribe(shows -> {
                             ShowAdapter adapter = new ShowAdapter(shows);
                             recyclerView.setAdapter(adapter);
