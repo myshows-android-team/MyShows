@@ -2,6 +2,8 @@
 <resources>
     
     <dimen name="default_padding">16dp</dimen>
+
+    <dimen name="login_button_corner_radius">4dp</dimen>
     
     <!-- Navigation drawer dimens -->
     <dimen name="nav_header_height">168dp</dimen>

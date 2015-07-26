@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/black_40_opacity">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/login_button_corner_radius" />
+            <solid android:color="@color/red_50_opacity" />
+        </shape>
+    </item>
+</ripple>
