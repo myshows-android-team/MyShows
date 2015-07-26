@@ -1,5 +1,9 @@
 package me.myshows.android.ui.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -13,6 +17,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +38,12 @@ import rx.android.schedulers.AndroidSchedulers;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String REGISTER_URL = "http://myshows.me/";
+    private static final int ANIMATION_DURATION = 500;
+
+    private View logo;
+    private ViewGroup loginLayout;
+
+    private boolean needAnimate;
 
     private Subscription subscription;
 
@@ -40,16 +51,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         StorageMyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
                 AndroidSchedulers.mainThread());
 
-        if (client.hasCredentials()) {
-            if (hasInternetConnection()) {
-                processAuthenticationObserver(client.authentication());
-            } else {
-                changeActivity();
-            }
-        }
+        logo = findViewById(R.id.logo);
+        loginLayout = (ViewGroup) findViewById(R.id.login_layout);
 
         TextView newAccount = (TextView) findViewById(R.id.new_account);
         setupNewAccountTextView(newAccount);
@@ -60,6 +67,19 @@ public class LoginActivity extends AppCompatActivity {
             Credentials credentials = Credentials.make(login, password);
             processAuthenticationObserver(client.authentication(credentials));
         });
+
+        if (client.hasCredentials()) {
+            if (hasInternetConnection()) {
+                needAnimate = true;
+                setEnabled(loginLayout, false);
+                processAuthenticationObserver(client.authentication());
+            } else {
+                changeActivity();
+            }
+        } else {
+            logo.setTranslationY(0);
+            loginLayout.setAlpha(1);
+        }
     }
 
     @Override
@@ -94,6 +114,34 @@ public class LoginActivity extends AppCompatActivity {
         view.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    private void setEnabled(ViewGroup parent, boolean enabled) {
+        parent.setEnabled(enabled);
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                setEnabled((ViewGroup) child, enabled);
+            } else {
+                child.setEnabled(enabled);
+            }
+        }
+    }
+
+    private void animate() {
+        ObjectAnimator logoAnimator = ObjectAnimator.ofFloat(logo, View.TRANSLATION_Y, 0);
+        ObjectAnimator loginLayoutAnimator = ObjectAnimator.ofFloat(loginLayout, View.ALPHA, 1);
+        AnimatorSet animation = new AnimatorSet();
+        animation.playTogether(logoAnimator, loginLayoutAnimator);
+        animation.setDuration(ANIMATION_DURATION);
+        animation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setEnabled(loginLayout, true);
+                needAnimate = false;
+            }
+        });
+        animation.start();
+    }
+
     private boolean hasInternetConnection() {
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -106,7 +154,11 @@ public class LoginActivity extends AppCompatActivity {
             if (result) {
                 changeActivity();
             } else {
-                Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show();
+                if (needAnimate) {
+                    animate();
+                } else {
+                    Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

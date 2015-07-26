@@ -13,6 +13,7 @@
 
         <activity
             android:name=".ui.activities.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MyShows.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

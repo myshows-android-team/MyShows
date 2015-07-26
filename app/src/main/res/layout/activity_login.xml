@@ -24,7 +24,8 @@
             android:id="@+id/logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_logo" />
+            android:src="@drawable/ic_logo"
+            android:translationY="150dp"/>
 
         <View
             android:layout_width="match_parent"
@@ -35,11 +36,11 @@
             android:id="@+id/login_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:alpha="0"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:paddingLeft="46dp"
-            android:paddingRight="46dp"
-            android:visibility="visible">
+            android:paddingRight="46dp">
 
             <EditText
                 style="@style/MyShows.EditText.Login"
