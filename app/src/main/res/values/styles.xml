@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyShows.EditText.Login" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_marginBottom">25dp</item>
+        <item name="android:background">@drawable/login_edit_text</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:gravity">left</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white_80_opacity</item>
+        <item name="android:textColorHint">@color/white_60_opacity</item>
+    </style>
+</resources>
