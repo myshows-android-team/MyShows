@@ -4,8 +4,14 @@
     <color name="primaryDark">#A00000</color>
     <color name="accent">@color/primary</color>
     <color name="white_80_opacity">#CCFFFFFF</color>
+    <color name="white_60_opacity">#99FFFFFF</color>
+    <color name="white_40_opacity">#66FFFFFF</color>
     <color name="black_80_opacity">#CC000000</color>
-
+    <color name="black_40_opacity">#66000000</color>
+    <color name="red_80_opacity">#CCCC0000</color>
+    <color name="red_50_opacity">#80CC0000</color>
+    <color name="red_30_opacity">#4CCC0000</color>
+    
     <!-- List show view colors -->
     <color name="list_show_progress_background">@color/white_80_opacity</color>
     <color name="list_show_text_color">@color/white_80_opacity</color>
