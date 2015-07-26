@@ -5,6 +5,8 @@
     <string name="password">Пароль</string>
     <string name="login_button">Вход</string>
     <string name="incorrect_login_or_password">Неправильный логин или пароль</string>
+    <string name="new_account">или %s новый аккаунт</string>
+    <string name="register">зарегистрируйте</string>
 
     <!-- Navigation strings -->
     <string name="my_series">Мои сериалы</string>
