@@ -41,7 +41,7 @@ public class PersistentEntityConverter {
                     persistentUser.getWastedTime(), persistentUser.getGender(),
                     friends, followers, stats);
         } catch (IOException e) {
-            throw new RuntimeException("Unreachable state");
+            throw new RuntimeException("Unreachable state", e);
         }
     }
 
@@ -53,7 +53,7 @@ public class PersistentEntityConverter {
             return new PersistentUser(user.getLogin(), user.getAvatarUrl(), user.getWastedTime(),
                     user.getGender(), friends, followers, stats);
         } catch (IOException e) {
-            throw new RuntimeException("Unreachable state");
+            throw new RuntimeException("Unreachable state", e);
         }
     }
 
@@ -137,7 +137,7 @@ public class PersistentEntityConverter {
                     persistentShow.getRating(), persistentShow.getRuntime(), persistentShow.getImage(),
                     genres, episodes, persistentShow.getWatching(), images, persistentShow.getDescription());
         } catch (IOException e) {
-            throw new RuntimeException("Unreachable state");
+            throw new RuntimeException("Unreachable state", e);
         }
     }
 
@@ -153,7 +153,7 @@ public class PersistentEntityConverter {
                     show.getRating(), show.getRuntime(), show.getImage(),
                     genres, episodes, show.getWatching(), images, show.getDescription());
         } catch (IOException e) {
-            throw new RuntimeException("Unreachable state");
+            throw new RuntimeException("Unreachable state", e);
         }
     }
 
