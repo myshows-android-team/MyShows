@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-public class JsonMatshaller implements Marshaller {
+public class JsonMarshaller implements Marshaller {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

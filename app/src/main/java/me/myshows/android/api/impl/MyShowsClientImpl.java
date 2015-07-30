@@ -27,7 +27,7 @@ import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
-import me.myshows.android.model.serialization.JsonMatshaller;
+import me.myshows.android.model.serialization.JsonMarshaller;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
 import retrofit.client.Response;
@@ -46,7 +46,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     private static final String COOKIE_DELIMITER = ";";
     private static final String SET_COOKIE = "Set-Cookie";
     private static final String COOKIE = "Cookie";
-    private static final PersistentEntityConverter converter = new PersistentEntityConverter(new JsonMatshaller());
+    private static final PersistentEntityConverter converter = new PersistentEntityConverter(new JsonMarshaller());
 
     private static MyShowsClientImpl client;
 
