@@ -155,13 +155,13 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<UnwatchedEpisode>> profileUnwatchedEpisodes() {
         return Observable.<List<UnwatchedEpisode>>create(subscriber -> {
             Class<PersistentUnwatchedEpisode> clazz = PersistentUnwatchedEpisode.class;
-            List<UnwatchedEpisode> unwatchedEpisodes = manager.getEntities(clazz, converter::toUnwatchedEpisodePreview);
+            List<UnwatchedEpisode> unwatchedEpisodes = manager.getEntities(clazz, converter::toUnwatchedEpisode);
             if (unwatchedEpisodes != null) {
                 subscriber.onNext(unwatchedEpisodes);
             }
             api.profileUnwatchedEpisodes()
                     .subscribe(
-                            uep -> subscriber.onNext(manager.persistEntities(new ArrayList<>(uep.values()), clazz, converter::fromUnwatchedEpisodePreview)),
+                            uep -> subscriber.onNext(manager.persistEntities(new ArrayList<>(uep.values()), clazz, converter::fromUnwatchedEpisode)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -172,13 +172,13 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<NextEpisode>> profileNextEpisodes() {
         return Observable.<List<NextEpisode>>create(subscriber -> {
             Class<PersistentNextEpisode> clazz = PersistentNextEpisode.class;
-            List<NextEpisode> unwatchedEpisodePreviews = manager.getEntities(clazz, converter::toNextEpisodePreview);
+            List<NextEpisode> unwatchedEpisodePreviews = manager.getEntities(clazz, converter::toNextEpisode);
             if (unwatchedEpisodePreviews != null) {
                 subscriber.onNext(unwatchedEpisodePreviews);
             }
             api.profileNextEpisodes()
                     .subscribe(
-                            nep -> subscriber.onNext(manager.persistEntities(new ArrayList<>(nep.values()), clazz, converter::fromNextEpisodePreview)),
+                            nep -> subscriber.onNext(manager.persistEntities(new ArrayList<>(nep.values()), clazz, converter::fromNextEpisode)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );

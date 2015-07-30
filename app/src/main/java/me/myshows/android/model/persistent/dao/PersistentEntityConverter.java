@@ -82,28 +82,28 @@ public class PersistentEntityConverter {
                 userEpisode.getRating());
     }
 
-    public NextEpisode toNextEpisodePreview(PersistentNextEpisode persistentNextEpisode) {
+    public NextEpisode toNextEpisode(PersistentNextEpisode persistentNextEpisode) {
         return new NextEpisode(persistentNextEpisode.getEpisodeId(),
                 persistentNextEpisode.getTitle(), persistentNextEpisode.getShowId(),
                 persistentNextEpisode.getSeasonNumber(), persistentNextEpisode.getEpisodeNumber(),
                 persistentNextEpisode.getAirDate());
     }
 
-    public PersistentNextEpisode fromNextEpisodePreview(NextEpisode nextEpisode) {
+    public PersistentNextEpisode fromNextEpisode(NextEpisode nextEpisode) {
         return new PersistentNextEpisode(nextEpisode.getEpisodeId(),
                 nextEpisode.getTitle(), nextEpisode.getShowId(),
                 nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber(),
                 nextEpisode.getAirDate());
     }
 
-    public UnwatchedEpisode toUnwatchedEpisodePreview(PersistentUnwatchedEpisode persistentNextEpisodePreview) {
+    public UnwatchedEpisode toUnwatchedEpisode(PersistentUnwatchedEpisode persistentNextEpisodePreview) {
         return new UnwatchedEpisode(persistentNextEpisodePreview.getEpisodeId(),
                 persistentNextEpisodePreview.getTitle(), persistentNextEpisodePreview.getShowId(),
                 persistentNextEpisodePreview.getSeasonNumber(), persistentNextEpisodePreview.getEpisodeNumber(),
                 persistentNextEpisodePreview.getAirDate());
     }
 
-    public PersistentUnwatchedEpisode fromUnwatchedEpisodePreview(UnwatchedEpisode nextEpisodePreview) {
+    public PersistentUnwatchedEpisode fromUnwatchedEpisode(UnwatchedEpisode nextEpisodePreview) {
         return new PersistentUnwatchedEpisode(nextEpisodePreview.getEpisodeId(),
                 nextEpisodePreview.getTitle(), nextEpisodePreview.getShowId(),
                 nextEpisodePreview.getSeasonNumber(), nextEpisodePreview.getEpisodeNumber(),
