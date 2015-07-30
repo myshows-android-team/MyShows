@@ -27,12 +27,14 @@ public final class RealmManager {
     }
 
     public <T, E extends RealmObject> List<T> persistEntities(List<T> entities, Class<E> clazz, ToPersistConverter<T> converter) {
+        List<RealmObject> persistentEntities = new ArrayList<>(entities.size());
+        for (T entity: entities) {
+            persistentEntities.add(converter.toRealmObject(entity));
+        }
         Realm realm = Realm.getInstance(context);
-        realm.clear(clazz);
         realm.executeTransaction(r -> {
-            for (T entity : entities) {
-                r.copyToRealmOrUpdate(converter.toRealmObject(entity));
-            }
+            r.clear(clazz);
+            r.copyToRealmOrUpdate(persistentEntities);
         });
         realm.close();
         return entities;
