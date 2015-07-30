@@ -56,8 +56,9 @@ public final class RealmManager {
     public final <T, E extends RealmObject> List<T> getEntities(Class<E> clazz, FromPersistConverter<T, E> converter, Pair<String, Object>... where) {
         Realm realm = Realm.getInstance(context);
         RealmResults<E> results = makeQuery(realm, clazz, where).findAll();
-        List<T> entities = new ArrayList<>();
+        List<T> entities = null;
         if (results != null) {
+            entities = new ArrayList<>();
             for (E result : results) {
                 entities.add(converter.fromRealmObject(result));
             }
