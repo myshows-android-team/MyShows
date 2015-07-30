@@ -28,6 +28,10 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
     }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
 }
 
 def supportVersion = '22.2.1'
