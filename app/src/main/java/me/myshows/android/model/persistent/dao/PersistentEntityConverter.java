@@ -1,4 +1,4 @@
-package me.myshows.android.dao.entity;
+package me.myshows.android.model.persistent.dao;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -6,15 +6,22 @@ import java.util.List;
 import java.util.Map;
 
 import io.realm.RealmList;
-import me.myshows.android.entity.Episode;
-import me.myshows.android.entity.NextEpisode;
-import me.myshows.android.entity.Show;
-import me.myshows.android.entity.Statistics;
-import me.myshows.android.entity.UnwatchedEpisode;
-import me.myshows.android.entity.User;
-import me.myshows.android.entity.UserEpisode;
-import me.myshows.android.entity.UserShow;
-import me.myshows.android.serialization.Marshaller;
+import me.myshows.android.model.Episode;
+import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.Show;
+import me.myshows.android.model.Statistics;
+import me.myshows.android.model.UnwatchedEpisode;
+import me.myshows.android.model.User;
+import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserShow;
+import me.myshows.android.model.persistent.PersistentEpisode;
+import me.myshows.android.model.persistent.PersistentNextEpisode;
+import me.myshows.android.model.persistent.PersistentShow;
+import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
+import me.myshows.android.model.persistent.PersistentUser;
+import me.myshows.android.model.persistent.PersistentUserEpisode;
+import me.myshows.android.model.persistent.PersistentUserShow;
+import me.myshows.android.model.serialization.Marshaller;
 
 public class PersistentEntityConverter {
 

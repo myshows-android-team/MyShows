@@ -1,4 +1,4 @@
-package me.myshows.android.serialization;
+package me.myshows.android.model.serialization;
 
 import java.io.IOException;
 

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import me.myshows.android.R;
-import me.myshows.android.entity.UserShow;
+import me.myshows.android.model.UserShow;
 
 /**
  * Created by warrior on 06.07.15.

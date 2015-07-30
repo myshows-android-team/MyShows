@@ -19,7 +19,7 @@ import me.myshows.android.R;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.api.impl.PreferenceStorage;
-import me.myshows.android.entity.UserShow;
+import me.myshows.android.model.UserShow;
 import me.myshows.android.ui.activities.ShowActivity;
 import me.myshows.android.ui.views.ListShowView;
 import rx.Subscription;

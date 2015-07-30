@@ -1,4 +1,4 @@
-package me.myshows.android.dao.entity;
+package me.myshows.android.model.persistent;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;

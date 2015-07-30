@@ -3,12 +3,12 @@ package me.myshows.android.api;
 import java.util.List;
 
 import me.myshows.android.api.impl.Credentials;
-import me.myshows.android.entity.NextEpisode;
-import me.myshows.android.entity.Show;
-import me.myshows.android.entity.UnwatchedEpisode;
-import me.myshows.android.entity.User;
-import me.myshows.android.entity.UserEpisode;
-import me.myshows.android.entity.UserShow;
+import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.Show;
+import me.myshows.android.model.UnwatchedEpisode;
+import me.myshows.android.model.User;
+import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserShow;
 import rx.Observable;
 import rx.Scheduler;
 

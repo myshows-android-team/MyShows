@@ -1,4 +1,4 @@
-package me.myshows.android.entity;
+package me.myshows.android.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
