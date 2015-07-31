@@ -1,12 +1,14 @@
-package me.myshows.android.entities;
+package me.myshows.android.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Whiplash
  * @date 22.06.2015
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Episode {
 
     private final int id;
