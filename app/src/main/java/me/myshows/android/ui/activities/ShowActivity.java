@@ -12,8 +12,7 @@ import com.bumptech.glide.Glide;
 import org.parceler.Parcels;
 
 import me.myshows.android.R;
-import me.myshows.android.entities.UserShow;
-import rx.android.view.ViewObservable;
+import me.myshows.android.model.UserShow;
 
 /**
  * Created by warrior on 19.07.15.
@@ -54,11 +53,10 @@ public class ShowActivity extends AppCompatActivity {
     private void loadData(UserShow show) {
         if (show != null) {
             collapsingToolbar.setTitle(show.getTitle());
-            ViewObservable.bindView(showImage, show.requestImageUrl())
-                    .subscribe(url -> Glide.with(this)
-                            .load(url)
-                            .centerCrop()
-                            .into(showImage));
+            Glide.with(this)
+                    .load(show.getImage())
+                    .centerCrop()
+                    .into(showImage);
         }
     }
 }

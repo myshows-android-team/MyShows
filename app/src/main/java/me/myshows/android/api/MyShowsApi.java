@@ -2,11 +2,12 @@ package me.myshows.android.api;
 
 import java.util.Map;
 
-import me.myshows.android.entities.EpisodePreview;
-import me.myshows.android.entities.EpisodeRating;
-import me.myshows.android.entities.Show;
-import me.myshows.android.entities.User;
-import me.myshows.android.entities.UserShow;
+import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.Show;
+import me.myshows.android.model.UnwatchedEpisode;
+import me.myshows.android.model.User;
+import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserShow;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -29,13 +30,13 @@ public interface MyShowsApi {
     Observable<Map<String, UserShow>> profileShows();
 
     @GET("/profile/shows/{show_id}/")
-    Observable<Map<String, EpisodeRating>> profileEpisodesOfShow(@Path("show_id") int showId);
+    Observable<Map<String, UserEpisode>> profileEpisodesOfShow(@Path("show_id") int showId);
 
     @GET("/profile/episodes/unwatched/")
-    Observable<Map<String, EpisodePreview>> profileUnwatchedEpisodes();
+    Observable<Map<String, UnwatchedEpisode>> profileUnwatchedEpisodes();
 
     @GET("/profile/episodes/next/")
-    Observable<Map<String, EpisodePreview>> profileNextEpisodes();
+    Observable<Map<String, NextEpisode>> profileNextEpisodes();
 
     @GET("/shows/{show_id}")
     Observable<Show> showInformation(@Path("show_id") int showId);

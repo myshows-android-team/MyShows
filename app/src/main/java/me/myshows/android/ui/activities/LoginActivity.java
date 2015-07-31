@@ -59,8 +59,8 @@ public class LoginActivity extends AppCompatActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
 
-        StorageMyShowsClient client = MyShowsClientImpl.get(new PreferenceStorage(getApplicationContext()),
-                AndroidSchedulers.mainThread());
+        StorageMyShowsClient client = MyShowsClientImpl.get(getApplicationContext(),
+                new PreferenceStorage(getApplicationContext()), AndroidSchedulers.mainThread());
 
         logo = findViewById(R.id.logo);
         loginLayout = (ViewGroup) findViewById(R.id.login_layout);

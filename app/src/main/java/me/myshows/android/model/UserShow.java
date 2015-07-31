@@ -1,18 +1,18 @@
-package me.myshows.android.entities;
+package me.myshows.android.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
-
-import rx.Observable;
 
 /**
  * @author Whiplash
  * @date 20.06.2015
  */
 @Parcel(Parcel.Serialization.BEAN)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserShow {
 
     private final int showId;
@@ -25,8 +25,6 @@ public class UserShow {
     private final int totalEpisodes;
     private final int rating;
     private final String image;
-
-    private String cachedImageUrl;
 
     @ParcelConstructor
     @JsonCreator
@@ -95,27 +93,5 @@ public class UserShow {
     @JsonProperty("image")
     public String getImage() {
         return image;
-    }
-
-    public Observable<String> requestImageUrl() {
-        if (cachedImageUrl != null) {
-            return Observable.just(cachedImageUrl);
-        }
-        return ImageRequester.requestImageUrl(showId)
-                // TODO: remove this stuff
-                .map(s -> {
-                    cachedImageUrl = s;
-                    return s;
-                });
-    }
-
-    // just for Parceler lib
-    public String getCachedImageUrl() {
-        return cachedImageUrl;
-    }
-
-    // just for Parceler lib
-    public void setCachedImageUrl(String cachedImageUrl) {
-        this.cachedImageUrl = cachedImageUrl;
     }
 }

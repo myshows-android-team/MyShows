@@ -1,19 +1,33 @@
 package me.myshows.android.api.impl;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
-import me.myshows.android.entities.EpisodePreview;
-import me.myshows.android.entities.EpisodeRating;
-import me.myshows.android.entities.Show;
-import me.myshows.android.entities.User;
-import me.myshows.android.entities.UserShow;
+import me.myshows.android.model.persistent.dao.RealmManager;
+import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
+import me.myshows.android.model.persistent.PersistentNextEpisode;
+import me.myshows.android.model.persistent.PersistentShow;
+import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
+import me.myshows.android.model.persistent.PersistentUser;
+import me.myshows.android.model.persistent.PersistentUserEpisode;
+import me.myshows.android.model.persistent.PersistentUserShow;
+import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.Show;
+import me.myshows.android.model.UnwatchedEpisode;
+import me.myshows.android.model.User;
+import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserShow;
+import me.myshows.android.model.serialization.JsonMarshaller;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
 import retrofit.client.Response;
@@ -32,15 +46,18 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     private static final String COOKIE_DELIMITER = ";";
     private static final String SET_COOKIE = "Set-Cookie";
     private static final String COOKIE = "Cookie";
+    private static final PersistentEntityConverter converter = new PersistentEntityConverter(new JsonMarshaller());
 
     private static MyShowsClientImpl client;
 
     private final MyShowsApi api;
+    private final RealmManager manager;
 
     private Scheduler observerScheduler = Schedulers.immediate();
 
-    private MyShowsClientImpl(ClientStorage storage) {
+    private MyShowsClientImpl(Context context, ClientStorage storage) {
         super(storage);
+        this.manager = new RealmManager(context);
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
                 .setConverter(new JacksonConverter())
@@ -50,16 +67,16 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
                 .create(MyShowsApi.class);
     }
 
-    public static MyShowsClientImpl get(ClientStorage storage) {
+    public static MyShowsClientImpl get(Context context, ClientStorage storage) {
         if (client == null) {
-            client = new MyShowsClientImpl(storage);
+            client = new MyShowsClientImpl(context, storage);
         }
         return client;
     }
 
-    public static MyShowsClientImpl get(ClientStorage storage, Scheduler observerScheduler) {
+    public static MyShowsClientImpl get(Context context, ClientStorage storage, Scheduler observerScheduler) {
         if (client == null) {
-            client = new MyShowsClientImpl(storage);
+            client = new MyShowsClientImpl(context, storage);
         }
         client.setObserverScheduler(observerScheduler);
         return client;
@@ -67,7 +84,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
 
     @Override
     public Observable<Boolean> authentication(Credentials credentials) {
-        return Observable.<Boolean>create(subscriber -> api.login(credentials.getLogin(), credentials.getPasswordHash())
+        return Observable.create(subscriber -> api.login(credentials.getLogin(), credentials.getPasswordHash())
                 .observeOn(observerScheduler)
                 .subscribe(
                         response -> {
@@ -84,42 +101,105 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
 
     @Override
     public Observable<User> profile() {
-        return api.profile()
-                .observeOn(observerScheduler);
+        return Observable.<User>create(subscriber -> {
+            User user = manager.getEntity(PersistentUser.class, converter::toUser,
+                    Pair.create("login", storage.getCredentials().getLogin()));
+            if (user != null) {
+                subscriber.onNext(user);
+            }
+            api.profile()
+                    .subscribe(
+                            u -> subscriber.onNext(manager.persistEntity(u, converter::fromUser)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<UserShow> profileShows() {
-        return api.profileShows()
-                .concatMap(m -> Observable.from(m.values()))
-                .observeOn(observerScheduler);
+    public Observable<List<UserShow>> profileShows() {
+        return Observable.<List<UserShow>>create(subscriber -> {
+            Class<PersistentUserShow> clazz = PersistentUserShow.class;
+            List<UserShow> userShows = manager.getEntities(clazz, converter::toUserShow);
+            if (userShows != null) {
+                subscriber.onNext(userShows);
+            }
+            api.profileShows()
+                    .subscribe(
+                            us -> subscriber.onNext(manager.persistEntities(new ArrayList<>(us.values()), clazz, converter::fromUserShow)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<EpisodeRating> profileEpisodesOfShow(int showId) {
-        return api.profileEpisodesOfShow(showId)
-                .concatMap(m -> Observable.from(m.values()))
-                .observeOn(observerScheduler);
+    public Observable<List<UserEpisode>> profileEpisodesOfShow(int showId) {
+        return Observable.<List<UserEpisode>>create(subscriber -> {
+            Class<PersistentUserEpisode> clazz = PersistentUserEpisode.class;
+            List<UserEpisode> userEpisodes = manager.getEntities(clazz, converter::toUserEpisode,
+                    Pair.create("id", showId));
+            if (userEpisodes != null) {
+                subscriber.onNext(userEpisodes);
+            }
+            api.profileEpisodesOfShow(showId)
+                    .subscribe(
+                            ue -> subscriber.onNext(manager.persistEntities(new ArrayList<>(ue.values()), clazz, converter::fromUserEpisode)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<EpisodePreview> profileUnwatchedEpisodes() {
-        return api.profileUnwatchedEpisodes()
-                .concatMap(m -> Observable.from(m.values()))
-                .observeOn(observerScheduler);
+    public Observable<List<UnwatchedEpisode>> profileUnwatchedEpisodes() {
+        return Observable.<List<UnwatchedEpisode>>create(subscriber -> {
+            Class<PersistentUnwatchedEpisode> clazz = PersistentUnwatchedEpisode.class;
+            List<UnwatchedEpisode> unwatchedEpisodes = manager.getEntities(clazz, converter::toUnwatchedEpisode);
+            if (unwatchedEpisodes != null) {
+                subscriber.onNext(unwatchedEpisodes);
+            }
+            api.profileUnwatchedEpisodes()
+                    .subscribe(
+                            uep -> subscriber.onNext(manager.persistEntities(new ArrayList<>(uep.values()), clazz, converter::fromUnwatchedEpisode)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<EpisodePreview> profileNextEpisodes() {
-        return api.profileNextEpisodes()
-                .concatMap(m -> Observable.from(m.values()))
-                .observeOn(observerScheduler);
+    public Observable<List<NextEpisode>> profileNextEpisodes() {
+        return Observable.<List<NextEpisode>>create(subscriber -> {
+            Class<PersistentNextEpisode> clazz = PersistentNextEpisode.class;
+            List<NextEpisode> unwatchedEpisodePreviews = manager.getEntities(clazz, converter::toNextEpisode);
+            if (unwatchedEpisodePreviews != null) {
+                subscriber.onNext(unwatchedEpisodePreviews);
+            }
+            api.profileNextEpisodes()
+                    .subscribe(
+                            nep -> subscriber.onNext(manager.persistEntities(new ArrayList<>(nep.values()), clazz, converter::fromNextEpisode)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
     }
 
     @Override
     public Observable<Show> showInformation(int showId) {
-        return api.showInformation(showId)
-                .observeOn(observerScheduler);
+        return Observable.<Show>create(subscriber -> {
+            Show show = manager.getEntity(PersistentShow.class, converter::toShow,
+                    Pair.create("id", showId));
+            if (show != null) {
+                subscriber.onNext(show);
+            }
+            api.showInformation(showId)
+                    .subscribe(
+                            s -> subscriber.onNext(manager.persistEntity(s, converter::fromShow)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
     }
 
     @Override

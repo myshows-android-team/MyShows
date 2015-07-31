@@ -1,6 +1,7 @@
-package me.myshows.android.entities;
+package me.myshows.android.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  * @author Whiplash
  * @date 20.06.2015
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     private final String login;

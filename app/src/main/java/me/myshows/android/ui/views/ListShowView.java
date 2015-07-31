@@ -11,9 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import me.myshows.android.R;
-import me.myshows.android.entities.UserShow;
-import rx.Subscription;
-import rx.android.view.ViewObservable;
+import me.myshows.android.model.UserShow;
 
 /**
  * Created by warrior on 06.07.15.
@@ -24,8 +22,6 @@ public class ListShowView extends FrameLayout {
     private TextView title;
     private ProgressBar progress;
     private View shadow;
-
-    private Subscription subscription;
 
     public ListShowView(Context context) {
         super(context);
@@ -51,16 +47,12 @@ public class ListShowView extends FrameLayout {
         title.setText(show.getTitle());
         progress.setMax(show.getTotalEpisodes());
         progress.setProgress(show.getWatchedEpisodes());
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
         shadow.setVisibility(position == 0 ? GONE : VISIBLE);
         // temporary workaround
         image.setImageResource(R.drawable.tmp_placeholder);
-        subscription = ViewObservable.bindView(this, show.requestImageUrl())
-                .subscribe(url -> Glide.with(getContext())
-                        .load(url)
-                        .centerCrop()
-                        .into(image));
+        Glide.with(getContext())
+                .load(show.getImage())
+                .centerCrop()
+                .into(image);
     }
 }
