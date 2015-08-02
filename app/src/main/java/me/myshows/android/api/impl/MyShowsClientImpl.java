@@ -30,6 +30,7 @@ import me.myshows.android.model.UserShow;
 import me.myshows.android.model.serialization.JsonMarshaller;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
+import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.JacksonConverter;
 import rx.Observable;
@@ -60,6 +61,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
         this.manager = new RealmManager(context);
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
+                .setClient(new OkClient())
                 .setConverter(new JacksonConverter())
                 .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
                 .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join(COOKIE_DELIMITER, storage.getCookies())))
