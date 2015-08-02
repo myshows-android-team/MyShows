@@ -6,16 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
+import me.myshows.android.model.glide.QualityShowImage;
+
 /**
  * @author Whiplash
  * @date 22.06.2015
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Show {
-
-    private static final String IMAGE_URL = "http://media.myshows.me/shows/%s/%s/%s/%s";
-    private static final String NORMAL = "normal";
-    private static final String SMALL = "small";
+public class Show implements QualityShowImage {
 
     private final int id;
     private final String title;
@@ -142,6 +140,7 @@ public class Show {
     }
 
     @JsonProperty("image")
+    @Override
     public String getImage() {
         return image;
     }
@@ -162,6 +161,7 @@ public class Show {
     }
 
     @JsonProperty("images")
+    @Override
     public String[] getImages() {
         return images;
     }
@@ -169,21 +169,5 @@ public class Show {
     @JsonProperty("description")
     public String getDescription() {
         return description;
-    }
-
-    public String getNormalImageUrl() {
-        return getImageUrl(NORMAL);
-    }
-
-    public String getSmallImageUrl() {
-        return getImageUrl(SMALL);
-    }
-
-    private String getImageUrl(String size) {
-        if (images == null || images.length == 0) {
-            return image;
-        }
-        String hash = images[0];
-        return String.format(IMAGE_URL, size, hash.substring(0, 1), hash.substring(0, 2), hash);
     }
 }

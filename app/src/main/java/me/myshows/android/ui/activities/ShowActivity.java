@@ -108,21 +108,17 @@ public class ShowActivity extends RxAppCompatActivity {
         WatchStatus watchStatus = show.getWatchStatus();
         fab.setImageResource(watchStatus.getDrawableId());
         fab.setBackgroundTintList(getResources().getColorStateList(watchStatus.getColorId()));
-        Glide.with(this)
-                .load(show.getImage())
-                .centerCrop()
-                .into(showImage);
     }
 
     private void bind(Show show) {
         if (!hasUserShow) {
             collapsingToolbar.setTitle(show.getTitle());
             status.setText(show.getShowStatus().getStringId());
-            Glide.with(this)
-                    .load(show.getImage())
-                    .centerCrop()
-                    .into(showImage);
         }
+        Glide.with(this)
+                .load(show)
+                .centerCrop()
+                .into(showImage);
         CharSequence descriptionText = processDescription(show.getDescription());
         if (descriptionText.length() == 0) {
             description.setVisibility(View.GONE);
