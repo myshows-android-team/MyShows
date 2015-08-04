@@ -16,9 +16,8 @@ import org.parceler.Parcels;
 import java.util.List;
 
 import me.myshows.android.R;
-import me.myshows.android.api.StorageMyShowsClient;
+import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
-import me.myshows.android.api.impl.PreferenceStorage;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.ui.activities.ShowActivity;
 import me.myshows.android.ui.views.ListShowView;
@@ -57,8 +56,7 @@ public class MyShowsFragment extends Fragment {
     }
 
     private void loadData() {
-        StorageMyShowsClient client = MyShowsClientImpl.get(getActivity(),
-                new PreferenceStorage(getActivity()), AndroidSchedulers.mainThread());
+        MyShowsClient client = MyShowsClientImpl.getInstance();
         subscription = client.profileShows()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(shows -> {

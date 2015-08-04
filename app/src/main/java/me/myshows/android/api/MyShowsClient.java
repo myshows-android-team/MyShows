@@ -17,8 +17,6 @@ import rx.Scheduler;
  */
 public interface MyShowsClient {
 
-    void setObserverScheduler(Scheduler scheduler);
-
     boolean hasCredentials();
 
     Observable<Boolean> authentication(Credentials credentials);

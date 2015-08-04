@@ -53,10 +53,9 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
 
     private final MyShowsApi api;
     private final RealmManager manager;
+    private final Scheduler observerScheduler;
 
-    private Scheduler observerScheduler = Schedulers.immediate();
-
-    private MyShowsClientImpl(Context context, ClientStorage storage) {
+    private MyShowsClientImpl(Context context, ClientStorage storage, Scheduler observerScheduler) {
         super(storage);
         this.manager = new RealmManager(context);
         this.api = new RestAdapter.Builder()
@@ -67,20 +66,14 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
                 .setRequestInterceptor(request -> request.addHeader(COOKIE, TextUtils.join(COOKIE_DELIMITER, storage.getCookies())))
                 .build()
                 .create(MyShowsApi.class);
+        this.observerScheduler = observerScheduler;
     }
 
-    public static MyShowsClientImpl get(Context context, ClientStorage storage) {
-        if (client == null) {
-            client = new MyShowsClientImpl(context, storage);
-        }
-        return client;
+    public static void init(Context context, ClientStorage storage, Scheduler observerScheduler) {
+        client = new MyShowsClientImpl(context, storage, observerScheduler);
     }
 
-    public static MyShowsClientImpl get(Context context, ClientStorage storage, Scheduler observerScheduler) {
-        if (client == null) {
-            client = new MyShowsClientImpl(context, storage);
-        }
-        client.setObserverScheduler(observerScheduler);
+    public static MyShowsClientImpl getInstance() {
         return client;
     }
 
@@ -202,11 +195,6 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
                             subscriber::onCompleted
                     );
         }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
-    }
-
-    @Override
-    public void setObserverScheduler(Scheduler scheduler) {
-        this.observerScheduler = scheduler;
     }
 
     @Override

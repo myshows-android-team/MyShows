@@ -27,10 +27,8 @@ import me.myshows.android.R;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.api.impl.MyShowsClientImpl;
-import me.myshows.android.api.impl.PreferenceStorage;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * @author Whiplash
@@ -60,8 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
 
-        client = MyShowsClientImpl.get(getApplicationContext(),
-                new PreferenceStorage(getApplicationContext()), AndroidSchedulers.mainThread());
+        client = MyShowsClientImpl.getInstance();
 
         logo = findViewById(R.id.logo);
         loginLayout = (ViewGroup) findViewById(R.id.login_layout);
