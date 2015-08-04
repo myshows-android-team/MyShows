@@ -41,11 +41,12 @@ public class LoginActivity extends AppCompatActivity {
     private static final String REGISTER_URL = "http://myshows.me/";
     private static final int ANIMATION_DURATION = 500;
 
+    private StorageMyShowsClient client;
+
     private View logo;
     private ViewGroup loginLayout;
 
     private boolean needAnimate;
-
     private Subscription subscription;
 
     @Override
@@ -59,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
 
-        StorageMyShowsClient client = MyShowsClientImpl.get(getApplicationContext(),
+        client = MyShowsClientImpl.get(getApplicationContext(),
                 new PreferenceStorage(getApplicationContext()), AndroidSchedulers.mainThread());
 
         logo = findViewById(R.id.logo);
@@ -75,6 +76,18 @@ public class LoginActivity extends AppCompatActivity {
             processAuthenticationObserver(client.authentication(credentials));
         });
 
+        autoLoginAttempt();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+        super.onDestroy();
+    }
+
+    private void autoLoginAttempt() {
         if (client.hasCredentials()) {
             if (hasInternetConnection()) {
                 needAnimate = true;
@@ -87,14 +100,6 @@ public class LoginActivity extends AppCompatActivity {
             logo.setTranslationY(0);
             loginLayout.setAlpha(1);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        super.onDestroy();
     }
 
     private void setupNewAccountTextView(TextView view) {
