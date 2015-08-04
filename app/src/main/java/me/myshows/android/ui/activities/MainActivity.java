@@ -21,9 +21,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import me.myshows.android.R;
-import me.myshows.android.api.StorageMyShowsClient;
+import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
-import me.myshows.android.api.impl.PreferenceStorage;
 import me.myshows.android.ui.fragments.CalendarFragment;
 import me.myshows.android.ui.fragments.FavoritesFragment;
 import me.myshows.android.ui.fragments.FriendsFragment;
@@ -31,7 +30,6 @@ import me.myshows.android.ui.fragments.MyShowsFragment;
 import me.myshows.android.ui.fragments.ProfileFragment;
 import me.myshows.android.ui.fragments.RatingsFragment;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * @author Whiplash
@@ -179,8 +177,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        StorageMyShowsClient client = MyShowsClientImpl.get(getApplicationContext(),
-                new PreferenceStorage(getApplicationContext()), AndroidSchedulers.mainThread());
+        MyShowsClient client = MyShowsClientImpl.getInstance();
         subscription = client.profile()
                 .subscribe(user -> {
                     username.setText(user.getLogin());
