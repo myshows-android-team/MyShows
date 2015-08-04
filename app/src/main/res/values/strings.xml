@@ -5,7 +5,7 @@
     <!-- Login strings -->
     <string name="login">Login</string>
     <string name="password">Password</string>
-    <string name="login_button">Login</string>
+    <string name="sign_in_button">Sign in</string>
     <string name="incorrect_login_or_password">Incorrect login or password</string>
     <string name="new_account">or %s new account</string>
     <string name="register">register</string>

@@ -56,13 +56,13 @@
                 android:hint="@string/password" />
 
             <Button
-                android:id="@+id/login_button"
+                android:id="@+id/sign_in_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/login_button_background"
                 android:fontFamily="sans-serif-light"
-                android:text="@string/login_button"
+                android:text="@string/sign_in_button"
                 android:textAllCaps="true"
                 android:textColor="@color/white_80_opacity"
                 android:textSize="18sp" />

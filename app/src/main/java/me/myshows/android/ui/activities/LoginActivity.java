@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         TextView newAccount = (TextView) findViewById(R.id.new_account);
         setupNewAccountTextView(newAccount);
 
-        findViewById(R.id.login_button).setOnClickListener(view -> {
+        findViewById(R.id.sign_in_button).setOnClickListener(view -> {
             String login = ((EditText) findViewById(R.id.login)).getText().toString();
             String password = ((EditText) findViewById(R.id.password)).getText().toString();
             Credentials credentials = Credentials.make(login, password);
