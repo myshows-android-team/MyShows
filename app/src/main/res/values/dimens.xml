@@ -18,4 +18,7 @@
     <dimen name="list_show_gradient_height">120dp</dimen>
     <dimen name="list_show_shadow_height">4dp</dimen>
     <dimen name="list_show_text_size">18sp</dimen>
+
+    <dimen name="fab_margin">0dp</dimen>
+
 </resources>
