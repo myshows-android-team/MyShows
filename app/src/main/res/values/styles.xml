@@ -11,4 +11,20 @@
         <item name="android:textColor">@color/white_80_opacity</item>
         <item name="android:textColorHint">@color/white_60_opacity</item>
     </style>
+    
+    <style name="MyShows.ShowScreen.TextView" parent="">
+        <item name="android:padding">@dimen/default_padding</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">#888888</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+    
+    <style name="MyShows.ShowScreen.TextView.Header">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">#717171</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>
