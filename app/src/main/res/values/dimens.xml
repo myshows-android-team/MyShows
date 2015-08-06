@@ -2,6 +2,9 @@
 <resources>
     
     <dimen name="default_padding">16dp</dimen>
+    <dimen name="show_image_height">240dp</dimen>
+    <!-- show_image_height / 2 -->
+    <dimen name="show_image_gradient_height">120dp</dimen>
 
     <dimen name="login_button_corner_radius">4dp</dimen>
     
@@ -11,11 +14,8 @@
     <dimen name="nav_avatar_top_margin">0dp</dimen>
 
     <!-- List show view dimens -->
-    <dimen name="list_show_card_height">240dp</dimen>
     <dimen name="list_show_progress_height">3dp</dimen>
     <dimen name="list_show_text_height">50dp</dimen>
-    <!-- list_show_card_height / 2 -->
-    <dimen name="list_show_gradient_height">120dp</dimen>
     <dimen name="list_show_shadow_height">4dp</dimen>
     <dimen name="list_show_text_size">18sp</dimen>
 
