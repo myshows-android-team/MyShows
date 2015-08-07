@@ -15,6 +15,11 @@ import org.parceler.ParcelConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserShow {
 
+    public static final String WATCHING = "watching";
+    public static final String LATER = "later";
+    public static final String CANCELLED = "cancelled";
+    public static final String FINISHED = "finished";
+
     private final int showId;
     private final String title;
     private final String ruTitle;

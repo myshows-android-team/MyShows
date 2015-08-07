@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -53,6 +54,7 @@ public class ShowActivity extends AppCompatActivity {
     private TextView status;
     private TextView rating;
     private RatingBar myRating;
+    private FloatingActionButton fab;
 
     private Subscription subscription;
     private boolean hasUserShow;
@@ -75,6 +77,7 @@ public class ShowActivity extends AppCompatActivity {
         status = (TextView) findViewById(R.id.status);
         rating = (TextView) findViewById(R.id.rating);
         myRating = (RatingBar) findViewById(R.id.my_rating);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
         Intent intent = getIntent();
         int showId;
@@ -117,10 +120,29 @@ public class ShowActivity extends AppCompatActivity {
         collapsingToolbar.setTitle(show.getTitle());
         myRating.setRating(show.getRating());
         status.setText(statusStringId(show.getShowStatus()));
+        setWatchingStatus(show.getWatchStatus());
         Glide.with(this)
                 .load(show.getImage())
                 .centerCrop()
                 .into(showImage);
+    }
+
+    private void setWatchingStatus(String watchingStatus) {
+        switch (watchingStatus) {
+            case UserShow.WATCHING:
+            case UserShow.FINISHED:
+                fab.setImageResource(R.drawable.fab_watching);
+                fab.setBackgroundTintList(getResources().getColorStateList(R.color.fab_watching));
+                break;
+            case UserShow.LATER:
+                fab.setImageResource(R.drawable.fab_later);
+                fab.setBackgroundTintList(getResources().getColorStateList(R.color.fab_later));
+                break;
+            case UserShow.CANCELLED:
+                fab.setImageResource(R.drawable.fab_cancelled);
+                fab.setBackgroundTintList(getResources().getColorStateList(R.color.fab_cancelled));
+                break;
+        }
     }
 
     private void bind(Show show) {

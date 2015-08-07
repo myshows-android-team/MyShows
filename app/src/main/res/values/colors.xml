@@ -15,4 +15,9 @@
     <!-- List show view colors -->
     <color name="list_show_progress_background">@color/white_80_opacity</color>
     <color name="list_show_text_color">@color/white_80_opacity</color>
+
+    <!-- Fab colors -->
+    <color name="fab_watching">#78B531</color>
+    <color name="fab_later">#3894E8</color>
+    <color name="fab_cancelled">#F8DA37</color>
 </resources>
