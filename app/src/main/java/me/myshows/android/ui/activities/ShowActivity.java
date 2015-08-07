@@ -1,5 +1,6 @@
 package me.myshows.android.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -28,7 +29,8 @@ import rx.Subscription;
  */
 public class ShowActivity extends AppCompatActivity {
 
-    public static final String SHOW = "show";
+    public static final String SHOW_ID = "showId";
+    public static final String USER_SHOW = "userShow";
 
     private static final String CANCELLED = "Canceled/Ended";
     private static final String ONGOING = "Returning Series";
@@ -53,6 +55,7 @@ public class ShowActivity extends AppCompatActivity {
     private RatingBar myRating;
 
     private Subscription subscription;
+    private boolean hasUserShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +76,18 @@ public class ShowActivity extends AppCompatActivity {
         rating = (TextView) findViewById(R.id.rating);
         myRating = (RatingBar) findViewById(R.id.my_rating);
 
-        UserShow show = Parcels.unwrap(getIntent().getParcelableExtra(SHOW));
-        loadData(show);
+        Intent intent = getIntent();
+        int showId;
+        if (intent.hasExtra(USER_SHOW)) {
+            hasUserShow = true;
+            UserShow userShow = Parcels.unwrap(intent.getParcelableExtra(USER_SHOW));
+            bind(userShow);
+            showId = userShow.getShowId();
+        } else {
+            hasUserShow = false;
+            showId = intent.getIntExtra(SHOW_ID, 0);
+        }
+        loadData(showId);
     }
 
     @Override
@@ -95,9 +108,8 @@ public class ShowActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadData(UserShow userShow) {
-        bind(userShow);
-        subscription = client.showInformation(userShow.getShowId())
+    private void loadData(int showId) {
+        subscription = client.showInformation(showId)
                 .subscribe(this::bind);
     }
 
@@ -112,6 +124,14 @@ public class ShowActivity extends AppCompatActivity {
     }
 
     private void bind(Show show) {
+        if (!hasUserShow) {
+            collapsingToolbar.setTitle(show.getTitle());
+            status.setText(statusStringId(show.getStatus()));
+            Glide.with(this)
+                    .load(show.getImage())
+                    .centerCrop()
+                    .into(showImage);
+        }
         CharSequence descriptionText = processDescription(show.getDescription());
         if (descriptionText.length() == 0) {
             description.setVisibility(View.GONE);
