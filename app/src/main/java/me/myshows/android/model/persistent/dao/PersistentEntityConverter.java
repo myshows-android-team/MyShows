@@ -9,11 +9,13 @@ import io.realm.RealmList;
 import me.myshows.android.model.Episode;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.Show;
+import me.myshows.android.model.ShowStatus;
 import me.myshows.android.model.Statistics;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.WatchStatus;
 import me.myshows.android.model.persistent.PersistentEpisode;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentShow;
@@ -60,15 +62,15 @@ public class PersistentEntityConverter {
     public UserShow toUserShow(PersistentUserShow persistentUserShow) {
         return new UserShow(persistentUserShow.getShowId(), persistentUserShow.getTitle(),
                 persistentUserShow.getRuTitle(), persistentUserShow.getRuntime(),
-                persistentUserShow.getShowStatus(), persistentUserShow.getWatchStatus(),
+                ShowStatus.fromString(persistentUserShow.getShowStatus()), WatchStatus.fromString(persistentUserShow.getWatchStatus()),
                 persistentUserShow.getWatchedEpisodes(), persistentUserShow.getTotalEpisodes(),
                 persistentUserShow.getRating(), persistentUserShow.getImage());
     }
 
     public PersistentUserShow fromUserShow(UserShow userShow) {
         return new PersistentUserShow(userShow.getShowId(), userShow.getTitle(),
-                userShow.getRuTitle(), userShow.getRuntime(), userShow.getShowStatus(),
-                userShow.getWatchStatus(), userShow.getWatchedEpisodes(), userShow.getTotalEpisodes(),
+                userShow.getRuTitle(), userShow.getRuntime(), userShow.getShowStatus().toString(),
+                userShow.getWatchStatus().toString(), userShow.getWatchedEpisodes(), userShow.getTotalEpisodes(),
                 userShow.getRating(), userShow.getImage());
     }
 
@@ -131,7 +133,7 @@ public class PersistentEntityConverter {
             Map<String, Episode> episodes = toEpisodeMap(persistentShow.getEpisodes());
             String[] images = marshaller.deserialize(persistentShow.getImages(), String[].class);
             return new Show(persistentShow.getId(), persistentShow.getTitle(), persistentShow.getRuTitle(),
-                    persistentShow.getStatus(), persistentShow.getCountry(), persistentShow.getStarted(),
+                    ShowStatus.fromString(persistentShow.getShowStatus()), persistentShow.getCountry(), persistentShow.getStarted(),
                     persistentShow.getEnded(), persistentShow.getYear(), persistentShow.getKinopoiskId(),
                     persistentShow.getTvrageId(), persistentShow.getImdbId(), persistentShow.getVoted(),
                     persistentShow.getRating(), persistentShow.getRuntime(), persistentShow.getImage(),
@@ -147,7 +149,7 @@ public class PersistentEntityConverter {
             RealmList<PersistentEpisode> episodes = fromEpisodeMap(show.getEpisodes());
             byte[] images = marshaller.serialize(show.getImages());
             return new PersistentShow(show.getId(), show.getTitle(), show.getRuTitle(),
-                    show.getStatus(), show.getCountry(), show.getStarted(),
+                    show.getShowStatus().toString(), show.getCountry(), show.getStarted(),
                     show.getEnded(), show.getYear(), show.getKinopoiskId(),
                     show.getTvrageId(), show.getImdbId(), show.getVoted(),
                     show.getRating(), show.getRuntime(), show.getImage(),

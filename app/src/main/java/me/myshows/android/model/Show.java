@@ -20,7 +20,7 @@ public class Show {
     private final int id;
     private final String title;
     private final String ruTitle;
-    private final String status;
+    private final ShowStatus showStatus;
     private final String country;
     private final String started;
     private final String ended;
@@ -40,7 +40,7 @@ public class Show {
 
     @JsonCreator
     public Show(@JsonProperty("id") int id, @JsonProperty("title") String title,
-                @JsonProperty("ruTitle") String ruTitle, @JsonProperty("status") String status,
+                @JsonProperty("ruTitle") String ruTitle, @JsonProperty("status") ShowStatus showStatus,
                 @JsonProperty("country") String country, @JsonProperty("started") String started,
                 @JsonProperty("ended") String ended, @JsonProperty("year") int year,
                 @JsonProperty("kinopoiskId") int kinopoiskId, @JsonProperty("tvrageId") int tvrageId,
@@ -52,7 +52,7 @@ public class Show {
         this.id = id;
         this.title = title;
         this.ruTitle = ruTitle;
-        this.status = status;
+        this.showStatus = showStatus;
         this.country = country;
         this.started = started;
         this.ended = ended;
@@ -87,8 +87,8 @@ public class Show {
     }
 
     @JsonProperty("status")
-    public String getStatus() {
-        return status;
+    public ShowStatus getShowStatus() {
+        return showStatus;
     }
 
     @JsonProperty("country")

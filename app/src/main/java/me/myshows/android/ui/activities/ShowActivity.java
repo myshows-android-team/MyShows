@@ -2,7 +2,6 @@ package me.myshows.android.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +22,7 @@ import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.WatchStatus;
 import rx.Subscription;
 
 /**
@@ -32,15 +32,6 @@ public class ShowActivity extends AppCompatActivity {
 
     public static final String SHOW_ID = "showId";
     public static final String USER_SHOW = "userShow";
-
-    private static final String CANCELLED = "Canceled/Ended";
-    private static final String ONGOING = "Returning Series";
-    private static final String ON_BREAK = "On Hiatus";
-    private static final String NEW = "New Series";
-    private static final String FINAL_SEASON = "Final Season";
-    private static final String IN_DEVELOPMENT = "In Development";
-    private static final String TBD = "TBD/On The Bubble";
-    private static final String PILOT = "Pilot Rejected";
 
     private static final String OPEN_P_TAG = "<p>";
     private static final String CLOSE_P_TAG = "</p>";
@@ -119,36 +110,20 @@ public class ShowActivity extends AppCompatActivity {
     private void bind(UserShow show) {
         collapsingToolbar.setTitle(show.getTitle());
         myRating.setRating(show.getRating());
-        status.setText(statusStringId(show.getShowStatus()));
-        setWatchingStatus(show.getWatchStatus());
+        status.setText(show.getShowStatus().getStringId());
+        WatchStatus watchStatus = show.getWatchStatus();
+        fab.setImageResource(watchStatus.getDrawableId());
+        fab.setBackgroundTintList(getResources().getColorStateList(watchStatus.getColorId()));
         Glide.with(this)
                 .load(show.getImage())
                 .centerCrop()
                 .into(showImage);
     }
 
-    private void setWatchingStatus(String watchingStatus) {
-        switch (watchingStatus) {
-            case UserShow.WATCHING:
-            case UserShow.FINISHED:
-                fab.setImageResource(R.drawable.fab_watching);
-                fab.setBackgroundTintList(getResources().getColorStateList(R.color.fab_watching));
-                break;
-            case UserShow.LATER:
-                fab.setImageResource(R.drawable.fab_later);
-                fab.setBackgroundTintList(getResources().getColorStateList(R.color.fab_later));
-                break;
-            case UserShow.CANCELLED:
-                fab.setImageResource(R.drawable.fab_cancelled);
-                fab.setBackgroundTintList(getResources().getColorStateList(R.color.fab_cancelled));
-                break;
-        }
-    }
-
     private void bind(Show show) {
         if (!hasUserShow) {
             collapsingToolbar.setTitle(show.getTitle());
-            status.setText(statusStringId(show.getStatus()));
+            status.setText(show.getShowStatus().getStringId());
             Glide.with(this)
                     .load(show.getImage())
                     .centerCrop()
@@ -173,29 +148,5 @@ public class ShowActivity extends AppCompatActivity {
             description = description.substring(0, description.length() - CLOSE_P_TAG.length());
         }
         return Html.fromHtml(description);
-    }
-
-    @StringRes
-    private int statusStringId(String status) {
-        switch (status) {
-            case CANCELLED:
-                return R.string.cancelled;
-            case ONGOING:
-                return R.string.ongoing;
-            case ON_BREAK:
-                return R.string.on_break;
-            case NEW:
-                return R.string.new_show;
-            case FINAL_SEASON:
-                return R.string.final_season;
-            case IN_DEVELOPMENT:
-                return R.string.in_development;
-            case TBD:
-                return R.string.tbd;
-            case PILOT:
-                return R.string.pilot;
-            default:
-                return R.string.unknown_status;
-        }
     }
 }

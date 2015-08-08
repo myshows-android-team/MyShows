@@ -15,17 +15,12 @@ import org.parceler.ParcelConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserShow {
 
-    public static final String WATCHING = "watching";
-    public static final String LATER = "later";
-    public static final String CANCELLED = "cancelled";
-    public static final String FINISHED = "finished";
-
     private final int showId;
     private final String title;
     private final String ruTitle;
     private final int runtime;
-    private final String showStatus;
-    private final String watchStatus;
+    private final ShowStatus showStatus;
+    private final WatchStatus watchStatus;
     private final int watchedEpisodes;
     private final int totalEpisodes;
     private final int rating;
@@ -35,7 +30,7 @@ public class UserShow {
     @JsonCreator
     public UserShow(@JsonProperty("showId") int showId, @JsonProperty("title") String title,
                     @JsonProperty("ruTitle") String ruTitle, @JsonProperty("runtime") int runtime,
-                    @JsonProperty("showStatus") String showStatus, @JsonProperty("watchStatus") String watchStatus,
+                    @JsonProperty("showStatus") ShowStatus showStatus, @JsonProperty("watchStatus") WatchStatus watchStatus,
                     @JsonProperty("watchedEpisodes") int watchedEpisodes, @JsonProperty("totalEpisodes") int totalEpisodes,
                     @JsonProperty("rating") int rating, @JsonProperty("image") String image) {
         this.showId = showId;
@@ -71,12 +66,12 @@ public class UserShow {
     }
 
     @JsonProperty("showStatus")
-    public String getShowStatus() {
+    public ShowStatus getShowStatus() {
         return showStatus;
     }
 
     @JsonProperty("watchStatus")
-    public String getWatchStatus() {
+    public WatchStatus getWatchStatus() {
         return watchStatus;
     }
 
