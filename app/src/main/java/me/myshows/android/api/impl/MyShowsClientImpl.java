@@ -13,6 +13,8 @@ import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
+import me.myshows.android.model.RatingShow;
+import me.myshows.android.model.persistent.PersistentRatingShow;
 import me.myshows.android.model.persistent.dao.RealmManager;
 import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
@@ -191,6 +193,22 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
             api.showInformation(showId)
                     .subscribe(
                             s -> subscriber.onNext(manager.persistEntity(s, converter::fromShow)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<List<RatingShow>> ratingShows() {
+        return Observable.<List<RatingShow>>create(subscriber -> {
+            List<RatingShow> ratingShows = manager.getEntities(PersistentRatingShow.class, converter::toRatingShow);
+            if (ratingShows != null) {
+                subscriber.onNext(ratingShows);
+            }
+            api.ratingShows()
+                    .subscribe(
+                            shows -> subscriber.onNext(manager.persistEntities(shows, PersistentRatingShow.class, converter::fromRatingShow)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );

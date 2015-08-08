@@ -4,6 +4,7 @@ import java.util.List;
 
 import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
@@ -32,4 +33,6 @@ public interface MyShowsClient {
     Observable<List<NextEpisode>> profileNextEpisodes();
 
     Observable<Show> showInformation(int showId);
+
+    Observable<List<RatingShow>> ratingShows();
 }
