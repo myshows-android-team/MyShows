@@ -132,6 +132,6 @@ public class RealmManager {
         } else if (value instanceof Double) {
             return query.equalTo(fieldName, (double) value);
         }
-        throw new IllegalArgumentException("Unreached statement");
+        throw new IllegalArgumentException("Unsupported value type");
     }
 }
