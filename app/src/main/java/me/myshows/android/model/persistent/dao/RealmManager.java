@@ -25,13 +25,27 @@ public class RealmManager {
         return entity;
     }
 
-    public <T, E extends RealmObject> List<T> insertEntities(List<T> entities, ToPersistentEntity<T> converter) {
+    public <T> List<T> insertEntities(List<T> entities, ToPersistentEntity<T> converter) {
         List<RealmObject> persistentEntities = new ArrayList<>(entities.size());
         for (T entity : entities) {
             persistentEntities.add(converter.toRealmObject(entity));
         }
         Realm realm = Realm.getInstance(context);
         realm.executeTransaction(r -> r.copyToRealm(persistentEntities));
+        realm.close();
+        return entities;
+    }
+
+    public <T, E extends RealmObject> List<T> truncateAndInsertEntities(List<T> entities, Class<E> clazz, ToPersistentEntity<T> converter) {
+        List<RealmObject> persistentEntities = new ArrayList<>(entities.size());
+        for (T entity : entities) {
+            persistentEntities.add(converter.toRealmObject(entity));
+        }
+        Realm realm = Realm.getInstance(context);
+        realm.executeTransaction(r -> {
+            r.clear(clazz);
+            r.copyToRealm(persistentEntities);
+        });
         realm.close();
         return entities;
     }
@@ -43,7 +57,7 @@ public class RealmManager {
         return entity;
     }
 
-    public <T, E extends RealmObject> List<T> upsertEntities(List<T> entities, ToPersistentEntity<T> converter) {
+    public <T> List<T> upsertEntities(List<T> entities, ToPersistentEntity<T> converter) {
         List<RealmObject> persistentEntities = new ArrayList<>(entities.size());
         for (T entity : entities) {
             persistentEntities.add(converter.toRealmObject(entity));
@@ -121,7 +135,7 @@ public class RealmManager {
         throw new IllegalArgumentException("Unreached statement");
     }
 
-    public <E extends RealmObject> RealmManager clear(Class<E> clazz) {
+    public <E extends RealmObject> RealmManager truncate(Class<E> clazz) {
         Realm realm = Realm.getInstance(context);
         realm.executeTransaction(r -> r.clear(clazz));
         realm.close();
