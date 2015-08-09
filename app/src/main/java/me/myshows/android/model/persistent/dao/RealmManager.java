@@ -18,14 +18,35 @@ public class RealmManager {
         this.context = context;
     }
 
-    public <T> T persistEntity(T entity, ToPersistPersistentEntity<T> converter) {
+    public <T> T insertEntity(T entity, ToPersistPersistentEntity<T> converter) {
+        Realm realm = Realm.getInstance(context);
+        realm.executeTransaction(r -> r.copyToRealm(converter.toRealmObject(entity)));
+        realm.close();
+        return entity;
+    }
+
+    public <T, E extends RealmObject> List<T> insertEntities(List<T> entities, Class<E> clazz, ToPersistPersistentEntity<T> converter) {
+        List<RealmObject> persistentEntities = new ArrayList<>(entities.size());
+        for (T entity : entities) {
+            persistentEntities.add(converter.toRealmObject(entity));
+        }
+        Realm realm = Realm.getInstance(context);
+        realm.executeTransaction(r -> {
+            r.clear(clazz);
+            r.copyToRealm(persistentEntities);
+        });
+        realm.close();
+        return entities;
+    }
+
+    public <T> T upsertEntity(T entity, ToPersistPersistentEntity<T> converter) {
         Realm realm = Realm.getInstance(context);
         realm.executeTransaction(r -> r.copyToRealmOrUpdate(converter.toRealmObject(entity)));
         realm.close();
         return entity;
     }
 
-    public <T, E extends RealmObject> List<T> persistEntities(List<T> entities, Class<E> clazz, ToPersistPersistentEntity<T> converter) {
+    public <T, E extends RealmObject> List<T> upsertEntities(List<T> entities, Class<E> clazz, ToPersistPersistentEntity<T> converter) {
         List<RealmObject> persistentEntities = new ArrayList<>(entities.size());
         for (T entity : entities) {
             persistentEntities.add(converter.toRealmObject(entity));
@@ -39,7 +60,16 @@ public class RealmManager {
         return entities;
     }
 
-    public <T, E extends RealmObject> T getEntity(Class<E> clazz, FromPersistentEntity<T, E> converter, Predicate... predicates) {
+    public <E extends RealmObject> void deleteEntity(Class<E> clazz, Predicate... predicates) {
+        Realm realm = Realm.getInstance(context);
+        E persistentEntity = makeQuery(realm, clazz, predicates).findFirst();
+        if (persistentEntity != null) {
+            persistentEntity.removeFromRealm();
+        }
+        realm.close();
+    }
+
+    public <T, E extends RealmObject> T selectEntity(Class<E> clazz, FromPersistentEntity<T, E> converter, Predicate... predicates) {
         Realm realm = Realm.getInstance(context);
         E persistentEntity = makeQuery(realm, clazz, predicates).findFirst();
         T entity = null;
@@ -50,9 +80,23 @@ public class RealmManager {
         return entity;
     }
 
-    public <T, E extends RealmObject> List<T> getEntities(Class<E> clazz, FromPersistentEntity<T, E> converter, Predicate... predicates) {
+    public <T, E extends RealmObject> List<T> selectEntities(Class<E> clazz, FromPersistentEntity<T, E> converter, Predicate... predicates) {
         Realm realm = Realm.getInstance(context);
         RealmResults<E> results = makeQuery(realm, clazz, predicates).findAll();
+        List<T> entities = null;
+        if (results != null) {
+            entities = new ArrayList<>();
+            for (E result : results) {
+                entities.add(converter.fromRealmObject(result));
+            }
+        }
+        realm.close();
+        return entities;
+    }
+
+    public <T, E extends RealmObject> List<T> selectSortedEntities(Class<E> clazz, FromPersistentEntity<T, E> converter, String fieldName, boolean sortAscending, Predicate... predicates) {
+        Realm realm = Realm.getInstance(context);
+        RealmResults<E> results = makeQuery(realm, clazz, predicates).findAllSorted(fieldName, sortAscending);
         List<T> entities = null;
         if (results != null) {
             entities = new ArrayList<>();
