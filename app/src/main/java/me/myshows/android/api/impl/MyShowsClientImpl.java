@@ -121,7 +121,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
             }
             api.profileShows()
                     .subscribe(
-                            us -> subscriber.onNext(manager.upsertEntities(new ArrayList<>(us.values()), clazz, converter::fromUserShow)),
+                            us -> subscriber.onNext(manager.clear(clazz).upsertEntities(new ArrayList<>(us.values()), converter::fromUserShow)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -139,7 +139,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
             }
             api.profileEpisodesOfShow(showId)
                     .subscribe(
-                            ue -> subscriber.onNext(manager.upsertEntities(new ArrayList<>(ue.values()), clazz, converter::fromUserEpisode)),
+                            ue -> subscriber.onNext(manager.clear(clazz).upsertEntities(new ArrayList<>(ue.values()), converter::fromUserEpisode)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -156,7 +156,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
             }
             api.profileUnwatchedEpisodes()
                     .subscribe(
-                            uep -> subscriber.onNext(manager.upsertEntities(new ArrayList<>(uep.values()), clazz, converter::fromUnwatchedEpisode)),
+                            uep -> subscriber.onNext(manager.clear(clazz).upsertEntities(new ArrayList<>(uep.values()), converter::fromUnwatchedEpisode)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -173,7 +173,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
             }
             api.profileNextEpisodes()
                     .subscribe(
-                            nep -> subscriber.onNext(manager.upsertEntities(new ArrayList<>(nep.values()), clazz, converter::fromNextEpisode)),
+                            nep -> subscriber.onNext(manager.clear(clazz).upsertEntities(new ArrayList<>(nep.values()), converter::fromNextEpisode)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
