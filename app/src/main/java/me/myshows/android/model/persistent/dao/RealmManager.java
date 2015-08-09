@@ -18,14 +18,14 @@ public class RealmManager {
         this.context = context;
     }
 
-    public <T> T insertEntity(T entity, ToPersistPersistentEntity<T> converter) {
+    public <T> T insertEntity(T entity, ToPersistentEntity<T> converter) {
         Realm realm = Realm.getInstance(context);
         realm.executeTransaction(r -> r.copyToRealm(converter.toRealmObject(entity)));
         realm.close();
         return entity;
     }
 
-    public <T, E extends RealmObject> List<T> insertEntities(List<T> entities, ToPersistPersistentEntity<T> converter) {
+    public <T, E extends RealmObject> List<T> insertEntities(List<T> entities, ToPersistentEntity<T> converter) {
         List<RealmObject> persistentEntities = new ArrayList<>(entities.size());
         for (T entity : entities) {
             persistentEntities.add(converter.toRealmObject(entity));
@@ -36,14 +36,14 @@ public class RealmManager {
         return entities;
     }
 
-    public <T> T upsertEntity(T entity, ToPersistPersistentEntity<T> converter) {
+    public <T> T upsertEntity(T entity, ToPersistentEntity<T> converter) {
         Realm realm = Realm.getInstance(context);
         realm.executeTransaction(r -> r.copyToRealmOrUpdate(converter.toRealmObject(entity)));
         realm.close();
         return entity;
     }
 
-    public <T, E extends RealmObject> List<T> upsertEntities(List<T> entities, ToPersistPersistentEntity<T> converter) {
+    public <T, E extends RealmObject> List<T> upsertEntities(List<T> entities, ToPersistentEntity<T> converter) {
         List<RealmObject> persistentEntities = new ArrayList<>(entities.size());
         for (T entity : entities) {
             persistentEntities.add(converter.toRealmObject(entity));
