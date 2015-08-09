@@ -2,30 +2,25 @@ package me.myshows.android.model;
 
 import org.joda.time.DateTime;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Whiplash on 09.08.2015.
  */
-public class Feed {
+public class Feed extends ArrayList<UserFeed> {
 
     private final DateTime date;
-    private final List<UserFeed> feeds;
 
-    public Feed(String rawDate, List<UserFeed> feeds) {
-        this(new DateTime(rawDate), feeds);
+    public Feed(String rawDate) {
+        this(new DateTime(rawDate));
     }
 
-    public Feed(DateTime date, List<UserFeed> feeds) {
+    public Feed(DateTime date) {
+        super();
         this.date = date;
-        this.feeds = feeds;
     }
 
     public DateTime getDate() {
         return date;
-    }
-
-    public List<UserFeed> getFeeds() {
-        return feeds;
     }
 }

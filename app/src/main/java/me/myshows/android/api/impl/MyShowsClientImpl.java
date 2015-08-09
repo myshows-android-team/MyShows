@@ -7,26 +7,30 @@ import android.util.Pair;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
-import me.myshows.android.model.persistent.dao.RealmManager;
-import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
+import me.myshows.android.model.Feed;
+import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.Show;
+import me.myshows.android.model.UnwatchedEpisode;
+import me.myshows.android.model.User;
+import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserFeed;
+import me.myshows.android.model.UserShow;
+import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentShow;
 import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
 import me.myshows.android.model.persistent.PersistentUser;
 import me.myshows.android.model.persistent.PersistentUserEpisode;
 import me.myshows.android.model.persistent.PersistentUserShow;
-import me.myshows.android.model.NextEpisode;
-import me.myshows.android.model.Show;
-import me.myshows.android.model.UnwatchedEpisode;
-import me.myshows.android.model.User;
-import me.myshows.android.model.UserEpisode;
-import me.myshows.android.model.UserShow;
+import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
+import me.myshows.android.model.persistent.dao.RealmManager;
 import me.myshows.android.model.serialization.JsonMarshaller;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
@@ -195,6 +199,33 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
                             subscriber::onCompleted
                     );
         }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<List<Feed>> friendsNews() {
+        return Observable.<List<Feed>>create(subscriber -> {
+            Class<PersistentFeed> clazz = PersistentFeed.class;
+            List<Feed> feeds = null /*manager.getEntities(clazz, converter::toFeed)*/;
+            if (feeds != null) {
+                subscriber.onNext(feeds);
+            }
+            api.friendsNews()
+                    .subscribe(
+                            uf -> subscriber.onNext(generateFeeds(uf)), //TODO persist feeds
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    private List<Feed> generateFeeds(Map<String, List<UserFeed>> userFeeds) {
+        List<Feed> feeds = new ArrayList<>();
+        for (Map.Entry<String, List<UserFeed>> rawFeed : userFeeds.entrySet()) {
+            Feed feed = new Feed(rawFeed.getKey());
+            feed.addAll(rawFeed.getValue());
+            feeds.add(feed);
+        }
+        return feeds;
     }
 
     @Override
