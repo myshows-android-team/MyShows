@@ -5,19 +5,11 @@ package me.myshows.android.model.persistent.dao;
  */
 public class Predicate {
 
-    private final String field;
-    private final Object value;
+    public final String field;
+    public final Object value;
 
     public Predicate(String field, Object value) {
         this.field = field;
         this.value = value;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public Object getValue() {
-        return value;
     }
 }

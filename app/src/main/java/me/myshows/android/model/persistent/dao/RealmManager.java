@@ -119,7 +119,7 @@ public class RealmManager {
     private <E extends RealmObject> RealmQuery<E> makeQuery(Realm realm, Class<E> clazz, Predicate... predicates) {
         RealmQuery<E> query = realm.where(clazz);
         for (Predicate predicate : predicates) {
-            query = equalTo(query, predicate.getField(), predicate.getValue());
+            query = equalTo(query, predicate.field, predicate.value);
         }
         return query;
     }
@@ -133,12 +133,5 @@ public class RealmManager {
             return query.equalTo(fieldName, (double) value);
         }
         throw new IllegalArgumentException("Unreached statement");
-    }
-
-    public <E extends RealmObject> RealmManager truncate(Class<E> clazz) {
-        Realm realm = Realm.getInstance(context);
-        realm.executeTransaction(r -> r.clear(clazz));
-        realm.close();
-        return this;
     }
 }
