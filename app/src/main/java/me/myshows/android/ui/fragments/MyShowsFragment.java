@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import org.parceler.Parcels;
 
@@ -25,17 +25,14 @@ import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.ui.activities.ShowActivity;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by warrior on 06.07.15.
  */
-public class MyShowsFragment extends Fragment {
+public class MyShowsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
-
-    private Subscription subscription;
 
     @Nullable
     @Override
@@ -51,17 +48,10 @@ public class MyShowsFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        super.onDestroyView();
-    }
-
     private void loadData() {
         MyShowsClient client = MyShowsClientImpl.getInstance();
-        subscription = client.profileShows()
+        client.profileShows()
+                .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(shows -> {
                             ShowAdapter adapter = new ShowAdapter(shows);
