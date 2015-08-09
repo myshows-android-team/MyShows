@@ -2,7 +2,6 @@ package me.myshows.android.api.impl;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,20 +12,21 @@ import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
-import me.myshows.android.model.persistent.dao.RealmManager;
-import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
-import me.myshows.android.model.persistent.PersistentNextEpisode;
-import me.myshows.android.model.persistent.PersistentShow;
-import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
-import me.myshows.android.model.persistent.PersistentUser;
-import me.myshows.android.model.persistent.PersistentUserEpisode;
-import me.myshows.android.model.persistent.PersistentUserShow;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.persistent.PersistentNextEpisode;
+import me.myshows.android.model.persistent.PersistentShow;
+import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
+import me.myshows.android.model.persistent.PersistentUser;
+import me.myshows.android.model.persistent.PersistentUserEpisode;
+import me.myshows.android.model.persistent.PersistentUserShow;
+import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
+import me.myshows.android.model.persistent.dao.Predicate;
+import me.myshows.android.model.persistent.dao.RealmManager;
 import me.myshows.android.model.serialization.JsonMarshaller;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
@@ -98,7 +98,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<User> profile() {
         return Observable.<User>create(subscriber -> {
             User user = manager.getEntity(PersistentUser.class, converter::toUser,
-                    Pair.create("login", storage.getCredentials().getLogin()));
+                    new Predicate("login", storage.getCredentials().getLogin()));
             if (user != null) {
                 subscriber.onNext(user);
             }
@@ -133,7 +133,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
         return Observable.<List<UserEpisode>>create(subscriber -> {
             Class<PersistentUserEpisode> clazz = PersistentUserEpisode.class;
             List<UserEpisode> userEpisodes = manager.getEntities(clazz, converter::toUserEpisode,
-                    Pair.create("id", showId));
+                    new Predicate("id", showId));
             if (userEpisodes != null) {
                 subscriber.onNext(userEpisodes);
             }
@@ -184,7 +184,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<Show> showInformation(int showId) {
         return Observable.<Show>create(subscriber -> {
             Show show = manager.getEntity(PersistentShow.class, converter::toShow,
-                    Pair.create("id", showId));
+                    new Predicate("id", showId));
             if (show != null) {
                 subscriber.onNext(show);
             }
