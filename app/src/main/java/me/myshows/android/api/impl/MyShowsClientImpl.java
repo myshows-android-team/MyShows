@@ -2,7 +2,6 @@ package me.myshows.android.api.impl;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,20 +12,21 @@ import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
-import me.myshows.android.model.persistent.dao.RealmManager;
-import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
-import me.myshows.android.model.persistent.PersistentNextEpisode;
-import me.myshows.android.model.persistent.PersistentShow;
-import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
-import me.myshows.android.model.persistent.PersistentUser;
-import me.myshows.android.model.persistent.PersistentUserEpisode;
-import me.myshows.android.model.persistent.PersistentUserShow;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.persistent.PersistentNextEpisode;
+import me.myshows.android.model.persistent.PersistentShow;
+import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
+import me.myshows.android.model.persistent.PersistentUser;
+import me.myshows.android.model.persistent.PersistentUserEpisode;
+import me.myshows.android.model.persistent.PersistentUserShow;
+import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
+import me.myshows.android.model.persistent.dao.Predicate;
+import me.myshows.android.model.persistent.dao.RealmManager;
 import me.myshows.android.model.serialization.JsonMarshaller;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
@@ -97,14 +97,14 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     @Override
     public Observable<User> profile() {
         return Observable.<User>create(subscriber -> {
-            User user = manager.getEntity(PersistentUser.class, converter::toUser,
-                    Pair.create("login", storage.getCredentials().getLogin()));
+            User user = manager.selectEntity(PersistentUser.class, converter::toUser,
+                    new Predicate("login", storage.getCredentials().getLogin()));
             if (user != null) {
                 subscriber.onNext(user);
             }
             api.profile()
                     .subscribe(
-                            u -> subscriber.onNext(manager.persistEntity(u, converter::fromUser)),
+                            u -> subscriber.onNext(manager.upsertEntity(u, converter::fromUser)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -115,13 +115,13 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<UserShow>> profileShows() {
         return Observable.<List<UserShow>>create(subscriber -> {
             Class<PersistentUserShow> clazz = PersistentUserShow.class;
-            List<UserShow> userShows = manager.getEntities(clazz, converter::toUserShow);
+            List<UserShow> userShows = manager.selectEntities(clazz, converter::toUserShow);
             if (userShows != null) {
                 subscriber.onNext(userShows);
             }
             api.profileShows()
                     .subscribe(
-                            us -> subscriber.onNext(manager.persistEntities(new ArrayList<>(us.values()), clazz, converter::fromUserShow)),
+                            us -> subscriber.onNext(manager.truncateAndInsertEntities(new ArrayList<>(us.values()), clazz, converter::fromUserShow)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -132,14 +132,14 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<UserEpisode>> profileEpisodesOfShow(int showId) {
         return Observable.<List<UserEpisode>>create(subscriber -> {
             Class<PersistentUserEpisode> clazz = PersistentUserEpisode.class;
-            List<UserEpisode> userEpisodes = manager.getEntities(clazz, converter::toUserEpisode,
-                    Pair.create("id", showId));
+            List<UserEpisode> userEpisodes = manager.selectEntities(clazz, converter::toUserEpisode,
+                    new Predicate("id", showId));
             if (userEpisodes != null) {
                 subscriber.onNext(userEpisodes);
             }
             api.profileEpisodesOfShow(showId)
                     .subscribe(
-                            ue -> subscriber.onNext(manager.persistEntities(new ArrayList<>(ue.values()), clazz, converter::fromUserEpisode)),
+                            ue -> subscriber.onNext(manager.truncateAndInsertEntities(new ArrayList<>(ue.values()), clazz, converter::fromUserEpisode)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -150,13 +150,13 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<UnwatchedEpisode>> profileUnwatchedEpisodes() {
         return Observable.<List<UnwatchedEpisode>>create(subscriber -> {
             Class<PersistentUnwatchedEpisode> clazz = PersistentUnwatchedEpisode.class;
-            List<UnwatchedEpisode> unwatchedEpisodes = manager.getEntities(clazz, converter::toUnwatchedEpisode);
+            List<UnwatchedEpisode> unwatchedEpisodes = manager.selectEntities(clazz, converter::toUnwatchedEpisode);
             if (unwatchedEpisodes != null) {
                 subscriber.onNext(unwatchedEpisodes);
             }
             api.profileUnwatchedEpisodes()
                     .subscribe(
-                            uep -> subscriber.onNext(manager.persistEntities(new ArrayList<>(uep.values()), clazz, converter::fromUnwatchedEpisode)),
+                            uep -> subscriber.onNext(manager.truncateAndInsertEntities(new ArrayList<>(uep.values()), clazz, converter::fromUnwatchedEpisode)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -167,13 +167,13 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<NextEpisode>> profileNextEpisodes() {
         return Observable.<List<NextEpisode>>create(subscriber -> {
             Class<PersistentNextEpisode> clazz = PersistentNextEpisode.class;
-            List<NextEpisode> unwatchedEpisodePreviews = manager.getEntities(clazz, converter::toNextEpisode);
+            List<NextEpisode> unwatchedEpisodePreviews = manager.selectEntities(clazz, converter::toNextEpisode);
             if (unwatchedEpisodePreviews != null) {
                 subscriber.onNext(unwatchedEpisodePreviews);
             }
             api.profileNextEpisodes()
                     .subscribe(
-                            nep -> subscriber.onNext(manager.persistEntities(new ArrayList<>(nep.values()), clazz, converter::fromNextEpisode)),
+                            nep -> subscriber.onNext(manager.truncateAndInsertEntities(new ArrayList<>(nep.values()), clazz, converter::fromNextEpisode)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -183,14 +183,14 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     @Override
     public Observable<Show> showInformation(int showId) {
         return Observable.<Show>create(subscriber -> {
-            Show show = manager.getEntity(PersistentShow.class, converter::toShow,
-                    Pair.create("id", showId));
+            Show show = manager.selectEntity(PersistentShow.class, converter::toShow,
+                    new Predicate("id", showId));
             if (show != null) {
                 subscriber.onNext(show);
             }
             api.showInformation(showId)
                     .subscribe(
-                            s -> subscriber.onNext(manager.persistEntity(s, converter::fromShow)),
+                            s -> subscriber.onNext(manager.upsertEntity(s, converter::fromShow)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
