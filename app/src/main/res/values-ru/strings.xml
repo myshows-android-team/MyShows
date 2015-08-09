@@ -20,4 +20,27 @@
     <string name="settings">Настройки</string>
     <string name="about">О программе</string>
 
+    <!-- Show screen strings -->
+    <!-- Headers -->
+    <string name="overview">Обзор</string>
+    <string name="rating">Рейтинг сериала (%.2f)</string>
+    <string name="seasons">Сезоны</string>
+    <!-- Statuses -->
+    <string name="cancelled">Завершен</string>
+    <string name="new_show">Новый</string>
+    <string name="ongoing">Продолжается</string>
+    <string name="on_break">Пауза</string>
+    <string name="final_season">Последний сезон</string>
+    <string name="in_development">В разработке</string>
+    <string name="tbd">TBD</string>
+    <string name="pilot">Пилот</string>
+    <string name="unknown_status">Неизвестен</string>
+    <!-- Other -->
+    <plurals name="duration">
+        <item quantity="one">%d минута / серия</item>
+        <item quantity="few">%d минуты / серия</item>
+        <item quantity="many">%d минут / серия</item>
+    </plurals>
+    <string name="my_rating">Моя оценка</string>
+
 </resources>

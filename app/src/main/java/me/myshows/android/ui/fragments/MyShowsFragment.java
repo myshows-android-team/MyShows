@@ -103,7 +103,7 @@ public class MyShowsFragment extends Fragment {
             itemView.setOnClickListener(v -> {
                 Context context = v.getContext();
                 Intent intent = new Intent(context, ShowActivity.class);
-                intent.putExtra(ShowActivity.SHOW, Parcels.wrap(show));
+                intent.putExtra(ShowActivity.USER_SHOW, Parcels.wrap(show));
                 context.startActivity(intent);
             });
         }

@@ -12,7 +12,7 @@ public class PersistentShow extends RealmObject {
     private int id;
     private String title;
     private String ruTitle;
-    private String status;
+    private String showStatus;
     private String country;
     private String started;
     private String ended;
@@ -33,14 +33,14 @@ public class PersistentShow extends RealmObject {
     public PersistentShow() {
     }
 
-    public PersistentShow(int id, String title, String ruTitle, String status, String country,
+    public PersistentShow(int id, String title, String ruTitle, String showStatus, String country,
                           String started, String ended, int year, int kinopoiskId, int tvrageId,
                           int imdbId, int voted, float rating, int runtime, String image,
                           byte[] genres, RealmList<PersistentEpisode> episodes, int watching, byte[] images, String description) {
         this.id = id;
         this.title = title;
         this.ruTitle = ruTitle;
-        this.status = status;
+        this.showStatus = showStatus;
         this.country = country;
         this.started = started;
         this.ended = ended;
@@ -83,12 +83,12 @@ public class PersistentShow extends RealmObject {
         this.ruTitle = ruTitle;
     }
 
-    public String getStatus() {
-        return status;
+    public String getShowStatus() {
+        return showStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setShowStatus(String showStatus) {
+        this.showStatus = showStatus;
     }
 
     public String getCountry() {
