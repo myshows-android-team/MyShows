@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Login strings -->
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
@@ -43,4 +42,7 @@
     </plurals>
     <string name="my_rating">Моя оценка</string>
 
+    <!-- Ratings screen -->
+    <string name="watching">%d смотрят</string>
+    <string name="show_rating">Рейтинг \u2014 %.2f</string>
 </resources>
