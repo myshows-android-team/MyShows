@@ -16,6 +16,7 @@
         android:background="@color/black_70_opacity" />
 
     <ImageView
+        android:id="@+id/watch_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"

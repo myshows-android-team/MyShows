@@ -15,15 +15,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.parceler.Parcels;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.RatingShow;
+import me.myshows.android.model.UserShow;
+import me.myshows.android.model.WatchStatus;
 import me.myshows.android.ui.activities.ShowActivity;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by warrior on 19.07.15.
@@ -32,7 +37,11 @@ public class RatingsFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
+    private List<RatingShow> ratingShows;
+    private Map<Integer, UserShow> userShows;
+
     private Subscription subscription;
+    private Subscription subscription2;
 
     @Nullable
     @Override
@@ -53,26 +62,51 @@ public class RatingsFragment extends Fragment {
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
+        if (subscription2 != null && !subscription2.isUnsubscribed()) {
+            subscription2.unsubscribe();
+        }
         super.onDestroyView();
     }
 
     private void loadData() {
         MyShowsClient client = MyShowsClientImpl.getInstance();
         subscription = client.ratingShows()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(shows -> {
-                            RatingShowAdapter adapter = new RatingShowAdapter(shows);
-                            recyclerView.setAdapter(adapter);
+                            ratingShows = shows;
+                            if (userShows != null) {
+                                setAdapter();
+                            }
                         }
                 );
+        subscription2 = client.profileShows()
+                .map(shows -> {
+                    Map<Integer, UserShow> userShows = new HashMap<>();
+                    for (UserShow show : shows) {
+                        userShows.put(show.getShowId(), show);
+                    }
+                    return userShows;
+                })
+                .subscribe(shows -> {
+                    userShows = shows;
+                    if (ratingShows != null) {
+                        setAdapter();
+                    }
+                });
+    }
+
+    private void setAdapter() {
+        RatingShowAdapter adapter = new RatingShowAdapter(ratingShows, userShows);
+        recyclerView.setAdapter(adapter);
     }
 
     private static class RatingShowAdapter extends RecyclerView.Adapter<RatingShowHolder> {
 
-        private final List<RatingShow> shows;
+        private final List<RatingShow> ratingShows;
+        private final Map<Integer, UserShow> userShows;
 
-        public RatingShowAdapter(List<RatingShow> shows) {
-            this.shows = shows;
+        public RatingShowAdapter(List<RatingShow> ratingShows, Map<Integer, UserShow> userShows) {
+            this.ratingShows = ratingShows;
+            this.userShows = userShows;
         }
 
         @Override
@@ -84,18 +118,21 @@ public class RatingsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(RatingShowHolder holder, int position) {
-            holder.bind(shows.get(position));
+            RatingShow ratingShow = ratingShows.get(position);
+            UserShow userShow = userShows.get(ratingShow.getId());
+            holder.bind(ratingShow, userShow);
         }
 
         @Override
         public int getItemCount() {
-            return shows.size();
+            return ratingShows.size();
         }
     }
 
     private static class RatingShowHolder extends RecyclerView.ViewHolder {
 
         private ImageView image;
+        private ImageView watchStatusIcon;
         private TextView title;
         private TextView watching;
         private TextView rating;
@@ -103,23 +140,30 @@ public class RatingsFragment extends Fragment {
         public RatingShowHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.image);
+            watchStatusIcon = (ImageView) itemView.findViewById(R.id.watch_status);
             title = (TextView) itemView.findViewById(R.id.title);
             watching = (TextView) itemView.findViewById(R.id.watching);
             rating = (TextView) itemView.findViewById(R.id.rating);
         }
 
-        public void bind(RatingShow show) {
+        public void bind(RatingShow ratingShow, UserShow userShow) {
             Context context = itemView.getContext();
-            title.setText(show.getTitle());
-            watching.setText(context.getString(R.string.watching, show.getWatching()));
-            rating.setText(context.getString(R.string.show_rating, show.getRating()));
+            title.setText(ratingShow.getTitle());
+            watching.setText(context.getString(R.string.watching, ratingShow.getWatching()));
+            rating.setText(context.getString(R.string.show_rating, ratingShow.getRating()));
+            WatchStatus status = userShow != null ? userShow.getWatchStatus() : WatchStatus.NOT_WATCHING;
+            watchStatusIcon.setImageResource(status.getDrawableId());
             Glide.with(context)
-                    .load(show.getImage())
+                    .load(ratingShow.getImage())
                     .centerCrop()
                     .into(image);
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), ShowActivity.class);
-                intent.putExtra(ShowActivity.SHOW_ID, show.getId());
+                if (userShow != null) {
+                    intent.putExtra(ShowActivity.USER_SHOW, Parcels.wrap(userShow));
+                } else {
+                    intent.putExtra(ShowActivity.SHOW_ID, ratingShow.getId());
+                }
                 context.startActivity(intent);
             });
         }
