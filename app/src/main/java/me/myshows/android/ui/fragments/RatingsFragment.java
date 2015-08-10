@@ -3,6 +3,7 @@ package me.myshows.android.ui.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -130,6 +131,8 @@ public class RatingsFragment extends RxFragment {
             FORMAT = new DecimalFormat("#,###", symbols);
         }
 
+        private static Typeface typeface;
+
         private ImageView image;
         private ImageView watchStatusIcon;
         private TextView title;
@@ -143,6 +146,11 @@ public class RatingsFragment extends RxFragment {
             title = (TextView) itemView.findViewById(R.id.title);
             watching = (TextView) itemView.findViewById(R.id.watching);
             rating = (TextView) itemView.findViewById(R.id.rating);
+
+            if (typeface == null) {
+                typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "Roboto-Medium.ttf");
+            }
+            title.setTypeface(typeface);
         }
 
         public void bind(RatingShow ratingShow, UserShow userShow) {
