@@ -17,6 +17,8 @@ import com.trello.rxlifecycle.components.support.RxFragment;
 
 import org.parceler.Parcels;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,6 +120,14 @@ public class RatingsFragment extends RxFragment {
 
     private static class RatingShowHolder extends RecyclerView.ViewHolder {
 
+        private static final DecimalFormat FORMAT;
+
+        static {
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setGroupingSeparator(' ');
+            FORMAT = new DecimalFormat("#,###", symbols);
+        }
+
         private ImageView image;
         private ImageView watchStatusIcon;
         private TextView title;
@@ -136,7 +146,7 @@ public class RatingsFragment extends RxFragment {
         public void bind(RatingShow ratingShow, UserShow userShow) {
             Context context = itemView.getContext();
             title.setText(ratingShow.getTitle());
-            watching.setText(context.getString(R.string.watching, ratingShow.getWatching()));
+            watching.setText(context.getString(R.string.watching, FORMAT.format(ratingShow.getWatching())));
             rating.setText(context.getString(R.string.show_rating, ratingShow.getRating()));
             WatchStatus status = userShow != null ? userShow.getWatchStatus() : WatchStatus.NOT_WATCHING;
             watchStatusIcon.setImageResource(status.getDrawableId());
