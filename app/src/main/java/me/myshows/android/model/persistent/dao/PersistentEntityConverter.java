@@ -1,12 +1,17 @@
 package me.myshows.android.model.persistent.dao;
 
+import org.joda.time.DateTime;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.realm.RealmList;
 import me.myshows.android.model.Episode;
+import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.ShowStatus;
@@ -14,9 +19,11 @@ import me.myshows.android.model.Statistics;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.WatchStatus;
 import me.myshows.android.model.persistent.PersistentEpisode;
+import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentShow;
 import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
@@ -33,11 +40,10 @@ public class PersistentEntityConverter {
         this.marshaller = marshaller;
     }
 
-    @SuppressWarnings("unchecked")
     public User toUser(PersistentUser persistentUser) {
         try {
-            List<User> friends = marshaller.deserialize(persistentUser.getFriends(), List.class);
-            List<User> followers = marshaller.deserialize(persistentUser.getFollowers(), List.class);
+            List<User> friends = marshaller.deserializeList(persistentUser.getFriends(), ArrayList.class, User.class);
+            List<User> followers = marshaller.deserializeList(persistentUser.getFollowers(), ArrayList.class, User.class);
             Statistics stats = marshaller.deserialize(persistentUser.getStats(), Statistics.class);
             return new User(persistentUser.getLogin(), persistentUser.getAvatarUrl(),
                     persistentUser.getWastedTime(), persistentUser.getGender(),
@@ -154,6 +160,26 @@ public class PersistentEntityConverter {
                     show.getTvrageId(), show.getImdbId(), show.getVoted(),
                     show.getRating(), show.getRuntime(), show.getImage(),
                     genres, episodes, show.getWatching(), images, show.getDescription());
+        } catch (IOException e) {
+            throw new RuntimeException("Unreachable state", e);
+        }
+    }
+
+    public Feed toFeed(PersistentFeed persistentFeed) {
+        try {
+            DateTime date = new DateTime(persistentFeed.getDate());
+            List<UserFeed> userFeeds = marshaller.deserializeList(persistentFeed.getFeeds(), ArrayList.class, UserFeed.class);
+            return new Feed(date, userFeeds);
+        } catch (IOException e) {
+            throw new RuntimeException("Unreachable state", e);
+        }
+    }
+
+    public PersistentFeed fromFeed(Feed feed) {
+        try {
+            Date date = feed.getDate().toDate();
+            byte[] userFeeds = marshaller.serialize(feed.getFeeds());
+            return new PersistentFeed(date, userFeeds);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }

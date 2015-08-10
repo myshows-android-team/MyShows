@@ -205,13 +205,13 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<Feed>> friendsNews() {
         return Observable.<List<Feed>>create(subscriber -> {
             Class<PersistentFeed> clazz = PersistentFeed.class;
-            List<Feed> feeds = null /*manager.getEntities(clazz, converter::toFeed)*/;
+            List<Feed> feeds = manager.selectEntities(clazz, converter::toFeed);
             if (feeds != null) {
                 subscriber.onNext(feeds);
             }
             api.friendsNews()
                     .subscribe(
-                            uf -> subscriber.onNext(generateFeeds(uf)), //TODO persist feeds
+                            uf -> subscriber.onNext(manager.upsertEntities(generateFeeds(uf), converter::fromFeed)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
@@ -221,9 +221,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     private List<Feed> generateFeeds(Map<String, List<UserFeed>> userFeeds) {
         List<Feed> feeds = new ArrayList<>();
         for (Map.Entry<String, List<UserFeed>> rawFeed : userFeeds.entrySet()) {
-            Feed feed = new Feed(rawFeed.getKey());
-            feed.addAll(rawFeed.getValue());
-            feeds.add(feed);
+            feeds.add(new Feed(rawFeed.getKey(), rawFeed.getValue()));
         }
         return feeds;
     }
