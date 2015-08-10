@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -202,11 +203,19 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     @Override
     public Observable<List<RatingShow>> ratingShows() {
         return Observable.<List<RatingShow>>create(subscriber -> {
-            List<RatingShow> ratingShows = manager.selectEntities(PersistentRatingShow.class, converter::toRatingShow);
+            List<RatingShow> ratingShows = manager.selectSortedEntities(PersistentRatingShow.class, converter::toRatingShow, "place", true);
             if (ratingShows != null) {
                 subscriber.onNext(ratingShows);
             }
             api.ratingShows()
+                    .map(shows -> {
+                        Collections.sort(shows, (s1, s2) -> {
+                            int place1 = s1.getPlace();
+                            int place2 = s2.getPlace();
+                            return place1 < place2 ? -1 : (place1 == place2 ? 0 : 1);
+                        });
+                        return shows;
+                    })
                     .subscribe(
                             shows -> subscriber.onNext(manager.truncateAndInsertEntities(shows, PersistentRatingShow.class, converter::fromRatingShow)),
                             e -> subscriber.onCompleted(),
