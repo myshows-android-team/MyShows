@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.MenuItem;
@@ -19,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -29,13 +29,12 @@ import me.myshows.android.ui.fragments.FriendsFragment;
 import me.myshows.android.ui.fragments.MyShowsFragment;
 import me.myshows.android.ui.fragments.ProfileFragment;
 import me.myshows.android.ui.fragments.RatingsFragment;
-import rx.Subscription;
 
 /**
  * @author Whiplash
  * @date 18.06.2015
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends RxAppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -59,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarLayout appbarLayout;
     private ImageView avatar;
     private TextView username;
-
-    private Subscription subscription;
 
     private int currentItemId;
 
@@ -92,14 +89,6 @@ public class MainActivity extends AppCompatActivity {
         username = (TextView) findViewById(R.id.nav_username);
 
         loadData();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -178,7 +167,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         MyShowsClient client = MyShowsClientImpl.getInstance();
-        subscription = client.profile()
+        client.profile()
+                .compose(bindToLifecycle())
                 .subscribe(user -> {
                     username.setText(user.getLogin());
                     Glide.with(this)

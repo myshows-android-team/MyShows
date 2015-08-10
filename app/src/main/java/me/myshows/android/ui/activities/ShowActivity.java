@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.MenuItem;
@@ -14,6 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import org.parceler.Parcels;
 
@@ -28,7 +28,7 @@ import rx.Subscription;
 /**
  * Created by warrior on 19.07.15.
  */
-public class ShowActivity extends AppCompatActivity {
+public class ShowActivity extends RxAppCompatActivity {
 
     public static final String SHOW_ID = "showId";
     public static final String USER_SHOW = "userShow";
@@ -47,7 +47,6 @@ public class ShowActivity extends AppCompatActivity {
     private RatingBar myRating;
     private FloatingActionButton fab;
 
-    private Subscription subscription;
     private boolean hasUserShow;
 
     @Override
@@ -85,14 +84,6 @@ public class ShowActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        super.onDestroy();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -103,7 +94,8 @@ public class ShowActivity extends AppCompatActivity {
     }
 
     private void loadData(int showId) {
-        subscription = client.showInformation(showId)
+        client.showInformation(showId)
+                .compose(bindToLifecycle())
                 .subscribe(this::bind);
     }
 
