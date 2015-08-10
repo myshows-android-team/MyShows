@@ -2,6 +2,7 @@ package me.myshows.android.ui.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +49,7 @@ public class RatingsFragment extends RxFragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new DividerItemDecorator(getActivity()));
         recyclerView.setHasFixedSize(true);
 
         loadData();
@@ -163,6 +165,23 @@ public class RatingsFragment extends RxFragment {
                 }
                 context.startActivity(intent);
             });
+        }
+    }
+
+    private static class DividerItemDecorator extends RecyclerView.ItemDecoration {
+
+        private final int dividerHeight;
+
+        public DividerItemDecorator(Context context) {
+            dividerHeight = context.getResources().getDimensionPixelSize(R.dimen.ratings_divider_height);
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view);
+            if (position != 0) {
+                outRect.set(0, dividerHeight, 0, 0);
+            }
         }
     }
 }
