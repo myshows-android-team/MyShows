@@ -11,7 +11,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -23,18 +22,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+
 import me.myshows.android.R;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.Observable;
-import rx.Subscription;
 
 /**
  * @author Whiplash
  * @date 14.06.2015
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends RxAppCompatActivity {
 
     private static final String REGISTER_URL = "http://myshows.me/";
     private static final int ANIMATION_DURATION = 500;
@@ -45,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
     private ViewGroup loginLayout;
 
     private boolean needAnimate;
-    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +74,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         autoLoginAttempt();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        super.onDestroy();
     }
 
     private void autoLoginAttempt() {
@@ -159,17 +151,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void processAuthenticationObserver(Observable<Boolean> observable) {
-        subscription = observable.subscribe(result -> {
-            if (result) {
-                changeActivity();
-            } else {
-                if (needAnimate) {
-                    animate();
-                } else {
-                    Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        observable
+                .compose(bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(result -> {
+                    if (result) {
+                        changeActivity();
+                    } else {
+                        if (needAnimate) {
+                            animate();
+                        } else {
+                            Toast.makeText(this, R.string.incorrect_login_or_password, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private void changeActivity() {
