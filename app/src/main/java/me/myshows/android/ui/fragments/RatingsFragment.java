@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import org.parceler.Parcels;
 
@@ -28,20 +28,16 @@ import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.WatchStatus;
 import me.myshows.android.ui.activities.ShowActivity;
-import rx.Subscription;
 
 /**
  * Created by warrior on 19.07.15.
  */
-public class RatingsFragment extends Fragment {
+public class RatingsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
 
     private List<RatingShow> ratingShows;
     private Map<Integer, UserShow> userShows;
-
-    private Subscription subscription;
-    private Subscription subscription2;
 
     @Nullable
     @Override
@@ -57,20 +53,10 @@ public class RatingsFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        if (subscription2 != null && !subscription2.isUnsubscribed()) {
-            subscription2.unsubscribe();
-        }
-        super.onDestroyView();
-    }
-
     private void loadData() {
         MyShowsClient client = MyShowsClientImpl.getInstance();
-        subscription = client.ratingShows()
+        client.ratingShows()
+                .compose(bindToLifecycle())
                 .subscribe(shows -> {
                             ratingShows = shows;
                             if (userShows != null) {
@@ -78,7 +64,8 @@ public class RatingsFragment extends Fragment {
                             }
                         }
                 );
-        subscription2 = client.profileShows()
+        client.profileShows()
+                .compose(bindToLifecycle())
                 .map(shows -> {
                     Map<Integer, UserShow> userShows = new HashMap<>();
                     for (UserShow show : shows) {
