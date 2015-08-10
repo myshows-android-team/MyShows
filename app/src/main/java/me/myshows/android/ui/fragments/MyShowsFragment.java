@@ -10,6 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import org.parceler.Parcels;
 
@@ -20,7 +25,6 @@ import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.ui.activities.ShowActivity;
-import me.myshows.android.ui.views.ListShowView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -76,7 +80,7 @@ public class MyShowsFragment extends Fragment {
 
         @Override
         public ShowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            ListShowView view = (ListShowView) LayoutInflater.from(parent.getContext())
+            View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_show_view, parent, false);
             return new ShowHolder(view);
         }
@@ -94,12 +98,31 @@ public class MyShowsFragment extends Fragment {
 
     private static class ShowHolder extends RecyclerView.ViewHolder {
 
-        public ShowHolder(ListShowView itemView) {
+        private ImageView image;
+        private TextView title;
+        private ProgressBar progress;
+        private View shadow;
+
+        public ShowHolder(View itemView) {
             super(itemView);
+            image = (ImageView) itemView.findViewById(R.id.image);
+            title = (TextView) itemView.findViewById(R.id.title);
+            progress = (ProgressBar) itemView.findViewById(R.id.progress);
+            shadow = itemView.findViewById(R.id.shadow);
         }
 
         public void bind(UserShow show, int position) {
-            ((ListShowView) itemView).bind(show, position);
+            title.setText(show.getTitle());
+            progress.setMax(show.getTotalEpisodes());
+            progress.setProgress(show.getWatchedEpisodes());
+            shadow.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+            // temporary workaround
+            image.setImageResource(R.drawable.tmp_placeholder);
+            Glide.with(itemView.getContext())
+                    .load(show.getImage())
+                    .centerCrop()
+                    .into(image);
+
             itemView.setOnClickListener(v -> {
                 Context context = v.getContext();
                 Intent intent = new Intent(context, ShowActivity.class);
