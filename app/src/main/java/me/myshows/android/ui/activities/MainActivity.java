@@ -127,9 +127,12 @@ public class MainActivity extends RxAppCompatActivity {
                     if (info != null && !menuItem.isChecked()) {
                         currentItemId = menuItem.getItemId();
                         setActionBarTitle(info.titleId);
-                        Fragment fragment = getFragment(info.fragmentClass);
+                        Fragment oldFragment = fragmentManager.findFragmentById(R.id.content);
+                        Fragment newFragment = getFragment(info.fragmentClass);
                         fragmentManager.beginTransaction()
-                                .replace(R.id.content, fragment, info.fragmentClass.getSimpleName())
+                                .detach(oldFragment)
+                                .replace(R.id.content, newFragment, info.fragmentClass.getSimpleName())
+                                .attach(newFragment)
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .commit();
                         menuItem.setChecked(true);
