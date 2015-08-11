@@ -131,7 +131,6 @@ public class MainActivity extends RxAppCompatActivity {
                         fragmentManager.beginTransaction()
                                 .replace(R.id.content, fragment, info.fragmentClass.getSimpleName())
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .addToBackStack(null)
                                 .commit();
                         menuItem.setChecked(true);
                     }
