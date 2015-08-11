@@ -64,9 +64,7 @@ public class RatingsFragment extends RxFragment {
                 .compose(bindToLifecycle())
                 .subscribe(shows -> {
                             ratingShows = shows;
-                            if (userShows != null) {
-                                setAdapter();
-                            }
+                            trySetAdapter();
                         }
                 );
         client.profileShows()
@@ -80,15 +78,15 @@ public class RatingsFragment extends RxFragment {
                 })
                 .subscribe(shows -> {
                     userShows = shows;
-                    if (ratingShows != null) {
-                        setAdapter();
-                    }
+                    trySetAdapter();
                 });
     }
 
-    private void setAdapter() {
-        RatingShowAdapter adapter = new RatingShowAdapter(ratingShows, userShows);
-        recyclerView.setAdapter(adapter);
+    private void trySetAdapter() {
+        if (ratingShows != null && userShows != null) {
+            RatingShowAdapter adapter = new RatingShowAdapter(ratingShows, userShows);
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     private static class RatingShowAdapter extends RecyclerView.Adapter<RatingShowHolder> {
