@@ -27,6 +27,8 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
 
     lintOptions {
@@ -51,7 +53,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile "com.squareup.retrofit:retrofit:$retrofitVersion"
     compile "com.squareup.retrofit:converter-jackson:$retrofitVersion"
-    compile 'io.realm:realm-android:0.82.0'
+    compile 'io.realm:realm-android:0.82.1'
     compile 'io.reactivex:rxjava:1.0.13'
     compile 'io.reactivex:rxandroid:1.0.1'
     compile "com.trello:rxlifecycle:$rxlifecycleVersion"

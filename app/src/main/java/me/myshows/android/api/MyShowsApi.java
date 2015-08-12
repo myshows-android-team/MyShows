@@ -28,6 +28,9 @@ public interface MyShowsApi {
     @GET("/profile/")
     Observable<User> profile();
 
+    @GET("/profile/{login}")
+    Observable<User> profile(@Path("login") String login);
+
     @GET("/profile/shows/")
     Observable<Map<String, UserShow>> profileShows();
 
@@ -43,6 +46,6 @@ public interface MyShowsApi {
     @GET("/shows/{show_id}")
     Observable<Show> showInformation(@Path("show_id") int showId);
 
-    @GET("profile/news/")
+    @GET("/profile/news/")
     Observable<Map<String, List<UserFeed>>> friendsNews();
 }

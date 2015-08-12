@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,9 +176,9 @@ public class PersistentEntityConverter {
 
     public PersistentFeed fromFeed(Feed feed) {
         try {
-            Date date = feed.getDate().toDate();
+            long millis = feed.getDate().getMillis();
             byte[] userFeeds = marshaller.serialize(feed.getFeeds());
-            return new PersistentFeed(date, userFeeds);
+            return new PersistentFeed(millis, userFeeds);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }

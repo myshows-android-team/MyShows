@@ -23,6 +23,8 @@ public interface MyShowsClient {
 
     Observable<User> profile();
 
+    Observable<User> profile(String login);
+
     Observable<List<UserShow>> profileShows();
 
     Observable<List<UserEpisode>> profileEpisodesOfShow(int showId);

@@ -116,6 +116,23 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
+    public Observable<User> profile(String login) {
+        return Observable.<User>create(subscriber -> {
+            User user = manager.selectEntity(PersistentUser.class, converter::toUser,
+                    new Predicate("login", login));
+            if (user != null) {
+                subscriber.onNext(user);
+            }
+            api.profile(login)
+                    .subscribe(
+                            u -> subscriber.onNext(manager.upsertEntity(u, converter::fromUser)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
     public Observable<List<UserShow>> profileShows() {
         return Observable.<List<UserShow>>create(subscriber -> {
             Class<PersistentUserShow> clazz = PersistentUserShow.class;

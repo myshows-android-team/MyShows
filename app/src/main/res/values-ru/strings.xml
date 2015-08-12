@@ -43,4 +43,16 @@
     </plurals>
     <string name="my_rating">Моя оценка</string>
 
+    <!-- Feed screen strings -->
+    <plurals name="m_watch_series">
+        <item quantity="one">Посмотрел серию %2$s</item>
+        <item quantity="few">Посмотрел %1$d серии %2$s</item>
+        <item quantity="many">Посмотрел %1$d серий %2$s</item>
+    </plurals>
+    <plurals name="f_watch_series">
+        <item quantity="one">Посмотрела серию %2$s</item>
+        <item quantity="few">Посмотрела %1$d серии %2$s</item>
+        <item quantity="many">Посмотрела %1$d серий %2$s</item>
+    </plurals>
+
 </resources>

@@ -1,7 +1,5 @@
 package me.myshows.android.model.persistent;
 
-import java.util.Date;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
@@ -13,22 +11,22 @@ import io.realm.annotations.RealmClass;
 public class PersistentFeed extends RealmObject {
 
     @PrimaryKey
-    private Date date;
+    private long date;
     private byte[] feeds;
 
     public PersistentFeed() {
     }
 
-    public PersistentFeed(Date date, byte[] feeds) {
+    public PersistentFeed(long date, byte[] feeds) {
         this.date = date;
         this.feeds = feeds;
     }
 
-    public Date getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

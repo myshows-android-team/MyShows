@@ -1,6 +1,8 @@
 package me.myshows.android.model;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 
@@ -9,11 +11,13 @@ import java.util.List;
  */
 public class Feed {
 
+    private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy");
+
     private final DateTime date;
     private final List<UserFeed> feeds;
 
     public Feed(String rawDate, List<UserFeed> feeds) {
-        this(new DateTime(rawDate), feeds);
+        this(formatter.parseDateTime(rawDate), feeds);
     }
 
     public Feed(DateTime date, List<UserFeed> feeds) {
