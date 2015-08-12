@@ -1,0 +1,362 @@
+{
+    "44": {
+        "id": 44,
+        "ruTitle": "Спортивный",
+        "title": "Sports"
+    },
+    "45": {
+        "id": 45,
+        "ruTitle": "Исторический",
+        "title": "History"
+    },
+    "46": {
+        "id": 46,
+        "ruTitle": "Мультфильмы для детей",
+        "title": "Children Cartoons"
+    },
+    "47": {
+        "id": 47,
+        "ruTitle": "Stop-Motion",
+        "title": "Stop-Motion"
+    },
+    "48": {
+        "id": 48,
+        "ruTitle": "Sketch/Импровизация",
+        "title": "Sketch/Improv"
+    },
+    "49": {
+        "id": 49,
+        "ruTitle": "Супергерои",
+        "title": "Super Heroes"
+    },
+    "90": {
+        "id": 90,
+        "ruTitle": "Покупки",
+        "title": "Buy"
+    },
+    "91": {
+        "id": 91,
+        "ruTitle": "Торговля",
+        "title": "Sell & Trade"
+    },
+    "92": {
+        "id": 92,
+        "ruTitle": "Дебаты",
+        "title": "Debate"
+    },
+    "93": {
+        "id": 93,
+        "ruTitle": "Документальный",
+        "title": "Documentary"
+    },
+    "94": {
+        "id": 94,
+        "ruTitle": "Литературный",
+        "title": "Literature"
+    },
+    "50": {
+        "id": 50,
+        "ruTitle": "Путешествия",
+        "title": "Travel"
+    },
+    "51": {
+        "id": 51,
+        "ruTitle": "Tech/Игровой",
+        "title": "Tech/Gaming"
+    },
+    "95": {
+        "id": 95,
+        "ruTitle": "Дикая природа",
+        "title": "Wildlife"
+    },
+    "96": {
+        "id": 96,
+        "ruTitle": "Соревнования",
+        "title": "Competition"
+    },
+    "52": {
+        "id": 52,
+        "ruTitle": "Религия",
+        "title": "Religion"
+    },
+    "97": {
+        "id": 97,
+        "ruTitle": "Финансовый",
+        "title": "Finance"
+    },
+    "98": {
+        "id": 98,
+        "ruTitle": "Автомобили/Транспорт",
+        "title": "Automobiles/Vehicles"
+    },
+    "10": {
+        "id": 10,
+        "ruTitle": "Семейный",
+        "title": "Family"
+    },
+    "54": {
+        "id": 54,
+        "ruTitle": "Интервью",
+        "title": "Interview"
+    },
+    "55": {
+        "id": 55,
+        "ruTitle": "Текущие события",
+        "title": "Current Events"
+    },
+    "99": {
+        "id": 99,
+        "ruTitle": "Домашние животные",
+        "title": "Pets"
+    },
+    "11": {
+        "id": 11,
+        "ruTitle": "Таланты",
+        "title": "Talent"
+    },
+    "56": {
+        "id": 56,
+        "ruTitle": "Кулинарный/Еда",
+        "title": "Cooking/Food"
+    },
+    "12": {
+        "id": 12,
+        "ruTitle": "Фэнтези",
+        "title": "Fantasy"
+    },
+    "57": {
+        "id": 57,
+        "ruTitle": "Мода/Make-up",
+        "title": "Fashion/Make-up"
+    },
+    "59": {
+        "id": 59,
+        "ruTitle": "Финансовый/Бизнес",
+        "title": "Financial/Business"
+    },
+    "18": {
+        "id": 18,
+        "ruTitle": "Детский",
+        "title": "Children"
+    },
+    "1": {
+        "id": 1,
+        "ruTitle": "Комедия",
+        "title": "Comedy"
+    },
+    "2": {
+        "id": 2,
+        "ruTitle": "Молодежный",
+        "title": "Teens"
+    },
+    "3": {
+        "id": 3,
+        "ruTitle": "Мультфильмы для взрослых",
+        "title": "Adult Cartoons"
+    },
+    "4": {
+        "id": 4,
+        "ruTitle": "Боевик",
+        "title": "Action"
+    },
+    "5": {
+        "id": 5,
+        "ruTitle": "Приключения",
+        "title": "Adventure"
+    },
+    "6": {
+        "id": 6,
+        "ruTitle": "Драма",
+        "title": "Drama"
+    },
+    "7": {
+        "id": 7,
+        "ruTitle": "Романтика",
+        "title": "Romance/Dating"
+    },
+    "8": {
+        "id": 8,
+        "ruTitle": "Кукольный",
+        "title": "Puppets"
+    },
+    "9": {
+        "id": 9,
+        "ruTitle": "Фантастика",
+        "title": "Sci-Fi"
+    },
+    "63": {
+        "id": 63,
+        "ruTitle": "Сделай сам",
+        "title": "How To/Do It Yourself"
+    },
+    "23": {
+        "id": 23,
+        "ruTitle": "Мультфильмы",
+        "title": "Animation General"
+    },
+    "69": {
+        "id": 69,
+        "ruTitle": "Дизайн",
+        "title": "Design/Decorating"
+    },
+    "25": {
+        "id": 25,
+        "ruTitle": "Детектив",
+        "title": "Mystery"
+    },
+    "26": {
+        "id": 26,
+        "ruTitle": "Триллер",
+        "title": "Thriller"
+    },
+    "27": {
+        "id": 27,
+        "ruTitle": "Военный",
+        "title": "Military/War"
+    },
+    "28": {
+        "id": 28,
+        "ruTitle": "Криминал",
+        "title": "Crime"
+    },
+    "29": {
+        "id": 29,
+        "ruTitle": "Аниме",
+        "title": "Anime"
+    },
+    "70": {
+        "id": 70,
+        "ruTitle": "В мире животных",
+        "title": "Pets/Animals"
+    },
+    "72": {
+        "id": 72,
+        "ruTitle": "Housing/Строительство",
+        "title": "Housing/Building"
+    },
+    "30": {
+        "id": 30,
+        "ruTitle": "Ужасы/Сверхъестественное",
+        "title": "Horror/Supernatural"
+    },
+    "75": {
+        "id": 75,
+        "ruTitle": "Искусство",
+        "title": "Arts & Crafts"
+    },
+    "31": {
+        "id": 31,
+        "ruTitle": "Мыльные оперы",
+        "title": "Soaps"
+    },
+    "76": {
+        "id": 76,
+        "ruTitle": "Кино/Театр",
+        "title": "Cinema/Theatre"
+    },
+    "32": {
+        "id": 32,
+        "ruTitle": "Музыкальный",
+        "title": "Music"
+    },
+    "33": {
+        "id": 33,
+        "ruTitle": "Научный",
+        "title": "Discovery/Science"
+    },
+    "77": {
+        "id": 77,
+        "ruTitle": "Фитнес",
+        "title": "Fitness"
+    },
+    "34": {
+        "id": 34,
+        "ruTitle": "Стиль жизни",
+        "title": "Lifestyle"
+    },
+    "35": {
+        "id": 35,
+        "ruTitle": "Медицинский",
+        "title": "Medical"
+    },
+    "36": {
+        "id": 36,
+        "ruTitle": "Политика",
+        "title": "Politics"
+    },
+    "37": {
+        "id": 37,
+        "ruTitle": "Знаменитости",
+        "title": "Celebrities"
+    },
+    "38": {
+        "id": 38,
+        "ruTitle": "Танцевальный",
+        "title": "Dance"
+    },
+    "39": {
+        "id": 39,
+        "ruTitle": "Вестерн",
+        "title": "Western"
+    },
+    "100": {
+        "id": 100,
+        "ruTitle": "Эротика",
+        "title": "Porn"
+    },
+    "101": {
+        "id": 101,
+        "ruTitle": "Погода",
+        "title": "Weather"
+    },
+    "102": {
+        "id": 102,
+        "ruTitle": "Отношения",
+        "title": "Sex"
+    },
+    "103": {
+        "id": 103,
+        "ruTitle": "Дикая природа",
+        "title": "Outdoors/Wildlife"
+    },
+    "104": {
+        "id": 104,
+        "ruTitle": "Животные",
+        "title": "Animals/Pets"
+    },
+    "105": {
+        "id": 105,
+        "ruTitle": "Шпионский",
+        "title": "Spy/Espionage"
+    },
+    "106": {
+        "id": 106,
+        "ruTitle": "Праздничный",
+        "title": "Holiday"
+    },
+    "82": {
+        "id": 82,
+        "ruTitle": "Пейзажи",
+        "title": "Garden/Landscape"
+    },
+    "40": {
+        "id": 40,
+        "ruTitle": "Автомобильный",
+        "title": "Automobiles"
+    },
+    "41": {
+        "id": 41,
+        "ruTitle": "Антология",
+        "title": "Anthology"
+    },
+    "42": {
+        "id": 42,
+        "ruTitle": "Для взрослых",
+        "title": "Adult/Porn"
+    },
+    "43": {
+        "id": 43,
+        "ruTitle": "Образовательный",
+        "title": "Educational"
+    }
+}

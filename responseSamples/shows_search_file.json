@@ -1,0 +1,58 @@
+{
+    "filename": "Star.Wars.The.Clone.Wars.s02e01e02.rus.LostFilm.TV.avi",
+    "match": 100,
+    "show": {
+        "country": "US",
+        "image": "http://images.tvrage.com/shows/20/19187.jpg",
+        "images": [
+            "3dd622f7115fba9606d22dd05bccf7e8.jpg",
+            "e43bd185601f65b6e432933fcaeebd29.jpg",
+            "c76237267fca874b679a428f2a47a3d1.jpg",
+            "0324d4933e9a4c76d41d00bc3097d537.jpg",
+            "a81e8d6ce0a36c263e601ff23bb1a5c9.jpg"
+        ],
+        "year": null,
+        "imdbId": null,
+        "rating": null,
+        "voted": null,
+        "runtime": 22,
+        "description": null,
+        "started": "Oct/03/2008",
+        "ruTitle": "Звездные войны: Войны клонов",
+        "title": "Star Wars: The Clone Wars (2008)",
+        "watching": null,
+        "genres": null,
+        "ended": "Mar/07/2014",
+        "id": 11,
+        "tvrageId": 19187,
+        "episodes": {
+            "765": {
+                "image": null,
+                "sequenceNumber": 23,
+                "tvrageLink": "http://www.tvrage.com/Star_Wars-The_Clone_Wars/episodes/1064794677",
+                "productionNumber": "201",
+                "airDate": "02.10.2009",
+                "id": 765,
+                "seasonNumber": 2,
+                "title": "Holocron Heist",
+                "shortName": "s02e01",
+                "episodeNumber": 1
+            },
+            "14119": {
+                "image": null,
+                "sequenceNumber": 24,
+                "tvrageLink": "http://www.tvrage.com/Star_Wars-The_Clone_Wars/episodes/1064856582",
+                "productionNumber": "202",
+                "airDate": "02.10.2009",
+                "id": 14119,
+                "seasonNumber": 2,
+                "title": "Cargo of Doom",
+                "shortName": "s02e02",
+                "episodeNumber": 2
+            }
+        },
+        "status": "Canceled/Ended",
+        "kinopoiskId": null
+    },
+    "filesize": 395722752
+}
