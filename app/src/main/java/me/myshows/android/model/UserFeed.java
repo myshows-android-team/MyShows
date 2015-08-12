@@ -14,16 +14,16 @@ public class UserFeed {
     private final String show;
     private final String title;
     private final String login;
-    private final String gender;
+    private final Gender gender;
     private final int episodes;
     private final String episode;
-    private final String action;
+    private final Action action;
 
     public UserFeed(@JsonProperty("episodeId") int episodeId, @JsonProperty("showId") int showId,
                     @JsonProperty("show") String show, @JsonProperty("title") String title,
-                    @JsonProperty("login") String login, @JsonProperty("gender") String gender,
+                    @JsonProperty("login") String login, @JsonProperty("gender") Gender gender,
                     @JsonProperty("episodes") int episodes, @JsonProperty("episode") String episode,
-                    @JsonProperty("action") String action) {
+                    @JsonProperty("action") Action action) {
         this.episodeId = episodeId;
         this.showId = showId;
         this.show = show;
@@ -61,7 +61,7 @@ public class UserFeed {
     }
 
     @JsonProperty("gender")
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
@@ -76,7 +76,7 @@ public class UserFeed {
     }
 
     @JsonProperty("action")
-    public String getAction() {
+    public Action getAction() {
         return action;
     }
 }

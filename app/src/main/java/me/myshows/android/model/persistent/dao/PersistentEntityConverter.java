@@ -11,6 +11,7 @@ import java.util.Map;
 import io.realm.RealmList;
 import me.myshows.android.model.Episode;
 import me.myshows.android.model.Feed;
+import me.myshows.android.model.Gender;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.ShowStatus;
@@ -44,9 +45,9 @@ public class PersistentEntityConverter {
             List<User> friends = marshaller.deserializeList(persistentUser.getFriends(), ArrayList.class, User.class);
             List<User> followers = marshaller.deserializeList(persistentUser.getFollowers(), ArrayList.class, User.class);
             Statistics stats = marshaller.deserialize(persistentUser.getStats(), Statistics.class);
+            Gender gender = Gender.fromString(persistentUser.getGender());
             return new User(persistentUser.getLogin(), persistentUser.getAvatarUrl(),
-                    persistentUser.getWastedTime(), persistentUser.getGender(),
-                    friends, followers, stats);
+                    persistentUser.getWastedTime(), gender, friends, followers, stats);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
@@ -57,8 +58,9 @@ public class PersistentEntityConverter {
             byte[] friends = marshaller.serialize(user.getFriends());
             byte[] followers = marshaller.serialize(user.getFollowers());
             byte[] stats = marshaller.serialize(user.getStats());
+            String gender = user.getGender().toString();
             return new PersistentUser(user.getLogin(), user.getAvatarUrl(), user.getWastedTime(),
-                    user.getGender(), friends, followers, stats);
+                    gender, friends, followers, stats);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }

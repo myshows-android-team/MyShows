@@ -3,7 +3,6 @@ package me.myshows.android.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.PluralsRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -28,7 +27,9 @@ import java.util.Map;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
+import me.myshows.android.model.Action;
 import me.myshows.android.model.Feed;
+import me.myshows.android.model.Gender;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.ui.activities.ShowActivity;
@@ -159,7 +160,17 @@ public class FriendsFragment extends RxFragment {
             }
 
             name.setText(feed.getLogin());
-            setAction(feed.getGender().equals("m") ? R.plurals.m_watch_series : R.plurals.f_watch_series, feed);
+
+            switch (feed.getAction()) {
+                case WATCH:
+                    setWatchAction(feed);
+                    break;
+                case NEW:
+                    setWatchAction(feed);
+                    break;
+                default:
+                    throw new RuntimeException("Illegal action");
+            }
         }
 
         private void setAvatar(String avatarUrl) {
@@ -168,9 +179,17 @@ public class FriendsFragment extends RxFragment {
                     .into(avatar);
         }
 
-        private void setAction(@PluralsRes int pluralsId, UserFeed feed) {
+        private void setNewAction(UserFeed feed) {
+            // api never returns anything except "watch"
+            actionIcon.setImageResource(Action.NEW.getDrawableId());
+        }
+
+        private void setWatchAction(UserFeed feed) {
+            int pluralsId = feed.getGender() == Gender.MALE ? R.plurals.m_watch_series : R.plurals.f_watch_series;
             int seriesNumber = feed.getEpisodes();
             String showName = feed.getShow();
+
+            actionIcon.setImageResource(Action.WATCH.getDrawableId());
 
             String actionText = getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
             int start = actionText.indexOf(showName);
