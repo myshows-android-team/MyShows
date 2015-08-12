@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFFFF"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/list_feed_view_padding"
+    android:paddingRight="@dimen/list_feed_view_padding">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="@dimen/list_feed_view_history_line_width"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@color/list_feed_view_history_line" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/list_feed_view_action_icon_min_size"
+            android:background="@drawable/feed_action_frame"
+            android:minWidth="@dimen/list_feed_view_action_icon_min_size">
+
+            <ImageView
+                android:id="@+id/feed_action_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="Feed action icon"
+                android:src="@drawable/feed_watch" />
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="@dimen/list_feed_view_history_line_width"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@color/list_feed_view_history_line" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/list_feed_view_padding"
+        android:paddingLeft="@dimen/list_feed_view_padding"
+        android:paddingTop="@dimen/list_feed_view_padding">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/list_feed_view_line_height"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/friend_avatar"
+                android:layout_width="@dimen/list_feed_view_line_height"
+                android:layout_height="@dimen/list_feed_view_line_height"
+                android:src="#0000FF" />
+
+            <TextView
+                android:id="@+id/friend_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_feed_view_content_margin"
+                android:fontFamily="sans-serif-medium"
+                android:textAllCaps="true"
+                android:textColor="@color/list_feed_view_black_text"
+                android:textSize="18sp"
+                tools:text="Nilera" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/friend_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/list_feed_view_content_margin"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/list_feed_view_black_text"
+            android:textSize="15sp"
+            tools:text="Посмотрел 2 серии Gravity Falls" />
+
+    </LinearLayout>
+
+</LinearLayout>

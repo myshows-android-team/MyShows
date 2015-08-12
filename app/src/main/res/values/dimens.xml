@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <dimen name="default_padding">16dp</dimen>
     <dimen name="show_image_height">240dp</dimen>
     <!-- show_image_height / 2 -->
     <dimen name="show_image_gradient_height">120dp</dimen>
 
     <dimen name="login_button_corner_radius">4dp</dimen>
-    
+
     <!-- Navigation drawer dimens -->
     <dimen name="nav_header_height">168dp</dimen>
     <dimen name="nav_avatar_size">64dp</dimen>
@@ -20,5 +20,12 @@
     <dimen name="list_show_text_size">18sp</dimen>
 
     <dimen name="fab_margin">0dp</dimen>
+
+    <!-- List feed view dimens -->
+    <dimen name="list_feed_view_line_height">18dp</dimen>
+    <dimen name="list_feed_view_padding">16dp</dimen>
+    <dimen name="list_feed_view_content_margin">8dp</dimen>
+    <dimen name="list_feed_view_action_icon_min_size">32dp</dimen>
+    <dimen name="list_feed_view_history_line_width">1dp</dimen>
 
 </resources>
