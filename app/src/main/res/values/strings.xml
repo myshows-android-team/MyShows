@@ -1,5 +1,4 @@
 <resources>
-
     <string name="app_name" translatable="false">MyShows</string>
 
     <!-- Login strings -->
@@ -44,4 +43,7 @@
     </plurals>
     <string name="my_rating">My rating</string>
 
+    <!-- Ratings screen -->
+    <string name="watching">%s watching</string>
+    <string name="show_rating">Rating \u2014 %.2f</string>
 </resources>

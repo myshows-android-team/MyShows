@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,12 +14,14 @@ import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
+import me.myshows.android.model.persistent.PersistentRatingShow;
 import me.myshows.android.model.persistent.PersistentShow;
 import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
 import me.myshows.android.model.persistent.PersistentUser;
@@ -191,6 +194,30 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
             api.showInformation(showId)
                     .subscribe(
                             s -> subscriber.onNext(manager.upsertEntity(s, converter::fromShow)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<List<RatingShow>> ratingShows() {
+        return Observable.<List<RatingShow>>create(subscriber -> {
+            List<RatingShow> ratingShows = manager.selectSortedEntities(PersistentRatingShow.class, converter::toRatingShow, "place", true);
+            if (ratingShows != null) {
+                subscriber.onNext(ratingShows);
+            }
+            api.ratingShows()
+                    .map(shows -> {
+                        Collections.sort(shows, (s1, s2) -> {
+                            int place1 = s1.getPlace();
+                            int place2 = s2.getPlace();
+                            return place1 < place2 ? -1 : (place1 == place2 ? 0 : 1);
+                        });
+                        return shows;
+                    })
+                    .subscribe(
+                            shows -> subscriber.onNext(manager.truncateAndInsertEntities(shows, PersistentRatingShow.class, converter::fromRatingShow)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
