@@ -123,13 +123,13 @@ public class RatingsFragment extends RxFragment {
 
         private static final DecimalFormat FORMAT;
 
+        private static Typeface typeface;
+
         static {
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
             symbols.setGroupingSeparator(' ');
             FORMAT = new DecimalFormat("#,###", symbols);
         }
-
-        private static Typeface typeface;
 
         private ImageView image;
         private ImageView watchStatusIcon;
