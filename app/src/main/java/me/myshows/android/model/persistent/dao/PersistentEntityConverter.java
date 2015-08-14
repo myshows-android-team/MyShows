@@ -13,6 +13,7 @@ import me.myshows.android.model.Episode;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.Gender;
 import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.ShowStatus;
 import me.myshows.android.model.Statistics;
@@ -25,6 +26,7 @@ import me.myshows.android.model.WatchStatus;
 import me.myshows.android.model.persistent.PersistentEpisode;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
+import me.myshows.android.model.persistent.PersistentRatingShow;
 import me.myshows.android.model.persistent.PersistentShow;
 import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
 import me.myshows.android.model.persistent.PersistentUser;
@@ -184,6 +186,19 @@ public class PersistentEntityConverter {
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
+    }
+    public RatingShow toRatingShow(PersistentRatingShow persistentRatingShow) {
+        return new RatingShow(persistentRatingShow.getId(), persistentRatingShow.getTitle(),
+                persistentRatingShow.getRuTitle(), ShowStatus.fromString(persistentRatingShow.getShowStatus()),
+                persistentRatingShow.getYear(), persistentRatingShow.getRating(),
+                persistentRatingShow.getWatching(), persistentRatingShow.getImage(),
+                persistentRatingShow.getPlace());
+    }
+
+    public PersistentRatingShow fromRatingShow(RatingShow ratingShow) {
+        return new PersistentRatingShow(ratingShow.getId(), ratingShow.getTitle(), ratingShow.getRuTitle(),
+                ratingShow.getShowStatus().toString(), ratingShow.getYear(), ratingShow.getRating(),
+                ratingShow.getWatching(), ratingShow.getImage(), ratingShow.getPlace());
     }
 
     private Map<String, Episode> toEpisodeMap(RealmList<PersistentEpisode> persistentEpisodes) {

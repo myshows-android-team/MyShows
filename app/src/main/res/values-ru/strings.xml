@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Login strings -->
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
@@ -55,4 +54,7 @@
         <item quantity="many">Посмотрела %1$d серий %2$s</item>
     </plurals>
 
+    <!-- Ratings screen -->
+    <string name="watching">%s смотрят</string>
+    <string name="show_rating">Рейтинг \u2014 %.2f</string>
 </resources>

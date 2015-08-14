@@ -41,5 +41,13 @@
         <item name="android:numStars">5</item>
         <item name="android:stepSize">1</item>
     </style>
+    
+    <style name="MyShows.RatingScreen.TextAppearance" parent="">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 
+    <style name="MyShows.RatingScreen.TextAppearance.Secondary">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>

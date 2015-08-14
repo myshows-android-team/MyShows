@@ -28,4 +28,6 @@
     <dimen name="list_feed_view_action_icon_min_size">32dp</dimen>
     <dimen name="list_feed_view_history_line_width">1dp</dimen>
 
+    <dimen name="ratings_divider_height">1dp</dimen>
+
 </resources>

@@ -1,0 +1,93 @@
+{
+    "followers": [
+        {
+            "gender": "m",
+            "wastedTime": 6543,
+            "avatar": "http://www.gravatar.com/avatar/19f548c2f2202a10ba79546b8cfcc6a0?s=150",
+            "login": "PiperBernadotte"
+        },
+        {
+            "gender": "m",
+            "wastedTime": 1043,
+            "avatar": "https://graph.facebook.com/1506300766319587/picture?width=150&height=150",
+            "login": "bladedancer"
+        }
+    ],
+    "gender": "m",
+    "stats": {
+        "remainingEpisodes": 55,
+        "watchedEpisodes": 4632,
+        "totalDays": 87.3,
+        "totalEpisodes": 4687,
+        "totalHours": 2094.1,
+        "remainingHours": 22.8,
+        "remainingDays": 1,
+        "watchedHours": 2071.3,
+        "watchedDays": 86.3
+    },
+    "wastedTime": 2071,
+    "avatar": "http://www.gravatar.com/avatar/9690f50ad50beec575b8b36f1df1d25a?s=150",
+    "login": "Nilera",
+    "friends": [
+        {
+            "gender": "f",
+            "wastedTime": 0,
+            "avatar": "http://pp.vk.me/c7004/c625216/v625216123/afad/iGjHrImXGco.jpg",
+            "login": "id10596123"
+        },
+        {
+            "gender": "m",
+            "wastedTime": 1856,
+            "avatar": "https://pp.vk.me/c608220/v608220204/659d/eMqyu8pwrlQ.jpg",
+            "login": "twothreenine"
+        },
+        {
+            "gender": "m",
+            "wastedTime": 2695,
+            "avatar": "http://www.gravatar.com/avatar/0e585ccf73be73c2970333c521083776?s=150",
+            "login": "Shersh"
+        },
+        {
+            "gender": "f",
+            "wastedTime": 1196,
+            "avatar": "http://www.gravatar.com/avatar/72dd4ef2cd76cad101112f025ef0ebe3?s=150",
+            "login": "katyatitkova"
+        },
+        {
+            "gender": "m",
+            "wastedTime": 912,
+            "avatar": "http://www.gravatar.com/avatar/b16c639ff34cd24ffcfd49d3fea171e0?s=150",
+            "login": "BlackHawk"
+        },
+        {
+            "gender": "m",
+            "wastedTime": 1814,
+            "avatar": "http://www.gravatar.com/avatar/56070f03203263b0d8d7a40026460710?s=150",
+            "login": "kreep"
+        },
+        {
+            "gender": "f",
+            "wastedTime": 3458,
+            "avatar": "http://pp.vk.me/c302710/v302710363/6790/3NTsUAHIfyQ.jpg",
+            "login": "Alonessa"
+        },
+        {
+            "gender": "m",
+            "wastedTime": 2242,
+            "avatar": "http://www.gravatar.com/avatar/037e0a8d1b1f34ba097e8de246636155?s=150",
+            "login": "a-rukin"
+        },
+        {
+            "gender": "m",
+            "wastedTime": 1656,
+            "avatar": "http://www.gravatar.com/avatar/3a656166e793914415511734fd4d18d4?s=150",
+            "login": "Warrior"
+        },
+        {
+            "gender": "m",
+            "wastedTime": 875,
+            "avatar": "https://pp.vk.me/c618718/v618718329/20773/nauIm3lXVmY.jpg",
+            "login": "God_Gefest"
+        }
+    ]
+}

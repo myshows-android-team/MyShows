@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
@@ -48,4 +49,7 @@ public interface MyShowsApi {
 
     @GET("/profile/news/")
     Observable<Map<String, List<UserFeed>>> friendsNews();
+
+    @GET("/shows/top/all/")
+    Observable<List<RatingShow>> ratingShows();
 }
