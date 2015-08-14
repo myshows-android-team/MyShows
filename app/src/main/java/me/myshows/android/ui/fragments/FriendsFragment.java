@@ -1,6 +1,7 @@
 package me.myshows.android.ui.fragments;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,7 +41,8 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class FriendsFragment extends RxFragment {
 
-    private MyShowsClient client;
+    private static Typeface typeface;
+    private static MyShowsClient client;
 
     private RecyclerView recyclerView;
 
@@ -52,6 +54,9 @@ public class FriendsFragment extends RxFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.my_shows_fragment, container, false);
         client = MyShowsClientImpl.getInstance();
+        if (typeface == null) {
+            typeface = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Medium.ttf");
+        }
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -68,10 +73,9 @@ public class FriendsFragment extends RxFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(this::extractUserFeeds)
                 .subscribe(feeds -> {
-                            this.feeds = feeds;
-                            trySetAdapter();
-                        }
-                );
+                    this.feeds = feeds;
+                    trySetAdapter();
+                });
         client.profile()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -105,35 +109,6 @@ public class FriendsFragment extends RxFragment {
         return friendsAvatar;
     }
 
-    private class FeedAdapter extends RecyclerView.Adapter<FeedHolder> {
-
-        private final List<UserFeed> userFeeds;
-        private final Map<String, String> friendsAvatar;
-
-        public FeedAdapter(List<UserFeed> userFeeds, Map<String, String> friendsAvatar) {
-            this.userFeeds = userFeeds;
-            this.friendsAvatar = friendsAvatar;
-        }
-
-        @Override
-        public FeedHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_feed_view, parent, false);
-            return new FeedHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(FeedHolder holder, int position) {
-            UserFeed userFeed = userFeeds.get(position);
-            holder.bind(userFeed, friendsAvatar.get(userFeed.getLogin()));
-        }
-
-        @Override
-        public int getItemCount() {
-            return userFeeds.size();
-        }
-    }
-
     private class FeedHolder extends RecyclerView.ViewHolder {
 
         private ImageView avatar;
@@ -147,6 +122,7 @@ public class FriendsFragment extends RxFragment {
             name = (TextView) itemView.findViewById(R.id.friend_name);
             action = (TextView) itemView.findViewById(R.id.friend_action);
             actionIcon = (ImageView) itemView.findViewById(R.id.feed_action_icon);
+            name.setTypeface(typeface);
         }
 
         public void bind(UserFeed feed, String avatarUrl) {
@@ -166,7 +142,7 @@ public class FriendsFragment extends RxFragment {
                     setWatchAction(feed);
                     break;
                 case NEW:
-                    setWatchAction(feed);
+                    setNewAction(feed);
                     break;
                 default:
                     throw new RuntimeException("Illegal action");
@@ -220,6 +196,35 @@ public class FriendsFragment extends RxFragment {
             public void updateDrawState(TextPaint textPaint) {
                 textPaint.setColor(getResources().getColor(R.color.primary));
             }
+        }
+    }
+
+    private class FeedAdapter extends RecyclerView.Adapter<FeedHolder> {
+
+        private final List<UserFeed> userFeeds;
+        private final Map<String, String> friendsAvatar;
+
+        public FeedAdapter(List<UserFeed> userFeeds, Map<String, String> friendsAvatar) {
+            this.userFeeds = userFeeds;
+            this.friendsAvatar = friendsAvatar;
+        }
+
+        @Override
+        public FeedHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_feed_view, parent, false);
+            return new FeedHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(FeedHolder holder, int position) {
+            UserFeed userFeed = userFeeds.get(position);
+            holder.bind(userFeed, friendsAvatar.get(userFeed.getLogin()));
+        }
+
+        @Override
+        public int getItemCount() {
+            return userFeeds.size();
         }
     }
 }
