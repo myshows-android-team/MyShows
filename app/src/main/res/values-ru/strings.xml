@@ -44,12 +44,12 @@
 
     <!-- Feed screen strings -->
     <plurals name="m_watch_series">
-        <item quantity="one">Посмотрел серию %2$s</item>
+        <item quantity="one">Посмотрел %3$s серию %2$s</item>
         <item quantity="few">Посмотрел %1$d серии %2$s</item>
         <item quantity="many">Посмотрел %1$d серий %2$s</item>
     </plurals>
     <plurals name="f_watch_series">
-        <item quantity="one">Посмотрела серию %2$s</item>
+        <item quantity="one">Посмотрела %3$s серию %2$s</item>
         <item quantity="few">Посмотрела %1$d серии %2$s</item>
         <item quantity="many">Посмотрела %1$d серий %2$s</item>
     </plurals>
@@ -58,6 +58,21 @@
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
     <string name="at_this_week">На этой неделе</string>
+    <string-array name="month_name">
+        <item></item>
+        <item>Январь</item>
+        <item>Февраль</item>
+        <item>Март</item>
+        <item>Апрель</item>
+        <item>Май</item>
+        <item>Июнь</item>
+        <item>Июль</item>
+        <item>Август</item>
+        <item>Сентябрь</item>
+        <item>Октябрь</item>
+        <item>Ноябрь</item>
+        <item>Декабрь</item>
+    </string-array>
 
     <!-- Ratings screen -->
     <string name="watching">%s смотрят</string>

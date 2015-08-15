@@ -5,42 +5,22 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="@dimen/list_feed_view_action_icon_min_size"
+        android:layout_margin="@dimen/list_feed_view_padding"
+        android:background="@drawable/feed_action_frame"
+        android:minWidth="@dimen/list_feed_view_action_icon_min_size">
 
-        <View
-            android:layout_width="@dimen/list_feed_view_history_line_width"
-            android:layout_height="@dimen/list_feed_view_padding"
-            android:layout_marginLeft="@dimen/list_feed_view_history_line_margin"
-            android:background="@color/list_feed_view_history_line" />
-
-        <FrameLayout
+        <ImageView
+            android:id="@+id/feed_action_icon"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/list_feed_view_action_icon_min_size"
-            android:layout_marginLeft="@dimen/list_feed_view_padding"
-            android:background="@drawable/feed_action_frame"
-            android:minWidth="@dimen/list_feed_view_action_icon_min_size">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="Feed action icon"
+            android:src="@drawable/action_watch" />
 
-            <ImageView
-                android:id="@+id/feed_action_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="Feed action icon"
-                android:src="@drawable/action_watch" />
-
-        </FrameLayout>
-
-        <View
-            android:layout_width="@dimen/list_feed_view_history_line_width"
-            android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/list_feed_view_history_line_margin"
-            android:layout_weight="1"
-            android:background="@color/list_feed_view_history_line" />
-
-    </LinearLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,7 +28,6 @@
         android:layout_marginRight="@dimen/list_feed_view_padding"
         android:orientation="vertical"
         android:paddingBottom="@dimen/list_feed_view_padding"
-        android:paddingLeft="@dimen/list_feed_view_padding"
         android:paddingTop="@dimen/list_feed_view_padding">
 
         <LinearLayout
@@ -69,7 +48,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/list_feed_view_content_margin"
                 android:fontFamily="sans-serif-medium"
-                android:textAllCaps="true"
                 android:textColor="@color/list_feed_view_black_text"
                 android:textSize="18sp"
                 tools:text="Nilera" />

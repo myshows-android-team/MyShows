@@ -159,7 +159,7 @@ public class FriendsFragment extends RxFragment {
 
         private void setNewAction(UserFeed feed) {
             actionIcon.setImageResource(Action.NEW.getDrawableId());
-            int stringId = feed.getGender() == Gender.FEMALE ? R.string.m_started_show : R.string.f_started_show;
+            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_started_show : R.string.m_started_show;
             String showName = feed.getShow();
             String actionText = getString(stringId, showName);
             setShowActionText(actionText, feed);
@@ -167,10 +167,11 @@ public class FriendsFragment extends RxFragment {
 
         private void setWatchAction(UserFeed feed) {
             actionIcon.setImageResource(Action.WATCH.getDrawableId());
-            int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.m_watch_series : R.plurals.f_watch_series;
+            int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
             int seriesNumber = feed.getEpisodes();
             String showName = feed.getShow();
-            String actionText = getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
+            String episodeName = "[" + feed.getEpisode() + "]";
+            String actionText = getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName, episodeName);
             setShowActionText(actionText, feed);
         }
 

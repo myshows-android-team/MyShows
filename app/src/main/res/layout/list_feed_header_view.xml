@@ -8,7 +8,7 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="@dimen/list_feed_view_action_icon_min_size"
-        android:layout_marginLeft="@dimen/list_feed_view_padding"
+        android:layout_margin="@dimen/list_feed_view_padding"
         android:background="@drawable/feed_action_frame"
         android:minWidth="@dimen/list_feed_view_action_icon_min_size">
 
