@@ -23,11 +23,6 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Days;
-import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,14 +46,12 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class FriendsFragment extends RxFragment {
 
-    private static final DateTimeFormatter MONTH_DATE_FORMAT = DateTimeFormat.forPattern("MMMM");
-
     private static Typeface typeface;
     private static MyShowsClient client;
 
     private RecyclerView recyclerView;
     private StickyRecyclerHeadersDecoration itemDecoration;
-    private DateTime now;
+    private FeedHeader feedHeader;
 
     private List<Feed> feeds;
     private Map<String, String> friendsAvatar;
@@ -75,7 +68,7 @@ public class FriendsFragment extends RxFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-        now = new DateTime();
+        feedHeader = new FeedHeader(getActivity());
 
         loadData();
 
@@ -225,16 +218,7 @@ public class FriendsFragment extends RxFragment {
         }
 
         public void bind(DateTime feedDate) {
-            int days = Days.daysBetween(feedDate, now).getDays();
-            if (days == 0) {
-                header.setText(R.string.today);
-            } else if (days == 1) {
-                header.setText(R.string.yesterday);
-            } else if (new Interval(now.withDayOfWeek(DateTimeConstants.MONDAY), now).contains(feedDate)) {
-                header.setText(R.string.at_this_week);
-            } else {
-                header.setText(MONTH_DATE_FORMAT.print(feedDate));
-            }
+            header.setText(feedHeader.getText(feedDate));
         }
     }
 
@@ -270,16 +254,7 @@ public class FriendsFragment extends RxFragment {
         @Override
         public long getHeaderId(int position) {
             DateTime feedDate = feedsDate.get(position);
-            int days = Days.daysBetween(feedDate, now).getDays();
-            if (days == 0) {
-                return Math.abs(getString(R.string.today).hashCode());
-            } else if (days == 1) {
-                return Math.abs(getString(R.string.yesterday).hashCode());
-            } else if (new Interval(now.withDayOfWeek(DateTimeConstants.MONDAY), now).contains(feedDate)) {
-                return Math.abs(getString(R.string.at_this_week).hashCode());
-            } else {
-                return Math.abs(MONTH_DATE_FORMAT.print(feedDate).hashCode());
-            }
+            return feedHeader.getId(feedDate);
         }
 
         @Override
