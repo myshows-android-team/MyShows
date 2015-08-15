@@ -148,8 +148,6 @@ public class FriendsFragment extends RxFragment {
                 case NEW:
                     setNewAction(feed);
                     break;
-                default:
-                    throw new RuntimeException("Illegal action");
             }
         }
 
