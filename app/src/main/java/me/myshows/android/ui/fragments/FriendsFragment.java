@@ -57,7 +57,7 @@ public class FriendsFragment extends RxFragment {
     private static MyShowsClient client;
 
     private RecyclerView recyclerView;
-    private RecyclerView.ItemDecoration itemDecoration;
+    private StickyRecyclerHeadersDecoration itemDecoration;
     private DateTime now;
 
     private List<Feed> feeds;
@@ -103,11 +103,12 @@ public class FriendsFragment extends RxFragment {
     private void trySetAdapter() {
         if (feeds != null && friendsAvatar != null) {
             FeedAdapter adapter = new FeedAdapter(feeds, friendsAvatar);
-            recyclerView.setAdapter(adapter);
-            if (itemDecoration == null) {
-                itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
-                recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
+            if (itemDecoration != null) {
+                recyclerView.removeItemDecoration(itemDecoration);
             }
+            recyclerView.setAdapter(adapter);
+            itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
+            recyclerView.addItemDecoration(itemDecoration);
         }
     }
 
