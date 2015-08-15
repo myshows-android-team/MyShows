@@ -52,6 +52,11 @@
         <item quantity="one">Watched series of %2$s</item>
         <item quantity="other">Watched %1$d series of %2$s</item>
     </plurals>
+    <string name="m_started_show">Started watching the show %s</string>
+    <string name="f_started_show">Started watching the show %s</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="at_this_week">At this week</string>
 
     <!-- Ratings screen -->
     <string name="watching">%s watching</string>

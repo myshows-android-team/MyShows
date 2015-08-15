@@ -53,6 +53,11 @@
         <item quantity="few">Посмотрела %1$d серии %2$s</item>
         <item quantity="many">Посмотрела %1$d серий %2$s</item>
     </plurals>
+    <string name="m_started_show">Начал смотреть сериал %s</string>
+    <string name="f_started_show">Начала смотреть сериал %s</string>
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
+    <string name="at_this_week">На этой неделе</string>
 
     <!-- Ratings screen -->
     <string name="watching">%s смотрят</string>

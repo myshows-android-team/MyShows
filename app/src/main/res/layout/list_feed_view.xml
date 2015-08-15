@@ -3,10 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFFFF"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/list_feed_view_padding"
-    android:paddingRight="@dimen/list_feed_view_padding">
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -16,12 +13,13 @@
         <View
             android:layout_width="@dimen/list_feed_view_history_line_width"
             android:layout_height="@dimen/list_feed_view_padding"
-            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/list_feed_view_history_line_margin"
             android:background="@color/list_feed_view_history_line" />
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="@dimen/list_feed_view_action_icon_min_size"
+            android:layout_marginLeft="@dimen/list_feed_view_padding"
             android:background="@drawable/feed_action_frame"
             android:minWidth="@dimen/list_feed_view_action_icon_min_size">
 
@@ -38,7 +36,7 @@
         <View
             android:layout_width="@dimen/list_feed_view_history_line_width"
             android:layout_height="0dp"
-            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/list_feed_view_history_line_margin"
             android:layout_weight="1"
             android:background="@color/list_feed_view_history_line" />
 
@@ -47,6 +45,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/list_feed_view_padding"
         android:orientation="vertical"
         android:paddingBottom="@dimen/list_feed_view_padding"
         android:paddingLeft="@dimen/list_feed_view_padding"

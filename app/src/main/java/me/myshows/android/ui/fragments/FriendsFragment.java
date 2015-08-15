@@ -18,9 +18,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Days;
+import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,18 +51,22 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class FriendsFragment extends RxFragment {
 
+    private static final DateTimeFormatter MONTH_DATE_FORMAT = DateTimeFormat.forPattern("MMMM");
+
     private static Typeface typeface;
     private static MyShowsClient client;
 
     private RecyclerView recyclerView;
+    private RecyclerView.ItemDecoration itemDecoration;
+    private DateTime now;
 
-    private List<UserFeed> feeds;
+    private List<Feed> feeds;
     private Map<String, String> friendsAvatar;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.my_shows_fragment, container, false);
+        View view = inflater.inflate(R.layout.friends_fragment, container, false);
         client = MyShowsClientImpl.getInstance();
         if (typeface == null) {
             typeface = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Medium.ttf");
@@ -61,6 +75,7 @@ public class FriendsFragment extends RxFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+        now = new DateTime();
 
         loadData();
 
@@ -71,7 +86,6 @@ public class FriendsFragment extends RxFragment {
         client.friendsNews()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(this::extractUserFeeds)
                 .subscribe(feeds -> {
                     this.feeds = feeds;
                     trySetAdapter();
@@ -90,15 +104,11 @@ public class FriendsFragment extends RxFragment {
         if (feeds != null && friendsAvatar != null) {
             FeedAdapter adapter = new FeedAdapter(feeds, friendsAvatar);
             recyclerView.setAdapter(adapter);
+            if (itemDecoration == null) {
+                itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
+                recyclerView.addItemDecoration(new StickyRecyclerHeadersDecoration(adapter));
+            }
         }
-    }
-
-    private List<UserFeed> extractUserFeeds(List<Feed> feeds) {
-        List<UserFeed> userFeeds = new ArrayList<>();
-        for (Feed feed : feeds) {
-            userFeeds.addAll(feed.getFeeds());
-        }
-        return userFeeds;
     }
 
     private Map<String, String> extractFriendsAvatar(User user) {
@@ -156,20 +166,25 @@ public class FriendsFragment extends RxFragment {
         }
 
         private void setNewAction(UserFeed feed) {
-            // api never returns anything except "watch"
             actionIcon.setImageResource(Action.NEW.getDrawableId());
+            int stringId = feed.getGender() == Gender.MALE ? R.string.m_started_show : R.string.f_started_show;
+            String showName = feed.getShow();
+            String actionText = getString(stringId, showName);
+            setShowActionText(actionText, feed);
         }
 
         private void setWatchAction(UserFeed feed) {
+            actionIcon.setImageResource(Action.WATCH.getDrawableId());
             int pluralsId = feed.getGender() == Gender.MALE ? R.plurals.m_watch_series : R.plurals.f_watch_series;
             int seriesNumber = feed.getEpisodes();
             String showName = feed.getShow();
-
-            actionIcon.setImageResource(Action.WATCH.getDrawableId());
-
             String actionText = getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
-            int start = actionText.indexOf(showName);
-            int end = start + showName.length();
+            setShowActionText(actionText, feed);
+        }
+
+        private void setShowActionText(String actionText, UserFeed feed) {
+            int start = actionText.indexOf(feed.getShow());
+            int end = start + feed.getShow().length();
             SpannableString ss = new SpannableString(actionText);
             ss.setSpan(new ShowSpan(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -199,14 +214,43 @@ public class FriendsFragment extends RxFragment {
         }
     }
 
-    private class FeedAdapter extends RecyclerView.Adapter<FeedHolder> {
+    private class FeedHeaderHolder extends RecyclerView.ViewHolder {
+
+        private TextView header;
+
+        public FeedHeaderHolder(View itemView) {
+            super(itemView);
+            header = (TextView) itemView.findViewById(R.id.feed_header);
+        }
+
+        public void bind(DateTime feedDate) {
+            int days = Days.daysBetween(feedDate, now).getDays();
+            if (days == 0) {
+                header.setText(R.string.today);
+            } else if (days == 1) {
+                header.setText(R.string.yesterday);
+            } else if (new Interval(now.withDayOfWeek(DateTimeConstants.MONDAY), now).contains(feedDate)) {
+                header.setText(R.string.at_this_week);
+            } else {
+                header.setText(MONTH_DATE_FORMAT.print(feedDate));
+            }
+        }
+    }
+
+    private class FeedAdapter extends RecyclerView.Adapter<FeedHolder> implements StickyRecyclerHeadersAdapter<FeedHeaderHolder> {
 
         private final List<UserFeed> userFeeds;
+        private final List<DateTime> feedsDate;
         private final Map<String, String> friendsAvatar;
 
-        public FeedAdapter(List<UserFeed> userFeeds, Map<String, String> friendsAvatar) {
-            this.userFeeds = userFeeds;
+        public FeedAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
+            this.userFeeds = new ArrayList<>();
+            this.feedsDate = new ArrayList<>();
             this.friendsAvatar = friendsAvatar;
+            for (Feed feed : feeds) {
+                userFeeds.addAll(feed.getFeeds());
+                feedsDate.addAll(Collections.nCopies(feed.getFeeds().size(), feed.getDate()));
+            }
         }
 
         @Override
@@ -220,6 +264,33 @@ public class FriendsFragment extends RxFragment {
         public void onBindViewHolder(FeedHolder holder, int position) {
             UserFeed userFeed = userFeeds.get(position);
             holder.bind(userFeed, friendsAvatar.get(userFeed.getLogin()));
+        }
+
+        @Override
+        public long getHeaderId(int position) {
+            DateTime feedDate = feedsDate.get(position);
+            int days = Days.daysBetween(feedDate, now).getDays();
+            if (days == 0) {
+                return Math.abs(getString(R.string.today).hashCode());
+            } else if (days == 1) {
+                return Math.abs(getString(R.string.yesterday).hashCode());
+            } else if (new Interval(now.withDayOfWeek(DateTimeConstants.MONDAY), now).contains(feedDate)) {
+                return Math.abs(getString(R.string.at_this_week).hashCode());
+            } else {
+                return Math.abs(MONTH_DATE_FORMAT.print(feedDate).hashCode());
+            }
+        }
+
+        @Override
+        public FeedHeaderHolder onCreateHeaderViewHolder(ViewGroup parent) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_feed_header_view, parent, false);
+            return new FeedHeaderHolder(view);
+        }
+
+        @Override
+        public void onBindHeaderViewHolder(FeedHeaderHolder feedHeaderHolder, int position) {
+            feedHeaderHolder.bind(feedsDate.get(position));
         }
 
         @Override
