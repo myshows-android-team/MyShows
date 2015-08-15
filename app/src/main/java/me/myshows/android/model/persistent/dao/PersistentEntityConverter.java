@@ -187,6 +187,7 @@ public class PersistentEntityConverter {
             throw new RuntimeException("Unreachable state", e);
         }
     }
+
     public RatingShow toRatingShow(PersistentRatingShow persistentRatingShow) {
         return new RatingShow(persistentRatingShow.getId(), persistentRatingShow.getTitle(),
                 persistentRatingShow.getRuTitle(), ShowStatus.fromString(persistentRatingShow.getShowStatus()),
