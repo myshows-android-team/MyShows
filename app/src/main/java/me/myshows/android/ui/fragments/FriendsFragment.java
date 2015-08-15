@@ -1,5 +1,6 @@
 package me.myshows.android.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -23,6 +24,9 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Days;
+import org.joda.time.Interval;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,19 +43,14 @@ import me.myshows.android.model.Gender;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.ui.activities.ShowActivity;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by warrior on 19.07.15.
  */
 public class FriendsFragment extends RxFragment {
 
-    private static Typeface typeface;
-    private static MyShowsClient client;
-
     private RecyclerView recyclerView;
     private StickyRecyclerHeadersDecoration itemDecoration;
-    private FeedHeader feedHeader;
 
     private List<Feed> feeds;
     private Map<String, String> friendsAvatar;
@@ -60,15 +59,10 @@ public class FriendsFragment extends RxFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.friends_fragment, container, false);
-        client = MyShowsClientImpl.getInstance();
-        if (typeface == null) {
-            typeface = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Medium.ttf");
-        }
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-        feedHeader = new FeedHeader(getActivity());
 
         loadData();
 
@@ -76,16 +70,15 @@ public class FriendsFragment extends RxFragment {
     }
 
     private void loadData() {
+        MyShowsClient client = MyShowsClientImpl.getInstance();
         client.friendsNews()
                 .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(feeds -> {
                     this.feeds = feeds;
                     trySetAdapter();
                 });
         client.profile()
                 .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(this::extractFriendsAvatar)
                 .subscribe(friendsAvatar -> {
                     this.friendsAvatar = friendsAvatar;
@@ -95,7 +88,7 @@ public class FriendsFragment extends RxFragment {
 
     private void trySetAdapter() {
         if (feeds != null && friendsAvatar != null) {
-            FeedAdapter adapter = new FeedAdapter(feeds, friendsAvatar);
+            FeedAdapter adapter = new FeedAdapter(getActivity(), feeds, friendsAvatar);
             if (itemDecoration != null) {
                 recyclerView.removeItemDecoration(itemDecoration);
             }
@@ -110,15 +103,20 @@ public class FriendsFragment extends RxFragment {
         for (User friend : user.getFriends()) {
             friendsAvatar.put(friend.getLogin(), friend.getAvatarUrl());
         }
+        for (User follower : user.getFollowers()) {
+            friendsAvatar.put(follower.getLogin(), follower.getAvatarUrl());
+        }
         return friendsAvatar;
     }
 
-    private class FeedHolder extends RecyclerView.ViewHolder {
+    private static class FeedHolder extends RecyclerView.ViewHolder {
 
-        private ImageView avatar;
-        private TextView name;
-        private TextView action;
-        private ImageView actionIcon;
+        private static Typeface typeface;
+
+        private final ImageView avatar;
+        private final TextView name;
+        private final TextView action;
+        private final ImageView actionIcon;
 
         public FeedHolder(View itemView) {
             super(itemView);
@@ -126,19 +124,15 @@ public class FriendsFragment extends RxFragment {
             name = (TextView) itemView.findViewById(R.id.friend_name);
             action = (TextView) itemView.findViewById(R.id.friend_action);
             actionIcon = (ImageView) itemView.findViewById(R.id.feed_action_icon);
+
+            if (typeface == null) {
+                typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "Roboto-Medium.ttf");
+            }
             name.setTypeface(typeface);
         }
 
         public void bind(UserFeed feed, String avatarUrl) {
-            if (avatarUrl == null) {
-                client.profile(feed.getLogin())
-                        .compose(bindToLifecycle())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(user -> setAvatar(user.getAvatarUrl()));
-            } else {
-                setAvatar(avatarUrl);
-            }
-
+            setAvatar(avatarUrl);
             name.setText(feed.getLogin());
 
             switch (feed.getAction()) {
@@ -152,16 +146,20 @@ public class FriendsFragment extends RxFragment {
         }
 
         private void setAvatar(String avatarUrl) {
-            Glide.with(itemView.getContext())
-                    .load(avatarUrl)
-                    .into(avatar);
+            if (avatarUrl != null) {
+                Glide.with(itemView.getContext())
+                        .load(avatarUrl)
+                        .into(avatar);
+            } else {
+                avatar.setImageResource(R.drawable.default_avatar);
+            }
         }
 
         private void setNewAction(UserFeed feed) {
             actionIcon.setImageResource(Action.NEW.getDrawableId());
             int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_started_show : R.string.m_started_show;
             String showName = feed.getShow();
-            String actionText = getString(stringId, showName);
+            String actionText = itemView.getContext().getString(stringId, showName);
             setShowActionText(actionText, feed);
         }
 
@@ -171,7 +169,7 @@ public class FriendsFragment extends RxFragment {
             int seriesNumber = feed.getEpisodes();
             String showName = feed.getShow();
             String episodeName = "[" + feed.getEpisode() + "]";
-            String actionText = getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName, episodeName);
+            String actionText = itemView.getContext().getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName, episodeName);
             setShowActionText(actionText, feed);
         }
 
@@ -197,37 +195,58 @@ public class FriendsFragment extends RxFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
                 intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
-                startActivity(intent);
+                itemView.getContext().startActivity(intent);
             }
 
             @Override
             public void updateDrawState(TextPaint textPaint) {
-                textPaint.setColor(getResources().getColor(R.color.primary));
+                textPaint.setColor(itemView.getContext().getResources().getColor(R.color.primary));
             }
         }
     }
 
-    private class FeedHeaderHolder extends RecyclerView.ViewHolder {
+    private static class FeedHeaderHolder extends RecyclerView.ViewHolder {
 
-        private TextView header;
+        private static final DateTime NOW = new DateTime();
+
+        private final TextView header;
 
         public FeedHeaderHolder(View itemView) {
             super(itemView);
             header = (TextView) itemView.findViewById(R.id.feed_header);
         }
 
+        private static String getText(Context context, DateTime feedDate) {
+            int days = Days.daysBetween(feedDate, NOW).getDays();
+            if (days == 0) {
+                return context.getString(R.string.today);
+            } else if (days == 1) {
+                return context.getString(R.string.yesterday);
+            } else if (new Interval(NOW.withDayOfWeek(DateTimeConstants.MONDAY), NOW).contains(feedDate)) {
+                return context.getString(R.string.at_this_week);
+            } else {
+                return context.getResources().getStringArray(R.array.month_name)[feedDate.getMonthOfYear()];
+            }
+        }
+
+        private static int getId(Context context, DateTime feedDate) {
+            return Math.abs(getText(context, feedDate).hashCode());
+        }
+
         public void bind(DateTime feedDate) {
-            header.setText(feedHeader.getText(feedDate));
+            header.setText(getText(itemView.getContext(), feedDate));
         }
     }
 
-    private class FeedAdapter extends RecyclerView.Adapter<FeedHolder> implements StickyRecyclerHeadersAdapter<FeedHeaderHolder> {
+    private static class FeedAdapter extends RecyclerView.Adapter<FeedHolder> implements StickyRecyclerHeadersAdapter<FeedHeaderHolder> {
 
+        private final Context context;
         private final List<UserFeed> userFeeds;
         private final List<DateTime> feedsDate;
         private final Map<String, String> friendsAvatar;
 
-        public FeedAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
+        public FeedAdapter(Context context, List<Feed> feeds, Map<String, String> friendsAvatar) {
+            this.context = context;
             this.userFeeds = new ArrayList<>();
             this.feedsDate = new ArrayList<>();
             this.friendsAvatar = friendsAvatar;
@@ -253,7 +272,7 @@ public class FriendsFragment extends RxFragment {
         @Override
         public long getHeaderId(int position) {
             DateTime feedDate = feedsDate.get(position);
-            return feedHeader.getId(feedDate);
+            return FeedHeaderHolder.getId(context, feedDate);
         }
 
         @Override

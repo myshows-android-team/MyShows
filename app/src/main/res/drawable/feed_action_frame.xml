@@ -9,5 +9,4 @@
     <stroke
         android:width="@dimen/list_feed_view_history_line_width"
         android:color="@color/list_feed_view_history_line" />
-
 </shape>
