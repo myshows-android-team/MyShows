@@ -146,13 +146,10 @@ public class FriendsFragment extends RxFragment {
         }
 
         private void setAvatar(String avatarUrl) {
-            if (avatarUrl != null) {
-                Glide.with(itemView.getContext())
-                        .load(avatarUrl)
-                        .into(avatar);
-            } else {
-                avatar.setImageResource(R.drawable.default_avatar);
-            }
+            Glide.with(itemView.getContext())
+                    .load(avatarUrl)
+                    .placeholder(R.drawable.default_avatar)
+                    .into(avatar);
         }
 
         private void setNewAction(UserFeed feed) {
