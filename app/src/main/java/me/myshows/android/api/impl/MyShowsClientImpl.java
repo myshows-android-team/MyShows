@@ -226,13 +226,16 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<Feed>> friendsNews() {
         return Observable.<List<Feed>>create(subscriber -> {
             Class<PersistentFeed> clazz = PersistentFeed.class;
-            List<Feed> feeds = manager.selectEntities(clazz, converter::toFeed);
+            List<Feed> feeds = manager.selectSortedEntities(clazz, converter::toFeed, "date", false);
             if (feeds != null) {
                 subscriber.onNext(feeds);
             }
             api.friendsNews()
                     .subscribe(
-                            uf -> subscriber.onNext(manager.upsertEntities(generateFeeds(uf), converter::fromFeed)),
+                            uf -> {
+                                manager.upsertEntities(generateFeeds(uf), converter::fromFeed);
+                                subscriber.onNext(manager.selectSortedEntities(clazz, converter::toFeed, "date", false));
+                            },
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
