@@ -165,7 +165,7 @@ public class FriendsFragment extends RxFragment {
             int seriesNumber = feed.getEpisodes();
             String showName = feed.getShow();
             String episodeName = "[" + feed.getEpisode() + "]";
-            String actionText = itemView.getContext().getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName, episodeName);
+            String actionText = itemView.getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName, episodeName);
             setShowActionText(actionText, feed);
         }
 
