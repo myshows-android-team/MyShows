@@ -57,22 +57,6 @@
     <string name="f_started_show">Начала смотреть сериал %s</string>
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
-    <string name="at_this_week">На этой неделе</string>
-    <string-array name="month_name">
-        <item></item>
-        <item>Январь</item>
-        <item>Февраль</item>
-        <item>Март</item>
-        <item>Апрель</item>
-        <item>Май</item>
-        <item>Июнь</item>
-        <item>Июль</item>
-        <item>Август</item>
-        <item>Сентябрь</item>
-        <item>Октябрь</item>
-        <item>Ноябрь</item>
-        <item>Декабрь</item>
-    </string-array>
 
     <!-- Ratings screen -->
     <string name="watching">%s смотрят</string>

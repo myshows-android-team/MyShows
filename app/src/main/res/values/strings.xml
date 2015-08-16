@@ -56,22 +56,6 @@
     <string name="f_started_show">Started watching the show %s</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
-    <string name="at_this_week">At this week</string>
-    <string-array name="month_name">
-        <item></item>
-        <item>January</item>
-        <item>February</item>
-        <item>March</item>
-        <item>April</item>
-        <item>May</item>
-        <item>June</item>
-        <item>July</item>
-        <item>August</item>
-        <item>September</item>
-        <item>October</item>
-        <item>November</item>
-        <item>December</item>
-    </string-array>
 
     <!-- Ratings screen -->
     <string name="watching">%s watching</string>

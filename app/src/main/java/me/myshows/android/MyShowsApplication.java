@@ -2,8 +2,6 @@ package me.myshows.android;
 
 import android.app.Application;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.api.impl.PreferenceStorage;
 import rx.android.schedulers.AndroidSchedulers;
@@ -17,6 +15,5 @@ public class MyShowsApplication extends Application {
     public void onCreate() {
         super.onCreate();
         MyShowsClientImpl.init(this, new PreferenceStorage(this), AndroidSchedulers.mainThread());
-        JodaTimeAndroid.init(this);
     }
 }

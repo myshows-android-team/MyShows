@@ -23,15 +23,14 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.Days;
-import org.joda.time.Interval;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import me.myshows.android.R;
@@ -204,7 +203,13 @@ public class FriendsFragment extends RxFragment {
 
     private static class FeedHeaderHolder extends RecyclerView.ViewHolder {
 
-        private static final DateTime NOW = new DateTime();
+        private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd MMMM", Locale.getDefault());
+        private static final Calendar TODAY = Calendar.getInstance();
+        private static final Calendar YESTERDAY = Calendar.getInstance();
+
+        static {
+            YESTERDAY.add(Calendar.DAY_OF_YEAR, -1);
+        }
 
         private final TextView header;
 
@@ -213,24 +218,28 @@ public class FriendsFragment extends RxFragment {
             header = (TextView) itemView.findViewById(R.id.feed_header);
         }
 
-        private static String getText(Context context, DateTime feedDate) {
-            int days = Days.daysBetween(feedDate, NOW).getDays();
-            if (days == 0) {
+        private static String getText(Context context, Date feedDate) {
+            Calendar feedDateCalendar = Calendar.getInstance();
+            feedDateCalendar.setTime(feedDate);
+            if (isSameDay(TODAY, feedDateCalendar)) {
                 return context.getString(R.string.today);
-            } else if (days == 1) {
+            } else if (isSameDay(YESTERDAY, feedDateCalendar)) {
                 return context.getString(R.string.yesterday);
-            } else if (new Interval(NOW.withDayOfWeek(DateTimeConstants.MONDAY), NOW).contains(feedDate)) {
-                return context.getString(R.string.at_this_week);
             } else {
-                return context.getResources().getStringArray(R.array.month_name)[feedDate.getMonthOfYear()];
+                return FORMATTER.format(feedDate);
             }
         }
 
-        private static int getId(Context context, DateTime feedDate) {
+        private static boolean isSameDay(Calendar first, Calendar second) {
+            return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)
+                    && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
+        }
+
+        private static int getId(Context context, Date feedDate) {
             return Math.abs(getText(context, feedDate).hashCode());
         }
 
-        public void bind(DateTime feedDate) {
+        public void bind(Date feedDate) {
             header.setText(getText(itemView.getContext(), feedDate));
         }
     }
@@ -239,7 +248,7 @@ public class FriendsFragment extends RxFragment {
 
         private final Context context;
         private final List<UserFeed> userFeeds;
-        private final List<DateTime> feedsDate;
+        private final List<Date> feedsDate;
         private final Map<String, String> friendsAvatar;
 
         public FeedAdapter(Context context, List<Feed> feeds, Map<String, String> friendsAvatar) {
@@ -268,7 +277,7 @@ public class FriendsFragment extends RxFragment {
 
         @Override
         public long getHeaderId(int position) {
-            DateTime feedDate = feedsDate.get(position);
+            Date feedDate = feedsDate.get(position);
             return FeedHeaderHolder.getId(context, feedDate);
         }
 

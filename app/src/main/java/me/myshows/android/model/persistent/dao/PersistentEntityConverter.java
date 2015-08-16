@@ -1,9 +1,8 @@
 package me.myshows.android.model.persistent.dao;
 
-import org.joda.time.DateTime;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -170,7 +169,7 @@ public class PersistentEntityConverter {
 
     public Feed toFeed(PersistentFeed persistentFeed) {
         try {
-            DateTime date = new DateTime(persistentFeed.getDate());
+            Date date = new Date(persistentFeed.getDate());
             List<UserFeed> userFeeds = marshaller.deserializeList(persistentFeed.getFeeds(), ArrayList.class, UserFeed.class);
             return new Feed(date, userFeeds);
         } catch (IOException e) {
@@ -180,7 +179,7 @@ public class PersistentEntityConverter {
 
     public PersistentFeed fromFeed(Feed feed) {
         try {
-            long millis = feed.getDate().getMillis();
+            long millis = feed.getDate().getTime();
             byte[] userFeeds = marshaller.serialize(feed.getFeeds());
             return new PersistentFeed(millis, userFeeds);
         } catch (IOException e) {
