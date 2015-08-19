@@ -131,11 +131,11 @@ public class RatingsFragment extends RxFragment {
             FORMAT = new DecimalFormat("#,###", symbols);
         }
 
-        private ImageView image;
-        private ImageView watchStatusIcon;
-        private TextView title;
-        private TextView watching;
-        private TextView rating;
+        private final ImageView image;
+        private final ImageView watchStatusIcon;
+        private final TextView title;
+        private final TextView watching;
+        private final TextView rating;
 
         public RatingShowHolder(View itemView) {
             super(itemView);
