@@ -88,10 +88,10 @@ public class MyShowsFragment extends RxFragment {
 
     private static class ShowHolder extends RecyclerView.ViewHolder {
 
-        private ImageView image;
-        private TextView title;
-        private ProgressBar progress;
-        private View shadow;
+        private final ImageView image;
+        private final TextView title;
+        private final ProgressBar progress;
+        private final View shadow;
 
         public ShowHolder(View itemView) {
             super(itemView);
