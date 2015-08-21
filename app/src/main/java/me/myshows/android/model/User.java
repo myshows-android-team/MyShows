@@ -17,14 +17,14 @@ public class User {
     private final String avatarUrl;
     private final int wastedTime;
     private final String gender;
-    private final List<User> friends;
-    private final List<User> followers;
+    private final List<UserPreview> friends;
+    private final List<UserPreview> followers;
     private final Statistics stats;
 
     @JsonCreator
     public User(@JsonProperty("login") String login, @JsonProperty("avatar") String avatarUrl,
                 @JsonProperty("wastedTime") int wastedTime, @JsonProperty("gender") String gender,
-                @JsonProperty("friends") List<User> friends, @JsonProperty("followers") List<User> followers,
+                @JsonProperty("friends") List<UserPreview> friends, @JsonProperty("followers") List<UserPreview> followers,
                 @JsonProperty("stats") Statistics stats) {
         this.login = login;
         this.avatarUrl = avatarUrl;
@@ -56,12 +56,12 @@ public class User {
     }
 
     @JsonProperty("friends")
-    public List<User> getFriends() {
+    public List<UserPreview> getFriends() {
         return friends;
     }
 
     @JsonProperty("followers")
-    public List<User> getFollowers() {
+    public List<UserPreview> getFollowers() {
         return followers;
     }
 

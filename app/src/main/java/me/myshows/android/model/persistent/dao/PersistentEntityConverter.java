@@ -15,6 +15,7 @@ import me.myshows.android.model.Statistics;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserPreview;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.WatchStatus;
 import me.myshows.android.model.persistent.PersistentEpisode;
@@ -38,8 +39,8 @@ public class PersistentEntityConverter {
     @SuppressWarnings("unchecked")
     public User toUser(PersistentUser persistentUser) {
         try {
-            List<User> friends = marshaller.deserialize(persistentUser.getFriends(), List.class);
-            List<User> followers = marshaller.deserialize(persistentUser.getFollowers(), List.class);
+            List<UserPreview> friends = marshaller.deserialize(persistentUser.getFriends(), List.class);
+            List<UserPreview> followers = marshaller.deserialize(persistentUser.getFollowers(), List.class);
             Statistics stats = marshaller.deserialize(persistentUser.getStats(), Statistics.class);
             return new User(persistentUser.getLogin(), persistentUser.getAvatarUrl(),
                     persistentUser.getWastedTime(), persistentUser.getGender(),
