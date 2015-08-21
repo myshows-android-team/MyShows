@@ -1,5 +1,6 @@
 package me.myshows.android.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -99,6 +100,7 @@ public class ShowActivity extends RxAppCompatActivity {
                 .subscribe(this::bind);
     }
 
+    @SuppressLint("NewApi")
     private void bind(UserShow show) {
         collapsingToolbar.setTitle(show.getTitle());
         myRating.setRating(show.getRating());

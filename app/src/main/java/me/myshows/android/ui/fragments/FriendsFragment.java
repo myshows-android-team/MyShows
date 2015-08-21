@@ -41,6 +41,7 @@ import me.myshows.android.model.Feed;
 import me.myshows.android.model.Gender;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
+import me.myshows.android.model.UserPreview;
 import me.myshows.android.ui.activities.ShowActivity;
 
 /**
@@ -99,10 +100,10 @@ public class FriendsFragment extends RxFragment {
 
     private Map<String, String> extractFriendsAvatar(User user) {
         Map<String, String> friendsAvatar = new HashMap<>();
-        for (User friend : user.getFriends()) {
+        for (UserPreview friend : user.getFriends()) {
             friendsAvatar.put(friend.getLogin(), friend.getAvatarUrl());
         }
-        for (User follower : user.getFollowers()) {
+        for (UserPreview follower : user.getFollowers()) {
             friendsAvatar.put(follower.getLogin(), follower.getAvatarUrl());
         }
         return friendsAvatar;

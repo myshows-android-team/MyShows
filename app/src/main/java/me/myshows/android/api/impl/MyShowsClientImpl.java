@@ -1,6 +1,5 @@
 package me.myshows.android.api.impl;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -63,9 +62,9 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     private final RealmManager manager;
     private final Scheduler observerScheduler;
 
-    private MyShowsClientImpl(Context context, ClientStorage storage, Scheduler observerScheduler) {
+    private MyShowsClientImpl(ClientStorage storage, Scheduler observerScheduler) {
         super(storage);
-        this.manager = new RealmManager(context);
+        this.manager = new RealmManager();
         this.api = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
                 .setClient(new OkClient())
@@ -77,8 +76,8 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
         this.observerScheduler = observerScheduler;
     }
 
-    public static void init(Context context, ClientStorage storage, Scheduler observerScheduler) {
-        client = new MyShowsClientImpl(context, storage, observerScheduler);
+    public static void init(ClientStorage storage, Scheduler observerScheduler) {
+        client = new MyShowsClientImpl(storage, observerScheduler);
     }
 
     public static MyShowsClientImpl getInstance() {

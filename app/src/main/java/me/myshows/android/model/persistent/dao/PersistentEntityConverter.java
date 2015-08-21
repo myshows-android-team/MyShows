@@ -20,6 +20,7 @@ import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserFeed;
+import me.myshows.android.model.UserPreview;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.WatchStatus;
 import me.myshows.android.model.persistent.PersistentEpisode;
@@ -43,8 +44,8 @@ public class PersistentEntityConverter {
 
     public User toUser(PersistentUser persistentUser) {
         try {
-            List<User> friends = marshaller.deserializeList(persistentUser.getFriends(), ArrayList.class, User.class);
-            List<User> followers = marshaller.deserializeList(persistentUser.getFollowers(), ArrayList.class, User.class);
+            List<UserPreview> friends = marshaller.deserializeList(persistentUser.getFriends(), ArrayList.class, UserPreview.class);
+            List<UserPreview> followers = marshaller.deserializeList(persistentUser.getFollowers(), ArrayList.class, UserPreview.class);
             Statistics stats = marshaller.deserialize(persistentUser.getStats(), Statistics.class);
             Gender gender = Gender.fromString(persistentUser.getGender());
             return new User(persistentUser.getLogin(), persistentUser.getAvatarUrl(),
