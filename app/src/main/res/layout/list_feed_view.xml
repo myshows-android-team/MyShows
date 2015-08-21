@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/list_feed_view_content_margin"
             android:fontFamily="sans-serif-light"
-            android:textColor="@color/list_feed_view_black_text"
+            android:textColor="@color/list_feed_view_gray_text"
             android:textColorHighlight="@color/red_30_opacity"
             android:textSize="15sp"
             tools:text="Посмотрел 2 серии Gravity Falls" />

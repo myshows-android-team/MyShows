@@ -22,8 +22,7 @@
     <dimen name="fab_margin">0dp</dimen>
 
     <!-- List feed view dimens -->
-    <dimen name="list_feed_view_line_height">18dp</dimen>
-    <dimen name="list_feed_view_padding">16dp</dimen>
+    <dimen name="list_feed_view_padding">@dimen/default_padding</dimen>
     <dimen name="list_feed_view_content_margin">8dp</dimen>
     <dimen name="list_feed_view_action_icon_min_size">32dp</dimen>
     <dimen name="list_feed_view_history_line_margin">32dp</dimen>

@@ -21,6 +21,7 @@
             android:paddingLeft="@dimen/list_feed_view_content_margin"
             android:paddingRight="@dimen/list_feed_view_content_margin"
             android:textAllCaps="true"
+            android:textColor="@color/list_feed_view_black_text"
             android:textSize="13sp"
             tools:text="TODAY" />
 

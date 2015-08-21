@@ -197,7 +197,7 @@ public class FriendsFragment extends RxFragment {
 
             @Override
             public void updateDrawState(TextPaint textPaint) {
-                textPaint.setColor(itemView.getContext().getResources().getColor(R.color.primary));
+                textPaint.setColor(itemView.getResources().getColor(R.color.primary));
             }
         }
     }

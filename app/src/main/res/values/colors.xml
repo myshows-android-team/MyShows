@@ -18,9 +18,9 @@
     <color name="list_show_text_color">@color/white_80_opacity</color>
 
     <!-- List feed view colors -->
-    <color name="list_feed_view_black_text">#FF515151</color>
-    <color name="list_feed_view_gray_text">#FFAAAAAA</color>
-    <color name="list_feed_view_history_line">#FFEDEDED</color>
+    <color name="list_feed_view_black_text">#515151</color>
+    <color name="list_feed_view_gray_text">#AAAAAA</color>
+    <color name="list_feed_view_history_line">#EDEDED</color>
 
     <!-- Fab colors -->
     <color name="fab_watching">#78B531</color>
