@@ -2,6 +2,7 @@
 <resources>
 
     <dimen name="default_padding">16dp</dimen>
+    <dimen name="default_half_padding">8dp</dimen>
     <dimen name="show_image_height">240dp</dimen>
     <!-- show_image_height / 2 -->
     <dimen name="show_image_gradient_height">120dp</dimen>
@@ -23,11 +24,10 @@
 
     <!-- List feed view dimens -->
     <dimen name="list_feed_avatar_size">18dp</dimen>
-    <dimen name="list_feed_view_padding">@dimen/default_padding</dimen>
-    <dimen name="list_feed_view_content_margin">8dp</dimen>
     <dimen name="list_feed_view_action_icon_min_size">32dp</dimen>
-    <dimen name="list_feed_view_history_line_margin">32dp</dimen>
-    <dimen name="list_feed_view_history_line_width">1dp</dimen>
+    <dimen name="list_feed_view_action_icon_corner_radius">16dp</dimen>
+    <dimen name="list_feed_view_line_margin">31.5dp</dimen>
+    <dimen name="list_feed_view_line_width">1dp</dimen>
 
     <dimen name="ratings_divider_height">1dp</dimen>
 

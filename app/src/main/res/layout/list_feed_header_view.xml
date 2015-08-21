@@ -8,7 +8,7 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="@dimen/list_feed_view_action_icon_min_size"
-        android:layout_margin="@dimen/list_feed_view_padding"
+        android:layout_margin="@dimen/default_padding"
         android:background="@drawable/feed_action_frame"
         android:minWidth="@dimen/list_feed_view_action_icon_min_size">
 
@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="sans-serif-regular"
-            android:paddingLeft="@dimen/list_feed_view_content_margin"
-            android:paddingRight="@dimen/list_feed_view_content_margin"
+            android:paddingLeft="@dimen/default_half_padding"
+            android:paddingRight="@dimen/default_half_padding"
             android:textAllCaps="true"
             android:textColor="@color/list_feed_view_black_text"
             android:textSize="13sp"
