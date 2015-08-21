@@ -22,6 +22,7 @@
     <dimen name="fab_margin">0dp</dimen>
 
     <!-- List feed view dimens -->
+    <dimen name="list_feed_avatar_size">18dp</dimen>
     <dimen name="list_feed_view_padding">@dimen/default_padding</dimen>
     <dimen name="list_feed_view_content_margin">8dp</dimen>
     <dimen name="list_feed_view_action_icon_min_size">32dp</dimen>

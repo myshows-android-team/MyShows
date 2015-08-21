@@ -88,7 +88,7 @@ public class FriendsFragment extends RxFragment {
 
     private void trySetAdapter() {
         if (feeds != null && friendsAvatar != null) {
-            FeedAdapter adapter = new FeedAdapter(getActivity(), feeds, friendsAvatar);
+            FeedAdapter adapter = new FeedAdapter(feeds, friendsAvatar);
             if (itemDecoration != null) {
                 recyclerView.removeItemDecoration(itemDecoration);
             }
@@ -236,8 +236,11 @@ public class FriendsFragment extends RxFragment {
                     && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
         }
 
-        private static int getId(Context context, Date feedDate) {
-            return Math.abs(getText(context, feedDate).hashCode());
+        private static int getId(Date feedDate) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(feedDate);
+            String strId = "" + calendar.get(Calendar.YEAR) + calendar.get(Calendar.DAY_OF_YEAR);
+            return Integer.parseInt(strId);
         }
 
         public void bind(Date feedDate) {
@@ -247,13 +250,11 @@ public class FriendsFragment extends RxFragment {
 
     private static class FeedAdapter extends RecyclerView.Adapter<FeedHolder> implements StickyRecyclerHeadersAdapter<FeedHeaderHolder> {
 
-        private final Context context;
         private final List<UserFeed> userFeeds;
         private final List<Date> feedsDate;
         private final Map<String, String> friendsAvatar;
 
-        public FeedAdapter(Context context, List<Feed> feeds, Map<String, String> friendsAvatar) {
-            this.context = context;
+        public FeedAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
             this.userFeeds = new ArrayList<>();
             this.feedsDate = new ArrayList<>();
             this.friendsAvatar = friendsAvatar;
@@ -279,7 +280,7 @@ public class FriendsFragment extends RxFragment {
         @Override
         public long getHeaderId(int position) {
             Date feedDate = feedsDate.get(position);
-            return FeedHeaderHolder.getId(context, feedDate);
+            return FeedHeaderHolder.getId(feedDate);
         }
 
         @Override

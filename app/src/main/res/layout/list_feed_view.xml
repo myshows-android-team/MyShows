@@ -37,8 +37,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/friend_avatar"
-                android:layout_width="@dimen/list_feed_view_line_height"
-                android:layout_height="@dimen/list_feed_view_line_height"
+                android:layout_width="@dimen/list_feed_avatar_size"
+                android:layout_height="@dimen/list_feed_avatar_size"
                 android:layout_gravity="center"
                 android:src="#0000FF" />
 
