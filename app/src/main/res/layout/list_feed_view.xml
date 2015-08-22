@@ -7,10 +7,10 @@
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/list_feed_view_action_icon_min_size"
+        android:layout_height="@dimen/list_feed_action_icon_min_size"
         android:layout_margin="@dimen/default_padding"
         android:background="@drawable/feed_action_frame"
-        android:minWidth="@dimen/list_feed_view_action_icon_min_size">
+        android:minWidth="@dimen/list_feed_action_icon_min_size">
 
         <ImageView
             android:id="@+id/feed_action_icon"
@@ -40,7 +40,7 @@
                 android:layout_width="@dimen/list_feed_avatar_size"
                 android:layout_height="@dimen/list_feed_avatar_size"
                 android:layout_gravity="center"
-                android:src="#0000FF" />
+                android:src="@drawable/default_avatar" />
 
             <TextView
                 android:id="@+id/friend_name"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/default_half_padding"
                 android:fontFamily="sans-serif-medium"
-                android:textColor="@color/list_feed_view_black_text"
+                android:textColor="@color/list_feed_black_text"
                 android:textSize="18sp"
                 tools:text="Nilera" />
 
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_half_padding"
             android:fontFamily="sans-serif-light"
-            android:textColor="@color/list_feed_view_gray_text"
+            android:textColor="@color/list_feed_gray_text"
             android:textColorHighlight="@color/red_30_opacity"
             android:textSize="15sp"
             tools:text="Посмотрел 2 серии Gravity Falls" />

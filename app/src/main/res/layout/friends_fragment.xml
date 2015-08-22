@@ -5,10 +5,10 @@
     android:background="@android:color/white">
 
     <View
-        android:layout_width="@dimen/list_feed_view_line_width"
+        android:layout_width="@dimen/list_feed_line_width"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/list_feed_view_line_margin"
-        android:background="@color/list_feed_view_history_line" />
+        android:layout_marginLeft="@dimen/list_feed_line_margin"
+        android:background="@color/list_feed_history" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
