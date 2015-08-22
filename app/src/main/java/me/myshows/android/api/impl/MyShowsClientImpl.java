@@ -6,19 +6,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
+import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentRatingShow;
 import me.myshows.android.model.persistent.PersistentShow;
@@ -115,6 +119,23 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
+    public Observable<User> profile(String login) {
+        return Observable.<User>create(subscriber -> {
+            User user = manager.selectEntity(PersistentUser.class, converter::toUser,
+                    new Predicate("login", login));
+            if (user != null) {
+                subscriber.onNext(user);
+            }
+            api.profile(login)
+                    .subscribe(
+                            u -> subscriber.onNext(manager.upsertEntity(u, converter::fromUser)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
     public Observable<List<UserShow>> profileShows() {
         return Observable.<List<UserShow>>create(subscriber -> {
             Class<PersistentUserShow> clazz = PersistentUserShow.class;
@@ -201,6 +222,25 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
+    public Observable<List<Feed>> friendsNews() {
+        return Observable.<List<Feed>>create(subscriber -> {
+            Class<PersistentFeed> clazz = PersistentFeed.class;
+            List<Feed> feeds = manager.selectSortedEntities(clazz, converter::toFeed, "date", false);
+            if (feeds != null) {
+                subscriber.onNext(feeds);
+            }
+            api.friendsNews()
+                    .subscribe(
+                            uf -> {
+                                manager.upsertEntities(generateFeeds(uf), converter::fromFeed);
+                                subscriber.onNext(manager.selectSortedEntities(clazz, converter::toFeed, "date", false));
+                            },
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
     public Observable<List<RatingShow>> ratingShows() {
         return Observable.<List<RatingShow>>create(subscriber -> {
             List<RatingShow> ratingShows = manager.selectSortedEntities(PersistentRatingShow.class, converter::toRatingShow, "place", true);
@@ -218,6 +258,14 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
                             subscriber::onCompleted
                     );
         }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    private List<Feed> generateFeeds(Map<String, List<UserFeed>> userFeeds) {
+        List<Feed> feeds = new ArrayList<>();
+        for (Map.Entry<String, List<UserFeed>> rawFeed : userFeeds.entrySet()) {
+            feeds.add(new Feed(rawFeed.getKey(), rawFeed.getValue()));
+        }
+        return feeds;
     }
 
     @Override

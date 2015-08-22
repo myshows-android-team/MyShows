@@ -9,6 +9,7 @@ import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
 import retrofit.client.Response;
 import retrofit.http.GET;
@@ -28,6 +29,9 @@ public interface MyShowsApi {
     @GET("/profile/")
     Observable<User> profile();
 
+    @GET("/profile/{login}")
+    Observable<User> profile(@Path("login") String login);
+
     @GET("/profile/shows/")
     Observable<Map<String, UserShow>> profileShows();
 
@@ -42,6 +46,9 @@ public interface MyShowsApi {
 
     @GET("/shows/{show_id}")
     Observable<Show> showInformation(@Path("show_id") int showId);
+
+    @GET("/profile/news/")
+    Observable<Map<String, List<UserFeed>>> friendsNews();
 
     @GET("/shows/top/all/")
     Observable<List<RatingShow>> ratingShows();

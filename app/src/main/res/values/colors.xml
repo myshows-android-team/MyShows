@@ -12,10 +12,15 @@
     <color name="red_80_opacity">#CCCC0000</color>
     <color name="red_50_opacity">#80CC0000</color>
     <color name="red_30_opacity">#4CCC0000</color>
-    
+
     <!-- List show view colors -->
     <color name="list_show_progress_background">@color/white_80_opacity</color>
     <color name="list_show_text_color">@color/white_80_opacity</color>
+
+    <!-- List feed view colors -->
+    <color name="list_feed_black_text">#515151</color>
+    <color name="list_feed_gray_text">#AAAAAA</color>
+    <color name="list_feed_history">#EDEDED</color>
 
     <!-- Fab colors -->
     <color name="fab_watching">#78B531</color>

@@ -1,12 +1,16 @@
 package me.myshows.android.model.persistent.dao;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.realm.RealmList;
 import me.myshows.android.model.Episode;
+import me.myshows.android.model.Feed;
+import me.myshows.android.model.Gender;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
@@ -15,10 +19,12 @@ import me.myshows.android.model.Statistics;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserPreview;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.WatchStatus;
 import me.myshows.android.model.persistent.PersistentEpisode;
+import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentRatingShow;
 import me.myshows.android.model.persistent.PersistentShow;
@@ -36,15 +42,14 @@ public class PersistentEntityConverter {
         this.marshaller = marshaller;
     }
 
-    @SuppressWarnings("unchecked")
     public User toUser(PersistentUser persistentUser) {
         try {
-            List<UserPreview> friends = marshaller.deserialize(persistentUser.getFriends(), List.class);
-            List<UserPreview> followers = marshaller.deserialize(persistentUser.getFollowers(), List.class);
+            List<UserPreview> friends = marshaller.deserializeList(persistentUser.getFriends(), ArrayList.class, UserPreview.class);
+            List<UserPreview> followers = marshaller.deserializeList(persistentUser.getFollowers(), ArrayList.class, UserPreview.class);
             Statistics stats = marshaller.deserialize(persistentUser.getStats(), Statistics.class);
+            Gender gender = Gender.fromString(persistentUser.getGender());
             return new User(persistentUser.getLogin(), persistentUser.getAvatarUrl(),
-                    persistentUser.getWastedTime(), persistentUser.getGender(),
-                    friends, followers, stats);
+                    persistentUser.getWastedTime(), gender, friends, followers, stats);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
@@ -55,8 +60,9 @@ public class PersistentEntityConverter {
             byte[] friends = marshaller.serialize(user.getFriends());
             byte[] followers = marshaller.serialize(user.getFollowers());
             byte[] stats = marshaller.serialize(user.getStats());
+            String gender = user.getGender().toString();
             return new PersistentUser(user.getLogin(), user.getAvatarUrl(), user.getWastedTime(),
-                    user.getGender(), friends, followers, stats);
+                    gender, friends, followers, stats);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
@@ -157,6 +163,26 @@ public class PersistentEntityConverter {
                     show.getTvrageId(), show.getImdbId(), show.getVoted(),
                     show.getRating(), show.getRuntime(), show.getImage(),
                     genres, episodes, show.getWatching(), images, show.getDescription());
+        } catch (IOException e) {
+            throw new RuntimeException("Unreachable state", e);
+        }
+    }
+
+    public Feed toFeed(PersistentFeed persistentFeed) {
+        try {
+            Date date = new Date(persistentFeed.getDate());
+            List<UserFeed> userFeeds = marshaller.deserializeList(persistentFeed.getFeeds(), ArrayList.class, UserFeed.class);
+            return new Feed(date, userFeeds);
+        } catch (IOException e) {
+            throw new RuntimeException("Unreachable state", e);
+        }
+    }
+
+    public PersistentFeed fromFeed(Feed feed) {
+        try {
+            long millis = feed.getDate().getTime();
+            byte[] userFeeds = marshaller.serialize(feed.getFeeds());
+            return new PersistentFeed(millis, userFeeds);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
