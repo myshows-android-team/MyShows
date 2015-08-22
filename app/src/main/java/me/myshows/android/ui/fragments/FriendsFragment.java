@@ -219,7 +219,16 @@ public class FriendsFragment extends RxFragment {
             header = (TextView) itemView.findViewById(R.id.feed_header);
         }
 
-        private static String getText(Context context, Date feedDate) {
+        private static boolean isSameDay(Calendar first, Calendar second) {
+            return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)
+                    && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
+        }
+
+        public void bind(Date feedDate) {
+            header.setText(getText(itemView.getContext(), feedDate));
+        }
+
+        private String getText(Context context, Date feedDate) {
             Calendar feedDateCalendar = Calendar.getInstance();
             feedDateCalendar.setTime(feedDate);
             if (isSameDay(TODAY, feedDateCalendar)) {
@@ -229,22 +238,6 @@ public class FriendsFragment extends RxFragment {
             } else {
                 return FORMATTER.format(feedDate);
             }
-        }
-
-        private static boolean isSameDay(Calendar first, Calendar second) {
-            return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)
-                    && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
-        }
-
-        private static int getId(Date feedDate) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(feedDate);
-            String strId = "" + calendar.get(Calendar.YEAR) + calendar.get(Calendar.DAY_OF_YEAR);
-            return Integer.parseInt(strId);
-        }
-
-        public void bind(Date feedDate) {
-            header.setText(getText(itemView.getContext(), feedDate));
         }
     }
 
@@ -279,8 +272,9 @@ public class FriendsFragment extends RxFragment {
 
         @Override
         public long getHeaderId(int position) {
-            Date feedDate = feedsDate.get(position);
-            return FeedHeaderHolder.getId(feedDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(feedsDate.get(position));
+            return calendar.get(Calendar.YEAR) * 367 + calendar.get(Calendar.DAY_OF_YEAR);
         }
 
         @Override
