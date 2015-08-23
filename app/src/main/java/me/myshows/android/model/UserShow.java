@@ -7,13 +7,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
+import me.myshows.android.model.glide.ShowImage;
+
 /**
  * @author Whiplash
  * @date 20.06.2015
  */
 @Parcel(Parcel.Serialization.BEAN)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserShow {
+public class UserShow implements ShowImage {
 
     private final int showId;
     private final String title;
@@ -91,6 +93,7 @@ public class UserShow {
     }
 
     @JsonProperty("image")
+    @Override
     public String getImage() {
         return image;
     }

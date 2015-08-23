@@ -159,7 +159,7 @@ public class RatingsFragment extends RxFragment {
             WatchStatus status = userShow != null ? userShow.getWatchStatus() : WatchStatus.NOT_WATCHING;
             watchStatusIcon.setImageResource(status.getDrawableId());
             Glide.with(context)
-                    .load(ratingShow.getImage())
+                    .load(ratingShow)
                     .centerCrop()
                     .into(image);
             itemView.setOnClickListener(v -> {

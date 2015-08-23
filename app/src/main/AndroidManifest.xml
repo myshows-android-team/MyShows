@@ -25,6 +25,10 @@
         <activity android:name=".ui.activities.MainActivity" />
 
         <activity android:name=".ui.activities.ShowActivity" />
+
+        <meta-data
+            android:name="me.myshows.android.model.glide.MyShowsGlideModule"
+            android:value="GlideModule" />
     </application>
 
 </manifest>

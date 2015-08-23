@@ -109,7 +109,7 @@ public class MyShowsFragment extends RxFragment {
             // temporary workaround
             image.setImageResource(R.drawable.tmp_placeholder);
             Glide.with(itemView.getContext())
-                    .load(show.getImage())
+                    .load(show)
                     .centerCrop()
                     .into(image);
 

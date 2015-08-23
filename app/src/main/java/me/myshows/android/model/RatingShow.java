@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import me.myshows.android.model.glide.ShowImage;
+
 /**
  * Created by warrior on 09.08.15.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RatingShow {
+public class RatingShow implements ShowImage {
 
     private final int id;
     private final String title;
@@ -73,6 +75,7 @@ public class RatingShow {
     }
 
     @JsonProperty("image")
+    @Override
     public String getImage() {
         return image;
     }
