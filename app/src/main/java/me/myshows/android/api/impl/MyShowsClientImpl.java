@@ -19,17 +19,17 @@ import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
-import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentRatingShow;
 import me.myshows.android.model.persistent.PersistentShow;
 import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
 import me.myshows.android.model.persistent.PersistentUser;
-import me.myshows.android.model.persistent.PersistentUserEpisode;
 import me.myshows.android.model.persistent.PersistentUserShow;
+import me.myshows.android.model.persistent.PersistentUserShowEpisodes;
 import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
 import me.myshows.android.model.persistent.dao.Predicate;
 import me.myshows.android.model.persistent.dao.RealmManager;
@@ -153,17 +153,17 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
-    public Observable<List<UserEpisode>> profileEpisodesOfShow(int showId) {
-        return Observable.<List<UserEpisode>>create(subscriber -> {
-            Class<PersistentUserEpisode> clazz = PersistentUserEpisode.class;
-            List<UserEpisode> userEpisodes = manager.selectEntities(clazz, converter::toUserEpisode,
-                    new Predicate("id", showId));
-            if (userEpisodes != null) {
-                subscriber.onNext(userEpisodes);
+    public Observable<UserShowEpisodes> profileEpisodesOfShow(int showId) {
+        return Observable.<UserShowEpisodes>create(subscriber -> {
+            Class<PersistentUserShowEpisodes> clazz = PersistentUserShowEpisodes.class;
+            UserShowEpisodes episodes = manager.selectEntity(clazz, converter::toUserShowEpisodes,
+                   new Predicate("showId", showId));
+            if (episodes != null) {
+                subscriber.onNext(episodes);
             }
             api.profileEpisodesOfShow(showId)
                     .subscribe(
-                            ue -> subscriber.onNext(manager.truncateAndInsertEntities(new ArrayList<>(ue.values()), clazz, converter::fromUserEpisode)),
+                            ue -> subscriber.onNext(manager.upsertEntity(new UserShowEpisodes(showId, new ArrayList<>(ue.values())), converter::fromUserShowEpisodes)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
