@@ -1,5 +1,6 @@
 package me.myshows.android.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
@@ -39,9 +40,9 @@ public class MainActivity extends RxAppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String MENU_ITEM_ID = "menuItemId";
-    
+
     private static final SparseArray<FragmentInfo> MENU_ITEM_ID_TO_FRAGMENT_INFO = new SparseArray<>();
-    
+
     static {
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_my_series, FragmentInfo.make(MyShowsFragment.class, R.string.my_series));
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_calendar, FragmentInfo.make(CalendarFragment.class, R.string.calendar));
@@ -119,29 +120,35 @@ public class MainActivity extends RxAppCompatActivity {
 
     private void setupNavigationDrawer(NavigationView navigationView) {
         navigationView.getMenu()
-                    .findItem(currentItemId)
-                    .setChecked(true);
+                .findItem(currentItemId)
+                .setChecked(true);
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
-                    if (info != null && !menuItem.isChecked()) {
-                        currentItemId = menuItem.getItemId();
-                        setActionBarTitle(info.titleId);
-                        Fragment oldFragment = fragmentManager.findFragmentById(R.id.content);
-                        Fragment newFragment = getFragment(info.fragmentClass);
-                        fragmentManager.beginTransaction()
-                                .detach(oldFragment)
-                                .replace(R.id.content, newFragment, info.fragmentClass.getSimpleName())
-                                .attach(newFragment)
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit();
-                        menuItem.setChecked(true);
+                    switch (menuItem.getItemId()) {
+                        case R.id.nav_settings:
+                            startActivity(new Intent(this, SettingsActivity.class));
+                            break;
+                        default:
+                            FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
+                            if (info != null && !menuItem.isChecked()) {
+                                currentItemId = menuItem.getItemId();
+                                setActionBarTitle(info.titleId);
+                                Fragment oldFragment = fragmentManager.findFragmentById(R.id.content);
+                                Fragment newFragment = getFragment(info.fragmentClass);
+                                fragmentManager.beginTransaction()
+                                        .detach(oldFragment)
+                                        .replace(R.id.content, newFragment, info.fragmentClass.getSimpleName())
+                                        .attach(newFragment)
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .commit();
+                                menuItem.setChecked(true);
+                            }
+                            drawerLayout.closeDrawers();
                     }
-                    drawerLayout.closeDrawers();
                     return true;
                 });
     }
-    
+
     private Fragment getFragment(Class<? extends Fragment> clazz) {
         Fragment fragment = fragmentManager.findFragmentByTag(clazz.getSimpleName());
         if (fragment == null) {
@@ -181,7 +188,8 @@ public class MainActivity extends RxAppCompatActivity {
 
     private static class FragmentInfo {
         public final Class<? extends Fragment> fragmentClass;
-        @StringRes public final int titleId;
+        @StringRes
+        public final int titleId;
 
         public FragmentInfo(Class<? extends Fragment> fragmentClass, @StringRes int titleId) {
             this.fragmentClass = fragmentClass;

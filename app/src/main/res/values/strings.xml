@@ -60,4 +60,17 @@
     <!-- Ratings screen -->
     <string name="watching">%s watching</string>
     <string name="show_rating">Rating \u2014 %.2f</string>
+
+    <!-- Preference -->
+    <string name="compact_mode">Compact mode</string>
+    <string name="compact_mode_description">Display show in compact mode (without images)</string>
+
+    <string name="cache">Cache</string>
+    <string name="cache_size">Cache size</string>
+    <string name="clear_cache">Clear cache</string>
+
+    <string name="notification">Notification</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="none_ringtone">None</string>
+
 </resources>
