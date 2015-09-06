@@ -64,26 +64,16 @@
     <!-- Preference -->
     <string name="compact_mode">Compact mode</string>
     <string name="compact_mode_description">Display show in compact mode (without images)</string>
-
-    <string name="cache">Cache</string>
     <string name="clear_cache">Clear cache</string>
     <string name="clear_cache_dialog_title">Clear cache?</string>
     <string name="clear_cache_dialog_content">The application will clear show data from you device, but you can always download it again.</string>
     <string name="clear_cache_dialog_reject">Cancel</string>
     <string name="clear_cache_dialog_accept">Clear</string>
-    <string name="cache_size">Cache size</string>
-    <string-array name="cache_entries">
-        <item>Cache size 1</item>
-        <item>Cache size 2</item>
-    </string-array>
-    <string-array name="cache_values">
-        <item>Value1</item>
-        <item>Value2</item>
-    </string-array>
 
     <string name="notification">Notification</string>
     <string name="check_new_series">Check new series</string>
     <string name="check_new_series_summary">Notify about new series</string>
+    <string name="time">Time</string>
     <string name="ringtone">Ringtone</string>
     <string name="none_ringtone">None</string>
     <string name="vibration">Vibration</string>

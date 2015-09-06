@@ -3,6 +3,7 @@ package me.myshows.android.ui.fragments;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
@@ -10,10 +11,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +20,7 @@ import com.bumptech.glide.Glide;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import me.myshows.android.R;
 import rx.Observable;
@@ -34,17 +34,19 @@ public class SettingsFragment extends PreferenceFragment {
 
     public static final String COMPACT_MODE = "compact_mode";
     public static final String CLEAR_CACHE = "clear_cache";
-    public static final String CACHE_SIZE = "cache_size";
     public static final String CHECK_NEW_SERIES = "check_new_series";
+    public static final String TIME = "time";
     public static final String RINGTONE = "ringtone";
     public static final String VIBRATION = "vibration";
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
+    private static final int HOUR = (int) TimeUnit.HOURS.toMinutes(1);
+    private static final int DEFAULT_TIME = (int) TimeUnit.HOURS.toMinutes(12);
 
     private CheckBoxPreference compactModePreference;
     private Preference clearCachePreference;
-    private ListPreference cacheSizePreference;
     private CheckBoxPreference checkNewSeriesPreference;
+    private Preference timePreference;
     private RingtonePreference ringtonePreference;
     private CheckBoxPreference vibrationPreference;
 
@@ -55,14 +57,15 @@ public class SettingsFragment extends PreferenceFragment {
 
         compactModePreference = (CheckBoxPreference) findPreference(COMPACT_MODE);
         clearCachePreference = findPreference(CLEAR_CACHE);
-        cacheSizePreference = (ListPreference) findPreference(CACHE_SIZE);
         checkNewSeriesPreference = (CheckBoxPreference) findPreference(CHECK_NEW_SERIES);
+        timePreference = findPreference(TIME);
         ringtonePreference = (RingtonePreference) findPreference(RINGTONE);
         vibrationPreference = (CheckBoxPreference) findPreference(VIBRATION);
 
-        clearCachePreferenceInitialize();
-        checkNewSeriesPreferenceInitialize();
-        ringtonePreferenceInitialize();
+        clearCachePreferenceInitialize(clearCachePreference);
+        checkNewSeriesPreferenceInitialize(checkNewSeriesPreference);
+        timePreferenceInitialize(timePreference);
+        ringtonePreferenceInitialize(ringtonePreference);
     }
 
     @Override
@@ -76,12 +79,13 @@ public class SettingsFragment extends PreferenceFragment {
         }
     }
 
+    //TODO: use fromCallable
     private Observable<Object> clearCache() {
         Glide.get(getActivity()).clearDiskCache();
         return Observable.just(null);
     }
 
-    private void clearCachePreferenceInitialize() {
+    private void clearCachePreferenceInitialize(Preference clearCachePreference) {
         setCacheSize(clearCachePreference);
         clearCachePreference.setOnPreferenceClickListener(preference -> {
             FragmentManager fragmentManager = getFragmentManager();
@@ -110,25 +114,53 @@ public class SettingsFragment extends PreferenceFragment {
         return bytes;
     }
 
-    private void checkNewSeriesPreferenceInitialize() {
+    private void checkNewSeriesPreferenceInitialize(CheckBoxPreference checkNewSeriesPreference) {
+        setEnabledNotificationsViews(checkNewSeriesPreference.isChecked());
         checkNewSeriesPreference.setOnPreferenceChangeListener((preference, value) -> {
-            ringtonePreference.setEnabled((Boolean) value);
-            vibrationPreference.setEnabled((Boolean) value);
+            setEnabledNotificationsViews((Boolean) value);
             return true;
         });
     }
 
-    private void ringtonePreferenceInitialize() {
+    private void setEnabledNotificationsViews(boolean value) {
+        timePreference.setEnabled(value);
+        ringtonePreference.setEnabled(value);
+        vibrationPreference.setEnabled(value);
+    }
+
+    private void timePreferenceInitialize(Preference timePreference) {
+        setTime(timePreference);
+        timePreference.setOnPreferenceClickListener(preference -> {
+            int time = timePreference.getSharedPreferences().getInt(timePreference.getKey(), DEFAULT_TIME);
+            new TimePickerDialog(getActivity(), (timePicker, h, m) -> setTime(preference, h, m),
+                    time / HOUR, time % HOUR, true).show();
+            return true;
+        });
+    }
+
+    private void setTime(Preference preference) {
+        int time = timePreference.getSharedPreferences().getInt(timePreference.getKey(), DEFAULT_TIME);
+        setTime(preference, time / HOUR, time % HOUR);
+    }
+
+    private void setTime(Preference preference, int hour, int minute) {
+        SharedPreferences.Editor editor = preference.getEditor();
+        editor.putInt(preference.getKey(), hour * HOUR + minute);
+        editor.apply();
+        preference.setSummary(String.format("%d:%02d", hour, minute));
+    }
+
+    private void ringtonePreferenceInitialize(RingtonePreference ringtonePreference) {
         setRingtoneName(ringtonePreference);
         ringtonePreference.setOnPreferenceChangeListener((preference, value) -> {
-            setRingtoneName(ringtonePreference, value.toString());
+            setRingtoneName(preference, value.toString());
             return true;
         });
     }
 
     private void setRingtoneName(Preference preference) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        setRingtoneName(preference, preferences.getString(RINGTONE, null));
+        String uri = preference.getSharedPreferences().getString(preference.getKey(), null);
+        setRingtoneName(preference, uri);
     }
 
     private void setRingtoneName(Preference preference, String uri) {
