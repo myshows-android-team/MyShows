@@ -124,7 +124,7 @@ public class MainActivity extends RxAppCompatActivity {
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
-                    if (info != null && !menuItem.isChecked()) {
+                    if (info != null && currentItemId != menuItem.getItemId()) {
                         currentItemId = menuItem.getItemId();
                         setActionBarTitle(info.titleId);
                         Fragment oldFragment = fragmentManager.findFragmentById(R.id.content);
@@ -135,7 +135,6 @@ public class MainActivity extends RxAppCompatActivity {
                                 .attach(newFragment)
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                 .commit();
-                        menuItem.setChecked(true);
                     }
                     drawerLayout.closeDrawers();
                     return true;

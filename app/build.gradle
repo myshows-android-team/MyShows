@@ -3,8 +3,8 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "23"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "me.myshows.android"
@@ -34,10 +34,10 @@ android {
     }
 }
 
-def supportVersion = '22.2.1'
+def supportVersion = '23.0.1'
 def retrofitVersion = '1.9.0'
 def parcelerVersion = '1.0.3'
-def rxlifecycleVersion = '0.2.0'
+def rxlifecycleVersion = '0.3.0'
 
 dependencies {
     compile "com.android.support:appcompat-v7:$supportVersion"
@@ -52,7 +52,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile "com.squareup.retrofit:retrofit:$retrofitVersion"
     compile "com.squareup.retrofit:converter-jackson:$retrofitVersion"
-    compile 'io.realm:realm-android:0.82.1'
+    compile 'io.realm:realm-android:0.82.2'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'io.reactivex:rxandroid:1.0.1'
     compile "com.trello:rxlifecycle:$rxlifecycleVersion"
