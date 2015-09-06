@@ -61,4 +61,27 @@
     <!-- Ratings screen -->
     <string name="watching">%s смотрят</string>
     <string name="show_rating">Рейтинг \u2014 %.2f</string>
+
+    <!-- Preference -->
+    <string name="compact_mode">Компактный вид</string>
+    <string name="compact_mode_description">Отображать сериалы в компактном виде (без картинок)</string>
+    <string name="clear_cache">Очистить кэш</string>
+    <string name="clear_cache_dialog_title">Очистить кэш?</string>
+    <string name="clear_cache_dialog_content">Приложение очистит данные о сериалах с вашего устройства, но вы всегда можете загрузить их снова.</string>
+    <string name="clear_cache_dialog_reject">Отмена</string>
+    <string name="clear_cache_dialog_accept">Очистить</string>
+
+    <string name="notification">Уведомления</string>
+    <string name="check_new_series">Уведомлять о новых сериях</string>
+    <string name="time">Время</string>
+    <string name="ringtone">Рингтон</string>
+    <string name="none_ringtone">Без звука</string>
+    <string name="vibration">Вибрация</string>
+
+    <string name="other">Другое</string>
+    <string name="sign_out">Выйти</string>
+    <string name="sign_out_dialog_title">Выйти?</string>
+    <string name="sign_out_dialog_content">При выходе из учетной записи из устройства будут удалены все связанные с ней данные. Продолжить?</string>
+    <string name="sign_out_dialog_reject">Отмена</string>
+    <string name="sign_out_dialog_accept">Выйти</string>
 </resources>

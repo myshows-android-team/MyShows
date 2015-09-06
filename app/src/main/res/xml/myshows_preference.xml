@@ -16,7 +16,6 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="check_new_series"
-            android:summary="@string/check_new_series_summary"
             android:title="@string/check_new_series" />
 
         <Preference

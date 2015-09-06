@@ -71,8 +71,7 @@
     <string name="clear_cache_dialog_accept">Clear</string>
 
     <string name="notification">Notification</string>
-    <string name="check_new_series">Check new series</string>
-    <string name="check_new_series_summary">Notify about new series</string>
+    <string name="check_new_series">Notify about new series</string>
     <string name="time">Time</string>
     <string name="ringtone">Ringtone</string>
     <string name="none_ringtone">None</string>
