@@ -5,6 +5,10 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="Theme.MyShows.Settings" parent="Base.Theme.MyShows">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
     <style name="Theme.MyShows.Login">
         <item name="colorAccent">@android:color/white</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

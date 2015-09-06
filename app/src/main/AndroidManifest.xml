@@ -25,7 +25,9 @@
 
         <activity android:name=".ui.activities.ShowActivity" />
 
-        <activity android:name=".ui.activities.SettingsActivity" />
+        <activity
+            android:name=".ui.activities.SettingsActivity"
+            android:theme="@style/Theme.MyShows.Settings" />
 
         <meta-data
             android:name="me.myshows.android.model.glide.MyShowsGlideModule"
