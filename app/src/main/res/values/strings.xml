@@ -67,6 +67,10 @@
 
     <string name="cache">Cache</string>
     <string name="clear_cache">Clear cache</string>
+    <string name="clear_cache_dialog_title">Clear cache?</string>
+    <string name="clear_cache_dialog_content">The application will clear show data from you device, but you can always download it again.</string>
+    <string name="clear_cache_dialog_reject">Cancel</string>
+    <string name="clear_cache_dialog_accept">Clear</string>
     <string name="cache_size">Cache size</string>
     <string-array name="cache_entries">
         <item>Cache size 1</item>

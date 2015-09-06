@@ -1,9 +1,14 @@
 package me.myshows.android.ui.fragments;
 
+import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -58,13 +63,28 @@ public class SettingsFragment extends PreferenceFragment {
         ringtonePreferenceInitialize();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == ClearCacheDialog.REQUEST_CODE) {
+            new ClearCacheTask().execute();
+        }
+    }
+
     private void clearCachePreferenceInitialize() {
-        long bytes = getCacheSize(Glide.getPhotoCacheDir(getActivity()));
-        clearCachePreference.setSummary(FileUtils.byteCountToDisplaySize(bytes));
+        setCacheSize(clearCachePreference);
         clearCachePreference.setOnPreferenceClickListener(preference -> {
-            new Thread(() -> Glide.get(getActivity()).clearDiskCache()).start();
+            FragmentManager fragmentManager = getFragmentManager();
+            DialogFragment fragment = new ClearCacheDialog();
+            fragment.setTargetFragment(this, ClearCacheDialog.REQUEST_CODE);
+            fragment.show(fragmentManager, null);
             return true;
         });
+    }
+
+    private void setCacheSize(Preference preference) {
+        long bytes = getCacheSize(Glide.getPhotoCacheDir(getActivity()));
+        preference.setSummary(FileUtils.byteCountToDisplaySize(bytes));
     }
 
     private long getCacheSize(File dir) {
@@ -96,17 +116,32 @@ public class SettingsFragment extends PreferenceFragment {
         });
     }
 
-    private void setRingtoneName(RingtonePreference preference) {
+    private void setRingtoneName(Preference preference) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         setRingtoneName(preference, preferences.getString(RINGTONE, null));
     }
 
-    private void setRingtoneName(RingtonePreference preference, String uri) {
+    private void setRingtoneName(Preference preference, String uri) {
         if (uri == null || uri.isEmpty()) {
-            preference.setSummary(getString(R.string.none_ringtone));
+            preference.setSummary(R.string.none_ringtone);
         } else {
             Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(uri));
             preference.setSummary(ringtone.getTitle(getActivity()));
+        }
+    }
+
+    private class ClearCacheTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Glide.get(getActivity()).clearDiskCache();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            setCacheSize(clearCachePreference);
         }
     }
 }
