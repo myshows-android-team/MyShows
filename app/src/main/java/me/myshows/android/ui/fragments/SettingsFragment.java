@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -24,6 +23,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 
 import me.myshows.android.R;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Whiplash on 06.09.2015.
@@ -67,8 +69,16 @@ public class SettingsFragment extends PreferenceFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == ClearCacheDialog.REQUEST_CODE) {
-            new ClearCacheTask().execute();
+            Observable.defer(this::clearCache)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(o -> setCacheSize(clearCachePreference));
         }
+    }
+
+    private Observable<Object> clearCache() {
+        Glide.get(getActivity()).clearDiskCache();
+        return Observable.just(null);
     }
 
     private void clearCachePreferenceInitialize() {
@@ -127,21 +137,6 @@ public class SettingsFragment extends PreferenceFragment {
         } else {
             Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(uri));
             preference.setSummary(ringtone.getTitle(getActivity()));
-        }
-    }
-
-    private class ClearCacheTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Glide.get(getActivity()).clearDiskCache();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            setCacheSize(clearCachePreference);
         }
     }
 }
