@@ -34,4 +34,12 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/other">
+
+        <Preference
+            android:key="sign_out"
+            android:title="@string/sign_out" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -22,7 +22,10 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import io.realm.Realm;
 import me.myshows.android.R;
+import me.myshows.android.api.impl.MyShowsClientImpl;
+import me.myshows.android.model.persistent.dao.RealmManager;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -38,6 +41,10 @@ public class SettingsFragment extends PreferenceFragment {
     public static final String TIME = "time";
     public static final String RINGTONE = "ringtone";
     public static final String VIBRATION = "vibration";
+    public static final String SIGN_OUT = "sign_out";
+
+    public static final int CLEAR_CACHE_REQUEST_CODE = 0;
+    public static final int SIGN_OUT_REQUEST_CODE = 1;
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
     private static final int HOUR = (int) TimeUnit.HOURS.toMinutes(1);
@@ -49,6 +56,7 @@ public class SettingsFragment extends PreferenceFragment {
     private Preference timePreference;
     private RingtonePreference ringtonePreference;
     private CheckBoxPreference vibrationPreference;
+    private Preference signOutPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,22 +69,35 @@ public class SettingsFragment extends PreferenceFragment {
         timePreference = findPreference(TIME);
         ringtonePreference = (RingtonePreference) findPreference(RINGTONE);
         vibrationPreference = (CheckBoxPreference) findPreference(VIBRATION);
+        signOutPreference = findPreference(SIGN_OUT);
 
         clearCachePreferenceInitialize(clearCachePreference);
         checkNewSeriesPreferenceInitialize(checkNewSeriesPreference);
         timePreferenceInitialize(timePreference);
         ringtonePreferenceInitialize(ringtonePreference);
+        signOutPreferenceInitialize(signOutPreference);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == ClearCacheDialog.REQUEST_CODE) {
-            Observable.defer(this::clearCache)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(o -> setCacheSize(clearCachePreference));
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case CLEAR_CACHE_REQUEST_CODE:
+                    clearCacheTask();
+                    break;
+                case SIGN_OUT_REQUEST_CODE:
+                    signOutTask();
+                    break;
+            }
         }
+    }
+
+    private void clearCacheTask() {
+        Observable.defer(this::clearCache)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> setCacheSize(clearCachePreference));
     }
 
     //TODO: use fromCallable
@@ -85,12 +106,28 @@ public class SettingsFragment extends PreferenceFragment {
         return Observable.just(null);
     }
 
+    private void signOutTask() {
+        Observable.defer(this::signOut)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> {
+                    getActivity().setResult(Activity.RESULT_OK, null);
+                    getActivity().finish();
+                });
+    }
+
+    private Observable<Object> signOut() {
+        Realm.deleteRealm(new RealmManager().getConfiguration());
+        MyShowsClientImpl.getInstance().cleanStorage();
+        return Observable.just(null);
+    }
+
     private void clearCachePreferenceInitialize(Preference clearCachePreference) {
         setCacheSize(clearCachePreference);
         clearCachePreference.setOnPreferenceClickListener(preference -> {
             FragmentManager fragmentManager = getFragmentManager();
             DialogFragment fragment = new ClearCacheDialog();
-            fragment.setTargetFragment(this, ClearCacheDialog.REQUEST_CODE);
+            fragment.setTargetFragment(this, CLEAR_CACHE_REQUEST_CODE);
             fragment.show(fragmentManager, null);
             return true;
         });
@@ -170,5 +207,15 @@ public class SettingsFragment extends PreferenceFragment {
             Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(uri));
             preference.setSummary(ringtone.getTitle(getActivity()));
         }
+    }
+
+    private void signOutPreferenceInitialize(Preference signOutPreference) {
+        signOutPreference.setOnPreferenceClickListener(preference -> {
+            FragmentManager fragmentManager = getFragmentManager();
+            DialogFragment fragment = new SignOutDialog();
+            fragment.setTargetFragment(this, SIGN_OUT_REQUEST_CODE);
+            fragment.show(fragmentManager, null);
+            return true;
+        });
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -125,5 +126,12 @@ public class RealmManager {
             return query.equalTo(fieldName, (double) value);
         }
         throw new IllegalArgumentException("Unsupported value type");
+    }
+
+    public RealmConfiguration getConfiguration() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmConfiguration configuration = realm.getConfiguration();
+        realm.close();
+        return configuration;
     }
 }

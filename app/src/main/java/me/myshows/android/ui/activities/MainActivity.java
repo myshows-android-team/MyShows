@@ -30,6 +30,7 @@ import me.myshows.android.ui.fragments.FriendsFragment;
 import me.myshows.android.ui.fragments.MyShowsFragment;
 import me.myshows.android.ui.fragments.ProfileFragment;
 import me.myshows.android.ui.fragments.RatingsFragment;
+import me.myshows.android.ui.fragments.SettingsFragment;
 
 /**
  * @author Whiplash
@@ -108,6 +109,15 @@ public class MainActivity extends RxAppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == SettingsFragment.SIGN_OUT_REQUEST_CODE) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+    }
+
     private void setupActionBar(Toolbar toolbar) {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -126,7 +136,8 @@ public class MainActivity extends RxAppCompatActivity {
                 menuItem -> {
                     switch (menuItem.getItemId()) {
                         case R.id.nav_settings:
-                            startActivity(new Intent(this, SettingsActivity.class));
+                            startActivityForResult(new Intent(this, SettingsActivity.class),
+                                    SettingsFragment.SIGN_OUT_REQUEST_CODE);
                             break;
                         default:
                             FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());

@@ -78,4 +78,11 @@
     <string name="none_ringtone">None</string>
     <string name="vibration">Vibration</string>
 
+    <string name="other">Other</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_dialog_title">Sign out?</string>
+    <string name="sign_out_dialog_content">Signing out will delete all data related to this account from this device. Continue?</string>
+    <string name="sign_out_dialog_reject">Cancel</string>
+    <string name="sign_out_dialog_accept">Sign out</string>
+
 </resources>

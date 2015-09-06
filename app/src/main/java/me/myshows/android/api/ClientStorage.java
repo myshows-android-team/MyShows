@@ -13,4 +13,6 @@ public interface ClientStorage {
     Set<String> getCookies();
 
     void putCookies(Set<String> cookies);
+
+    void clean();
 }
