@@ -47,30 +47,25 @@ public class SettingsFragment extends PreferenceFragment {
     public static final int CLEAR_CACHE_REQUEST_CODE = 0;
     public static final int SIGN_OUT_REQUEST_CODE = 1;
 
-    private static final String TAG = SettingsFragment.class.getSimpleName();
     private static final int HOUR = (int) TimeUnit.HOURS.toMinutes(1);
     private static final int DEFAULT_TIME = (int) TimeUnit.HOURS.toMinutes(12);
 
-    private CheckBoxPreference compactModePreference;
     private Preference clearCachePreference;
-    private CheckBoxPreference checkNewSeriesPreference;
     private Preference timePreference;
     private RingtonePreference ringtonePreference;
     private CheckBoxPreference vibrationPreference;
-    private Preference signOutPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.myshows_preference);
 
-        compactModePreference = (CheckBoxPreference) findPreference(COMPACT_MODE);
         clearCachePreference = findPreference(CLEAR_CACHE);
-        checkNewSeriesPreference = (CheckBoxPreference) findPreference(CHECK_NEW_SERIES);
+        CheckBoxPreference checkNewSeriesPreference = (CheckBoxPreference) findPreference(CHECK_NEW_SERIES);
         timePreference = findPreference(TIME);
         ringtonePreference = (RingtonePreference) findPreference(RINGTONE);
         vibrationPreference = (CheckBoxPreference) findPreference(VIBRATION);
-        signOutPreference = findPreference(SIGN_OUT);
+        Preference signOutPreference = findPreference(SIGN_OUT);
 
         clearCachePreferenceInitialize(clearCachePreference);
         checkNewSeriesPreferenceInitialize(checkNewSeriesPreference);
