@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 
 import com.bumptech.glide.Glide;
@@ -119,6 +120,7 @@ public class SettingsFragment extends PreferenceFragment {
     private Observable<Object> signOut() {
         Realm.deleteRealm(new RealmManager().getConfiguration());
         MyShowsClientImpl.getInstance().cleanStorage();
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
         return Observable.just(null);
     }
 
