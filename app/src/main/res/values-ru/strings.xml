@@ -81,7 +81,7 @@
     <string name="other">Другое</string>
     <string name="sign_out">Выйти</string>
     <string name="sign_out_dialog_title">Выйти?</string>
-    <string name="sign_out_dialog_content">При выходе из учетной записи из устройства будут удалены все связанные с ней данные. Продолжить?</string>
+    <string name="sign_out_dialog_content">При выходе из учетной записи с устройства будут удалены все связанные с ней данные. Продолжить?</string>
     <string name="sign_out_dialog_reject">Отмена</string>
     <string name="sign_out_dialog_accept">Выйти</string>
 </resources>
