@@ -23,10 +23,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import io.realm.Realm;
 import me.myshows.android.R;
 import me.myshows.android.api.impl.MyShowsClientImpl;
-import me.myshows.android.model.persistent.dao.RealmManager;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -113,9 +111,11 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private Observable<Object> signOut() {
-        Realm.deleteRealm(new RealmManager().getConfiguration());
-        MyShowsClientImpl.getInstance().cleanStorage();
-        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
+        MyShowsClientImpl.getInstance().clean();
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .edit()
+                .clear()
+                .apply();
         return Observable.just(null);
     }
 
@@ -138,11 +138,13 @@ public class SettingsFragment extends PreferenceFragment {
     private long getCacheSize(File dir) {
         long bytes = 0;
         File[] files = dir.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                bytes += getCacheSize(dir);
-            } else {
-                bytes += file.length();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    bytes += getCacheSize(dir);
+                } else {
+                    bytes += file.length();
+                }
             }
         }
         return bytes;

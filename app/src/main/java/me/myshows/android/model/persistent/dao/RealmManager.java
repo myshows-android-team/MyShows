@@ -1,5 +1,7 @@
 package me.myshows.android.model.persistent.dao;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,16 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class RealmManager {
+
+    private final RealmConfiguration configuration;
+
+    public RealmManager(Context context) {
+        configuration = new RealmConfiguration.Builder(context)
+                .schemaVersion(0)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(configuration);
+    }
 
     public <T> T insertEntity(T entity, ToPersistentEntity<T> converter) {
         Realm realm = Realm.getDefaultInstance();
@@ -129,9 +141,6 @@ public class RealmManager {
     }
 
     public RealmConfiguration getConfiguration() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmConfiguration configuration = realm.getConfiguration();
-        realm.close();
         return configuration;
     }
 }
