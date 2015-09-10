@@ -141,7 +141,7 @@ public class MainActivity extends RxAppCompatActivity {
                             break;
                         default:
                             FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
-                            if (info != null && !menuItem.isChecked()) {
+                            if (info != null && currentItemId != menuItem.getItemId()) {
                                 currentItemId = menuItem.getItemId();
                                 setActionBarTitle(info.titleId);
                                 Fragment oldFragment = fragmentManager.findFragmentById(R.id.content);
