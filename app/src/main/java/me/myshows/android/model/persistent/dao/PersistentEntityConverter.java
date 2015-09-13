@@ -2,7 +2,6 @@ package me.myshows.android.model.persistent.dao;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,7 +171,7 @@ public class PersistentEntityConverter {
 
     public Feed toFeed(PersistentFeed persistentFeed) {
         try {
-            Date date = new Date(persistentFeed.getDate());
+            long date = persistentFeed.getDate();
             List<UserFeed> userFeeds = marshaller.deserializeList(persistentFeed.getFeeds(), ArrayList.class, UserFeed.class);
             return new Feed(date, userFeeds);
         } catch (IOException e) {
@@ -182,7 +181,7 @@ public class PersistentEntityConverter {
 
     public PersistentFeed fromFeed(Feed feed) {
         try {
-            long millis = feed.getDate().getTime();
+            long millis = feed.getDate();
             byte[] userFeeds = marshaller.serialize(feed.getFeeds());
             return new PersistentFeed(millis, userFeeds);
         } catch (IOException e) {
