@@ -43,6 +43,7 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserPreview;
 import me.myshows.android.ui.activities.ShowActivity;
+import rx.Observable;
 
 /**
  * Created by warrior on 19.07.15.
@@ -51,9 +52,6 @@ public class FriendsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
     private StickyRecyclerHeadersDecoration itemDecoration;
-
-    private List<Feed> feeds;
-    private Map<String, String> friendsAvatar;
 
     @Nullable
     @Override
@@ -71,31 +69,20 @@ public class FriendsFragment extends RxFragment {
 
     private void loadData() {
         MyShowsClient client = MyShowsClientImpl.getInstance();
-        client.friendsNews()
+        Observable<Map<String, String>> friendsAvatarObservable = client.profile()
+                .map(this::extractFriendsAvatar);
+        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FeedAdapter::new)
                 .compose(bindToLifecycle())
-                .subscribe(feeds -> {
-                    this.feeds = feeds;
-                    trySetAdapter();
-                });
-        client.profile()
-                .compose(bindToLifecycle())
-                .map(this::extractFriendsAvatar)
-                .subscribe(friendsAvatar -> {
-                    this.friendsAvatar = friendsAvatar;
-                    trySetAdapter();
-                });
+                .subscribe(this::setAdapter);
     }
 
-    private void trySetAdapter() {
-        if (feeds != null && friendsAvatar != null) {
-            FeedAdapter adapter = new FeedAdapter(feeds, friendsAvatar);
-            if (itemDecoration != null) {
-                recyclerView.removeItemDecoration(itemDecoration);
-            }
-            recyclerView.setAdapter(adapter);
-            itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
-            recyclerView.addItemDecoration(itemDecoration);
+    private void setAdapter(FeedAdapter adapter) {
+        if (itemDecoration != null) {
+            recyclerView.removeItemDecoration(itemDecoration);
         }
+        recyclerView.setAdapter(adapter);
+        itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
+        recyclerView.addItemDecoration(itemDecoration);
     }
 
     private Map<String, String> extractFriendsAvatar(User user) {
