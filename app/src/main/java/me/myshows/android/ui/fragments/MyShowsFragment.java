@@ -25,7 +25,6 @@ import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.ui.activities.ShowActivity;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by warrior on 06.07.15.
@@ -52,12 +51,12 @@ public class MyShowsFragment extends RxFragment {
         MyShowsClient client = MyShowsClientImpl.getInstance();
         client.profileShows()
                 .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(shows -> {
-                            ShowAdapter adapter = new ShowAdapter(shows);
-                            recyclerView.setAdapter(adapter);
-                        }
-                );
+                .map(ShowAdapter::new)
+                .subscribe(this::setAdapter);
+    }
+
+    private void setAdapter(ShowAdapter adapter) {
+        recyclerView.setAdapter(adapter);
     }
 
     private static class ShowAdapter extends RecyclerView.Adapter<ShowHolder> {
