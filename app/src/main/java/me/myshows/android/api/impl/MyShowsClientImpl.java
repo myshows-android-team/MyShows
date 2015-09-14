@@ -34,7 +34,7 @@ import me.myshows.android.model.persistent.dao.PersistentEntityConverter;
 import me.myshows.android.model.persistent.dao.Predicate;
 import me.myshows.android.model.persistent.dao.RealmManager;
 import me.myshows.android.model.serialization.JsonMarshaller;
-import me.myshows.android.utils.Integers;
+import me.myshows.android.utils.Numbers;
 import retrofit.RestAdapter;
 import retrofit.client.Header;
 import retrofit.client.OkClient;
@@ -249,7 +249,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
             }
             api.ratingShows()
                     .map(shows -> {
-                        Collections.sort(shows, (s1, s2) -> Integers.compare(s1.getPlace(), s2.getPlace()));
+                        Collections.sort(shows, (s1, s2) -> Numbers.compare(s1.getPlace(), s2.getPlace()));
                         return shows;
                     })
                     .subscribe(
