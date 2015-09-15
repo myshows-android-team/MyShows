@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/show_screen_divider"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <TextView
+        style="@style/MyShows.ShowScreen.TextView.Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/overview" />
+
+    <TextView
+        style="@style/MyShows.ShowScreen.TextView"
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:textColor="@color/dark_gray"
+        tools:text="Heroes is a cult serial saga about people all over the world discovering that they have superpowers and trying to deal with how this change affects their lives." />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView"
+            android:id="@+id/duration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_show_duration"
+            tools:text="45 min / series" />
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView"
+            android:id="@+id/status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_show_status"
+            tools:text="Ended" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_half_padding" />
+
+    <LinearLayout
+        android:id="@+id/genres_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_drama"
+            android:text="Drama"
+            tools:text="Drama" />
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_super_heroes"
+            android:text="Super Heroes"
+            tools:text="Super Heroes" />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/MyShows.ShowScreen.TextView.Header"
+        android:id="@+id/rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Series rating (4.25)" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:text="@string/my_rating"
+            android:textColor="#717171" />
+
+        <RatingBar
+            style="@style/MyShows.RatingBar"
+            android:id="@+id/my_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_margin="12dp"
+            tools:rating="4" />
+
+    </FrameLayout>
+
+    <TextView
+        style="@style/MyShows.ShowScreen.TextView.Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/seasons" />
+
+</LinearLayout>

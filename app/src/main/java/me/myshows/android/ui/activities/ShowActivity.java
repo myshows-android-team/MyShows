@@ -5,50 +5,54 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
+import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import org.parceler.Parcels;
+
+import java.util.Collections;
 
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
-import rx.Subscription;
+import rx.Observable;
 
 /**
  * Created by warrior on 19.07.15.
  */
 public class ShowActivity extends RxAppCompatActivity {
 
-    public static final String SHOW_ID = "showId";
-    public static final String USER_SHOW = "userShow";
+    private static final String TAG = ShowActivity.class.getSimpleName();
 
-    private static final String OPEN_P_TAG = "<p>";
-    private static final String CLOSE_P_TAG = "</p>";
+    public static final String SHOW_ID = "showId";
+    public static final String SHOW_TITLE = "showTitle";
+    public static final String USER_SHOW = "userShow";
 
     private MyShowsClient client;
 
     private ImageView showImage;
     private CollapsingToolbarLayout collapsingToolbar;
-    private TextView description;
-    private TextView duration;
-    private TextView status;
-    private TextView rating;
-    private RatingBar myRating;
     private FloatingActionButton fab;
+    private RecyclerView recyclerView;
 
-    private boolean hasUserShow;
+    private RecyclerViewExpandableItemManager expandableItemManager;
+    private RecyclerView.Adapter wrappedAdapter;
+    private ShowAdapter adapter;
+
+    private UserShow userShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,25 +67,26 @@ public class ShowActivity extends RxAppCompatActivity {
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         showImage = (ImageView) findViewById(R.id.show_image);
-        description = (TextView) findViewById(R.id.description);
-        duration = (TextView) findViewById(R.id.duration);
-        status = (TextView) findViewById(R.id.status);
-        rating = (TextView) findViewById(R.id.rating);
-        myRating = (RatingBar) findViewById(R.id.my_rating);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.addItemDecoration(new ShowAdapter.DividerDecorator(this));
 
-        Intent intent = getIntent();
+        int showId = extractAndBindShowData(getIntent());
+        loadData(showId);
+    }
+
+    private int extractAndBindShowData(Intent intent) {
         int showId;
         if (intent.hasExtra(USER_SHOW)) {
-            hasUserShow = true;
-            UserShow userShow = Parcels.unwrap(intent.getParcelableExtra(USER_SHOW));
+            userShow = Parcels.unwrap(intent.getParcelableExtra(USER_SHOW));
             bind(userShow);
             showId = userShow.getShowId();
         } else {
-            hasUserShow = false;
             showId = intent.getIntExtra(SHOW_ID, 0);
+            String showTitle = intent.getStringExtra(SHOW_TITLE);
+            collapsingToolbar.setTitle(showTitle);
         }
-        loadData(showId);
+        return showId;
     }
 
     @Override
@@ -94,49 +99,78 @@ public class ShowActivity extends RxAppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        if (expandableItemManager != null) {
+            expandableItemManager.release();
+        }
+
+        if (wrappedAdapter != null) {
+            WrapperAdapterUtils.releaseAll(wrappedAdapter);
+            wrappedAdapter = null;
+        }
+        super.onDestroy();
+    }
+
     private void loadData(int showId) {
-        client.showInformation(showId)
+        Observable<Show> showObservable = client.showInformation(showId)
+                .doOnNext(this::bind);
+        Observable<UserShowEpisodes> userShowEpisodesObservable = client.profileEpisodesOfShow(showId)
+                .defaultIfEmpty(new UserShowEpisodes(showId, Collections.emptyList()));
+        Observable.combineLatest(showObservable, userShowEpisodesObservable, ShowAdapter::create)
                 .compose(bindToLifecycle())
-                .subscribe(this::bind);
+                .subscribe(this::setAdapter);
+        if (userShow == null) {
+            loadUserShow(showId);
+        }
+    }
+
+    private void loadUserShow(int showId) {
+        client.profileShows()
+                .compose(bindToLifecycle())
+                .flatMap(Observable::from)
+                .filter(show -> show.getShowId() == showId)
+                .doOnNext(this::bind)
+                .subscribe(userShow -> {
+                    this.userShow = userShow;
+                    if (adapter != null) {
+                        adapter.setUserShow(userShow);
+                        adapter.notifyItemChanged(0);
+                    }
+                });
     }
 
     @SuppressLint("NewApi")
     private void bind(UserShow show) {
         collapsingToolbar.setTitle(show.getTitle());
-        myRating.setRating(show.getRating());
-        status.setText(show.getShowStatus().getStringId());
         WatchStatus watchStatus = show.getWatchStatus();
         fab.setImageResource(watchStatus.getDrawableId());
         fab.setBackgroundTintList(getResources().getColorStateList(watchStatus.getColorId()));
     }
 
     private void bind(Show show) {
-        if (!hasUserShow) {
-            collapsingToolbar.setTitle(show.getTitle());
-            status.setText(show.getShowStatus().getStringId());
-        }
+        collapsingToolbar.setTitle(show.getTitle());
         Glide.with(this)
                 .load(show)
                 .centerCrop()
                 .into(showImage);
-        CharSequence descriptionText = processDescription(show.getDescription());
-        if (descriptionText.length() == 0) {
-            description.setVisibility(View.GONE);
-        } else {
-            description.setText(descriptionText);
-        }
-        duration.setText(getResources().getQuantityString(R.plurals.duration, show.getRuntime(), show.getRuntime()));
-        rating.setText(getString(R.string.rating, show.getRating()));
     }
 
-    private CharSequence processDescription(String description) {
-        description = description.trim();
-        if (description.startsWith(OPEN_P_TAG)) {
-            description = description.substring(OPEN_P_TAG.length());
+    private void setAdapter(ShowAdapter adapter) {
+        this.adapter = adapter;
+        if (userShow != null) {
+            adapter.setUserShow(userShow);
         }
-        if (description.endsWith(CLOSE_P_TAG)) {
-            description = description.substring(0, description.length() - CLOSE_P_TAG.length());
-        }
-        return Html.fromHtml(description);
+        expandableItemManager = new RecyclerViewExpandableItemManager(null);
+        wrappedAdapter = expandableItemManager.createWrappedAdapter(adapter);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(wrappedAdapter);
+
+        RecyclerView.ItemAnimator animator = new RefactoredDefaultItemAnimator();
+        animator.setSupportsChangeAnimations(false);
+        recyclerView.setItemAnimator(animator);
+        recyclerView.setHasFixedSize(false);
+        expandableItemManager.attachRecyclerView(recyclerView);
     }
 }
