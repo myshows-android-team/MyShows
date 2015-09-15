@@ -178,6 +178,7 @@ public class FriendsFragment extends RxFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
                 intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
+                intent.putExtra(ShowActivity.SHOW_TITLE, feed.getTitle());
                 itemView.getContext().startActivity(intent);
             }
 
