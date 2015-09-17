@@ -25,7 +25,7 @@ public class RatingShow implements ShowImage {
     @JsonCreator
     public RatingShow(@JsonProperty("id") int id, @JsonProperty("title") String title,
                       @JsonProperty("ruTitle") String ruTitle, @JsonProperty("status") ShowStatus showStatus,
-                      @JsonProperty("year") int year, @JsonProperty("nav_rating") float rating,
+                      @JsonProperty("year") int year, @JsonProperty("rating") float rating,
                       @JsonProperty("watching") int watching, @JsonProperty("image") String image,
                       @JsonProperty("place") int place) {
         this.id = id;
@@ -64,7 +64,7 @@ public class RatingShow implements ShowImage {
         return year;
     }
 
-    @JsonProperty("nav_rating")
+    @JsonProperty("rating")
     public float getRating() {
         return rating;
     }
