@@ -39,9 +39,9 @@ public class MainActivity extends RxAppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String MENU_ITEM_ID = "menuItemId";
-    
+
     private static final SparseArray<FragmentInfo> MENU_ITEM_ID_TO_FRAGMENT_INFO = new SparseArray<>();
-    
+
     static {
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_my_series, FragmentInfo.make(MyShowsFragment.class, R.string.my_series));
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_calendar, FragmentInfo.make(CalendarFragment.class, R.string.calendar));
@@ -57,6 +57,7 @@ public class MainActivity extends RxAppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     private AppBarLayout appbarLayout;
     private ImageView avatar;
+    private ImageView headerBackground;
     private TextView username;
 
     private int currentItemId;
@@ -85,10 +86,12 @@ public class MainActivity extends RxAppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setupNavigationDrawer(navigationView);
 
-        avatar = (ImageView) findViewById(R.id.nav_avatar);
         username = (TextView) findViewById(R.id.nav_username);
+        headerBackground = (ImageView) findViewById(R.id.nav_background);
+        avatar = (ImageView) findViewById(R.id.nav_avatar);
 
         loadData();
+        setHeaderBackground();
     }
 
     @Override
@@ -119,8 +122,8 @@ public class MainActivity extends RxAppCompatActivity {
 
     private void setupNavigationDrawer(NavigationView navigationView) {
         navigationView.getMenu()
-                    .findItem(currentItemId)
-                    .setChecked(true);
+                .findItem(currentItemId)
+                .setChecked(true);
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
@@ -140,7 +143,7 @@ public class MainActivity extends RxAppCompatActivity {
                     return true;
                 });
     }
-    
+
     private Fragment getFragment(Class<? extends Fragment> clazz) {
         Fragment fragment = fragmentManager.findFragmentByTag(clazz.getSimpleName());
         if (fragment == null) {
@@ -176,6 +179,14 @@ public class MainActivity extends RxAppCompatActivity {
                             .load(user.getAvatarUrl())
                             .into(avatar);
                 });
+    }
+
+    private void setHeaderBackground() {
+        // TODO: we need use background which user will select
+        Glide.with(this)
+                .load("http://media.myshows.me/shows/normal/d/da/da3e7aee7483129e27208bd8e36c0b64.jpg")
+                .crossFade()
+                .into(headerBackground);
     }
 
     private static class FragmentInfo {

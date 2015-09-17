@@ -10,9 +10,13 @@
     <dimen name="login_button_corner_radius">4dp</dimen>
 
     <!-- Navigation drawer dimens -->
-    <dimen name="nav_header_height">168dp</dimen>
-    <dimen name="nav_avatar_size">64dp</dimen>
-    <dimen name="nav_avatar_top_margin">0dp</dimen>
+    <dimen name="nav_header_height">172dp</dimen>
+    <!-- nav_header_height / 2 -->
+    <dimen name="nav_header_height_half">86dp</dimen>
+    <dimen name="nav_avatar_top_margin">123dp</dimen>
+    <dimen name="nav_avatar_size">98dp</dimen>
+    <!-- nav_avatar_size / 2 -->
+    <dimen name="nav_avatar_size_half">49dp</dimen>
 
     <!-- List show view dimens -->
     <dimen name="list_show_progress_height">3dp</dimen>
