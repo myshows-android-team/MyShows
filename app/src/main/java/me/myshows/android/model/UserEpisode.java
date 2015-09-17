@@ -15,7 +15,7 @@ public class UserEpisode {
 
     @JsonCreator
     public UserEpisode(@JsonProperty("id") int id, @JsonProperty("watchDate") String watchDate,
-                       @JsonProperty("rating") int rating) {
+                       @JsonProperty("nav_rating") int rating) {
         this.id = id;
         this.watchDate = watchDate;
         this.rating = rating;
@@ -31,7 +31,7 @@ public class UserEpisode {
         return watchDate;
     }
 
-    @JsonProperty("rating")
+    @JsonProperty("nav_rating")
     public int getRating() {
         return rating;
     }

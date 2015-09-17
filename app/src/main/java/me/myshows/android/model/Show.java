@@ -43,7 +43,7 @@ public class Show implements QualityShowImage {
                 @JsonProperty("ended") String ended, @JsonProperty("year") int year,
                 @JsonProperty("kinopoiskId") int kinopoiskId, @JsonProperty("tvrageId") int tvrageId,
                 @JsonProperty("imdbId") int imdbId, @JsonProperty("voted") int voted,
-                @JsonProperty("rating") float rating, @JsonProperty("runtime") int runtime,
+                @JsonProperty("nav_rating") float rating, @JsonProperty("runtime") int runtime,
                 @JsonProperty("image") String image, @JsonProperty("genres") int[] genres,
                 @JsonProperty("episodes") Map<String, Episode> episodes, @JsonProperty("watching") int watching,
                 @JsonProperty("images") String[] images, @JsonProperty("description") String description) {
@@ -129,7 +129,7 @@ public class Show implements QualityShowImage {
         return voted;
     }
 
-    @JsonProperty("rating")
+    @JsonProperty("nav_rating")
     public float getRating() {
         return rating;
     }

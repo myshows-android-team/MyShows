@@ -34,7 +34,7 @@ public class UserShow implements ShowImage {
                     @JsonProperty("ruTitle") String ruTitle, @JsonProperty("runtime") int runtime,
                     @JsonProperty("showStatus") ShowStatus showStatus, @JsonProperty("watchStatus") WatchStatus watchStatus,
                     @JsonProperty("watchedEpisodes") int watchedEpisodes, @JsonProperty("totalEpisodes") int totalEpisodes,
-                    @JsonProperty("rating") int rating, @JsonProperty("image") String image) {
+                    @JsonProperty("nav_rating") int rating, @JsonProperty("image") String image) {
         this.showId = showId;
         this.title = title;
         this.ruTitle = ruTitle;
@@ -87,7 +87,7 @@ public class UserShow implements ShowImage {
         return totalEpisodes;
     }
 
-    @JsonProperty("rating")
+    @JsonProperty("nav_rating")
     public int getRating() {
         return rating;
     }

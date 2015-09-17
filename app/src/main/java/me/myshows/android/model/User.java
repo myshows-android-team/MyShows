@@ -24,7 +24,7 @@ public class User {
     @JsonCreator
     public User(@JsonProperty("login") String login, @JsonProperty("avatar") String avatarUrl,
                 @JsonProperty("wastedTime") int wastedTime, @JsonProperty("gender") Gender gender,
-                @JsonProperty("friends") List<UserPreview> friends, @JsonProperty("followers") List<UserPreview> followers,
+                @JsonProperty("nav_friends") List<UserPreview> friends, @JsonProperty("followers") List<UserPreview> followers,
                 @JsonProperty("stats") Statistics stats) {
         this.login = login;
         this.avatarUrl = avatarUrl;
@@ -55,7 +55,7 @@ public class User {
         return gender;
     }
 
-    @JsonProperty("friends")
+    @JsonProperty("nav_friends")
     public List<UserPreview> getFriends() {
         return friends;
     }
