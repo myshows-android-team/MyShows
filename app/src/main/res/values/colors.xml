@@ -14,7 +14,8 @@
     <color name="red_30_opacity">#4CCC0000</color>
 
     <!-- Navigation drawer colors -->
-    <color name="nav_text_color">#212121</color>
+    <color name="nav_text_color">#4D4D4D</color>
+    <color name="nav_selected_item_color">#EEEEEE</color>
 
     <!-- List show view colors -->
     <color name="list_show_progress_background">@color/white_80_opacity</color>
