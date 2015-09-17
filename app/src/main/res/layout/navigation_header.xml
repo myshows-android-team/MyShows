@@ -11,7 +11,8 @@
         android:id="@+id/nav_background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_header_height"
-        android:background="?attr/colorPrimaryDark" />
+        android:background="?attr/colorPrimaryDark"
+        android:scaleType="fitXY" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/nav_avatar"
