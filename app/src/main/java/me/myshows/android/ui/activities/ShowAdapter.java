@@ -3,6 +3,7 @@ package me.myshows.android.ui.activities;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,8 @@ import me.myshows.android.model.Show;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
+import me.myshows.android.ui.decorators.*;
+import me.myshows.android.ui.decorators.ShadowDecorator;
 import me.myshows.android.utils.Numbers;
 import me.myshows.android.utils.SparseSet;
 
@@ -234,22 +237,29 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         return seasons;
     }
 
-    public static class DividerDecorator extends RecyclerView.ItemDecoration {
+    static class SeasonOffsetDecorator extends OffsetDecorator {
 
-        private final int offset;
-
-        public DividerDecorator(Context context) {
-            offset = context.getResources().getDimensionPixelSize(R.dimen.default_half_padding);
+        public SeasonOffsetDecorator(int offset) {
+            super(offset);
         }
 
         @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        protected boolean applyDecorator(View view, RecyclerView parent) {
             RecyclerView.ViewHolder holder = parent.getChildViewHolder(view);
-            if (holder instanceof SeasonViewHolder) {
-                if (holder.getAdapterPosition() != 1) {
-                    outRect.set(0, offset, 0, 0);
-                }
-            }
+            return holder instanceof SeasonViewHolder && holder.getAdapterPosition() != 1;
+        }
+    }
+
+    static class SeasonShadowDecorator extends ShadowDecorator {
+
+        public SeasonShadowDecorator(Drawable shadowDrawable) {
+            super(shadowDrawable);
+        }
+
+        @Override
+        protected boolean applyDecorator(View view, RecyclerView parent) {
+            RecyclerView.ViewHolder holder = parent.getChildViewHolder(view);
+            return holder instanceof SeasonViewHolder;
         }
     }
 

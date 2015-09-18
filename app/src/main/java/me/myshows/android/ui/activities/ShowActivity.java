@@ -69,7 +69,8 @@ public class ShowActivity extends RxAppCompatActivity {
         showImage = (ImageView) findViewById(R.id.show_image);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.addItemDecoration(new ShowAdapter.DividerDecorator(this));
+        recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_half_padding)));
+        recyclerView.addItemDecoration(new ShowAdapter.SeasonShadowDecorator(getResources().getDrawable(R.drawable.list_season_shadow)));
 
         int showId = extractAndBindShowData(getIntent());
         loadData(showId);
