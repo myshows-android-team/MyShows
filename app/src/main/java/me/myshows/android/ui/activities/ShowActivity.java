@@ -69,8 +69,7 @@ public class ShowActivity extends RxAppCompatActivity {
         showImage = (ImageView) findViewById(R.id.show_image);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_half_padding)));
-        recyclerView.addItemDecoration(new ShowAdapter.SeasonShadowDecorator(getResources().getDrawable(R.drawable.list_season_shadow)));
+        setupRecyclerView();
 
         int showId = extractAndBindShowData(getIntent());
         loadData(showId);
@@ -105,12 +104,20 @@ public class ShowActivity extends RxAppCompatActivity {
         if (expandableItemManager != null) {
             expandableItemManager.release();
         }
-
         if (wrappedAdapter != null) {
             WrapperAdapterUtils.releaseAll(wrappedAdapter);
-            wrappedAdapter = null;
         }
         super.onDestroy();
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(false);
+        recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_half_padding)));
+        recyclerView.addItemDecoration(new ShowAdapter.SeasonShadowDecorator(getResources().getDrawable(R.drawable.list_season_shadow)));
+        RecyclerView.ItemAnimator animator = new RefactoredDefaultItemAnimator();
+        animator.setSupportsChangeAnimations(false);
+        recyclerView.setItemAnimator(animator);
     }
 
     private void loadData(int showId) {
@@ -164,14 +171,7 @@ public class ShowActivity extends RxAppCompatActivity {
         }
         expandableItemManager = new RecyclerViewExpandableItemManager(null);
         wrappedAdapter = expandableItemManager.createWrappedAdapter(adapter);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(wrappedAdapter);
-
-        RecyclerView.ItemAnimator animator = new RefactoredDefaultItemAnimator();
-        animator.setSupportsChangeAnimations(false);
-        recyclerView.setItemAnimator(animator);
-        recyclerView.setHasFixedSize(false);
         expandableItemManager.attachRecyclerView(recyclerView);
     }
 }
