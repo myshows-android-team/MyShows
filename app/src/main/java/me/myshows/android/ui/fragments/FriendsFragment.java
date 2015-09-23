@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -70,7 +71,7 @@ public class FriendsFragment extends RxFragment {
     private void loadData() {
         MyShowsClient client = MyShowsClientImpl.getInstance();
         Observable<Map<String, String>> friendsAvatarObservable = client.profile()
-                .map(this::extractFriendsAvatar);
+                .map(FriendsFragment::extractAvatarUrls);
         Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FeedAdapter::new)
                 .compose(bindToLifecycle())
                 .subscribe(this::setAdapter);
@@ -85,15 +86,19 @@ public class FriendsFragment extends RxFragment {
         recyclerView.addItemDecoration(itemDecoration);
     }
 
-    private Map<String, String> extractFriendsAvatar(User user) {
-        Map<String, String> friendsAvatar = new HashMap<>();
-        for (UserPreview friend : user.getFriends()) {
-            friendsAvatar.put(friend.getLogin(), friend.getAvatarUrl());
+    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
+        Map<String, String> avatarUrls = new HashMap<>();
+        extractAvatarUrls(avatarUrls, user.getFriends());
+        extractAvatarUrls(avatarUrls, user.getFollowers());
+        return avatarUrls;
+    }
+
+    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
+        if (userPreviews != null) {
+            for (UserPreview userPreview : userPreviews) {
+                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
+            }
         }
-        for (UserPreview follower : user.getFollowers()) {
-            friendsAvatar.put(follower.getLogin(), follower.getAvatarUrl());
-        }
-        return friendsAvatar;
     }
 
     private static class FeedHolder extends RecyclerView.ViewHolder {
