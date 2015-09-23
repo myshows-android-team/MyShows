@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import me.myshows.android.MyShowsSettings;
 import me.myshows.android.R;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.Observable;
@@ -34,19 +35,17 @@ import rx.schedulers.Schedulers;
  */
 public class SettingsFragment extends PreferenceFragment {
 
-    public static final String COMPACT_MODE = "compact_mode";
-    public static final String CLEAR_CACHE = "clear_cache";
-    public static final String CHECK_NEW_SERIES = "check_new_series";
-    public static final String TIME = "time";
-    public static final String RINGTONE = "ringtone";
-    public static final String VIBRATION = "vibration";
-    public static final String SIGN_OUT = "sign_out";
-
     public static final int CLEAR_CACHE_REQUEST_CODE = 0;
     public static final int SIGN_OUT_REQUEST_CODE = 1;
 
+    private static final String CHECK_NEW_SERIES = MyShowsSettings.CHECK_NEW_SERIES;
+    private static final String TIME = MyShowsSettings.TIME;
+    private static final String RINGTONE = MyShowsSettings.RINGTONE;
+    private static final String VIBRATION = MyShowsSettings.VIBRATION;
+    private static final String CLEAR_CACHE = "clear_cache";
+    private static final String SIGN_OUT = "sign_out";
+
     private static final int HOUR = (int) TimeUnit.HOURS.toMinutes(1);
-    private static final int DEFAULT_TIME = (int) TimeUnit.HOURS.toMinutes(12);
 
     private Preference clearCachePreference;
     private Preference timePreference;
@@ -112,10 +111,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     private Observable<Object> signOut() {
         MyShowsClientImpl.getInstance().clean();
-        PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .edit()
-                .clear()
-                .apply();
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
         return Observable.just(null);
     }
 
@@ -167,7 +163,7 @@ public class SettingsFragment extends PreferenceFragment {
     private void timePreferenceInitialize(Preference timePreference) {
         setTime(timePreference);
         timePreference.setOnPreferenceClickListener(preference -> {
-            int time = timePreference.getSharedPreferences().getInt(timePreference.getKey(), DEFAULT_TIME);
+            int time = MyShowsSettings.getTimeValue(getActivity());
             new TimePickerDialog(getActivity(), (timePicker, h, m) -> setTime(preference, h, m),
                     time / HOUR, time % HOUR, true).show();
             return true;
@@ -175,7 +171,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setTime(Preference preference) {
-        int time = timePreference.getSharedPreferences().getInt(timePreference.getKey(), DEFAULT_TIME);
+        int time = MyShowsSettings.getTimeValue(getActivity());
         setTime(preference, time / HOUR, time % HOUR);
     }
 
@@ -195,7 +191,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setRingtoneName(Preference preference) {
-        String uri = preference.getSharedPreferences().getString(preference.getKey(), null);
+        String uri = MyShowsSettings.getRingtone(getActivity());
         setRingtoneName(preference, uri);
     }
 
