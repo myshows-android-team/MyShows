@@ -20,7 +20,7 @@ public class ClearCacheDialog extends DialogFragment {
                 .setMessage(R.string.clear_cache_dialog_content)
                 .setNegativeButton(R.string.clear_cache_dialog_reject, (dialogInterface, i) ->
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null))
-                .setPositiveButton(R.string.clear_cache_dialog_accept, (dialogInterface1, i) ->
+                .setPositiveButton(R.string.clear_cache_dialog_accept, (dialogInterface, i) ->
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null))
                 .create();
     }
