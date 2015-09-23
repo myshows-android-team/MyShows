@@ -29,6 +29,7 @@ import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Whiplash on 06.09.2015.
@@ -52,10 +53,13 @@ public class SettingsFragment extends PreferenceFragment {
     private RingtonePreference ringtonePreference;
     private CheckBoxPreference vibrationPreference;
 
+    private CompositeSubscription subscriptions;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.myshows_preference);
+        subscriptions = new CompositeSubscription();
 
         clearCachePreference = findPreference(CLEAR_CACHE);
         CheckBoxPreference checkNewSeriesPreference = (CheckBoxPreference) findPreference(CHECK_NEW_SERIES);
@@ -69,6 +73,14 @@ public class SettingsFragment extends PreferenceFragment {
         timePreferenceInitialize(timePreference);
         ringtonePreferenceInitialize(ringtonePreference);
         signOutPreferenceInitialize(signOutPreference);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (subscriptions != null && !subscriptions.isUnsubscribed()) {
+            subscriptions.unsubscribe();
+        }
+        super.onDestroyView();
     }
 
     @Override
@@ -87,10 +99,10 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void clearCacheTask() {
-        Observable.defer(this::clearCache)
+        subscriptions.add(Observable.defer(this::clearCache)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> setCacheSize(clearCachePreference));
+                .subscribe(o -> setCacheSize(clearCachePreference)));
     }
 
     //TODO: use fromCallable
@@ -100,13 +112,13 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void signOutTask() {
-        Observable.defer(this::signOut)
+        subscriptions.add(Observable.defer(this::signOut)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
                     getActivity().setResult(Activity.RESULT_OK, null);
                     getActivity().finish();
-                });
+                }));
     }
 
     private Observable<Object> signOut() {
@@ -127,8 +139,15 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setCacheSize(Preference preference) {
-        long bytes = getCacheSize(Glide.getPhotoCacheDir(getActivity()));
-        preference.setSummary(FileUtils.byteCountToDisplaySize(bytes));
+        subscriptions.add(Observable.<Long>create(subscriber -> {
+            File dir = Glide.getPhotoCacheDir(getActivity());
+            subscriber.onNext(getCacheSize(dir));
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bytes -> {
+                    String humanReadableSize = FileUtils.byteCountToDisplaySize(bytes);
+                    preference.setSummary(humanReadableSize);
+                }));
     }
 
     private long getCacheSize(File dir) {
