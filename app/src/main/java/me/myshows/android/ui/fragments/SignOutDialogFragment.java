@@ -11,16 +11,16 @@ import me.myshows.android.R;
 /**
  * Created by Whiplash on 06.09.2015.
  */
-public class ClearCacheDialog extends DialogFragment {
+public class SignOutDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.clear_cache_dialog_title)
-                .setMessage(R.string.clear_cache_dialog_content)
-                .setNegativeButton(R.string.clear_cache_dialog_reject, (dialogInterface, i) ->
+                .setTitle(R.string.sign_out_dialog_title)
+                .setMessage(R.string.sign_out_dialog_content)
+                .setNegativeButton(R.string.sign_out_dialog_reject, (dialogInterface, i) ->
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null))
-                .setPositiveButton(R.string.clear_cache_dialog_accept, (dialogInterface, i) ->
+                .setPositiveButton(R.string.sign_out_dialog_accept, (dialogInterface1, i) ->
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null))
                 .create();
     }

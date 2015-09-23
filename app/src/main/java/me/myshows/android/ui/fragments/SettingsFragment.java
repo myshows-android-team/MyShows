@@ -123,7 +123,7 @@ public class SettingsFragment extends PreferenceFragment {
         setCacheSize(clearCachePreference);
         clearCachePreference.setOnPreferenceClickListener(preference -> {
             FragmentManager fragmentManager = getFragmentManager();
-            DialogFragment fragment = new ClearCacheDialog();
+            DialogFragment fragment = new ClearCacheDialogFragment();
             fragment.setTargetFragment(this, CLEAR_CACHE_REQUEST_CODE);
             fragment.show(fragmentManager, null);
             return true;
@@ -151,14 +151,14 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void checkNewSeriesPreferenceInitialize(CheckBoxPreference checkNewSeriesPreference) {
-        setEnabledNotificationsViews(checkNewSeriesPreference.isChecked());
+        setEnabledNotificationsPreferences(checkNewSeriesPreference.isChecked());
         checkNewSeriesPreference.setOnPreferenceChangeListener((preference, value) -> {
-            setEnabledNotificationsViews((Boolean) value);
+            setEnabledNotificationsPreferences((Boolean) value);
             return true;
         });
     }
 
-    private void setEnabledNotificationsViews(boolean value) {
+    private void setEnabledNotificationsPreferences(boolean value) {
         timePreference.setEnabled(value);
         ringtonePreference.setEnabled(value);
         vibrationPreference.setEnabled(value);
@@ -211,7 +211,7 @@ public class SettingsFragment extends PreferenceFragment {
     private void signOutPreferenceInitialize(Preference signOutPreference) {
         signOutPreference.setOnPreferenceClickListener(preference -> {
             FragmentManager fragmentManager = getFragmentManager();
-            DialogFragment fragment = new SignOutDialog();
+            DialogFragment fragment = new SignOutDialogFragment();
             fragment.setTargetFragment(this, SIGN_OUT_REQUEST_CODE);
             fragment.show(fragmentManager, null);
             return true;
