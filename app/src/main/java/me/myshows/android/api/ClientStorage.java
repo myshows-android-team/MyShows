@@ -14,5 +14,5 @@ public interface ClientStorage {
 
     void putCookies(Set<String> cookies);
 
-    void clean();
+    void clear();
 }

@@ -124,7 +124,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private Observable<Object> signOut() {
-        MyShowsClientImpl.getInstance().clean();
+        MyShowsClientImpl.getInstance().clear();
         PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
         return Observable.just(null);
     }

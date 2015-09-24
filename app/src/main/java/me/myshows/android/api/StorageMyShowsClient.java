@@ -20,7 +20,7 @@ public abstract class StorageMyShowsClient implements MyShowsClient {
         return authentication(storage.getCredentials());
     }
 
-    public void cleanStorage() {
-        storage.clean();
+    public void clearStorage() {
+        storage.clear();
     }
 }

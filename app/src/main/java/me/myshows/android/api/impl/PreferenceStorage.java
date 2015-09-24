@@ -57,7 +57,7 @@ public class PreferenceStorage implements ClientStorage {
     }
 
     @Override
-    public void clean() {
+    public void clear() {
         preferences.edit().clear().apply();
     }
 }

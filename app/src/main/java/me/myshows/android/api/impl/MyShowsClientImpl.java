@@ -86,9 +86,9 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
         return client;
     }
 
-    public void clean() {
+    public void clear() {
         Realm.deleteRealm(manager.getConfiguration());
-        cleanStorage();
+        clearStorage();
     }
 
     @Override
