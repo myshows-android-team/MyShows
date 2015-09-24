@@ -15,6 +15,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 
@@ -27,6 +28,7 @@ import me.myshows.android.MyShowsSettings;
 import me.myshows.android.R;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.Observable;
+import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -139,9 +141,9 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setCacheSize(Preference preference) {
-        subscriptions.add(Observable.<Long>create(subscriber -> {
+        subscriptions.add(Single.<Long>create(subscriber -> {
             File dir = Glide.getPhotoCacheDir(getActivity());
-            subscriber.onNext(getCacheSize(dir));
+            subscriber.onSuccess(getCacheSize(dir));
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bytes -> {
@@ -215,7 +217,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setRingtoneName(Preference preference, String uri) {
-        if (uri == null || uri.isEmpty()) {
+        if (TextUtils.isEmpty(uri)) {
             preference.setSummary(R.string.none_ringtone);
         } else {
             Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(uri));
