@@ -1,13 +1,13 @@
 package me.myshows.android.ui.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -67,7 +67,7 @@ public class MainActivity extends RxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragmentManager = getSupportFragmentManager();
+        fragmentManager = getFragmentManager();
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
                     .add(R.id.content, new MyShowsFragment(), MyShowsFragment.class.getSimpleName())

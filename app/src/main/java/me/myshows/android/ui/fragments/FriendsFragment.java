@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle.components.RxFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
