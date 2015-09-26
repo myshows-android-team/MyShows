@@ -30,8 +30,8 @@ import me.myshows.android.model.Show;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
-import me.myshows.android.ui.decorators.*;
-import me.myshows.android.ui.decorators.ShadowDecorator;
+import me.myshows.android.ui.decorators.OffsetDecorator;
+import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
 import me.myshows.android.utils.Numbers;
 import me.myshows.android.utils.SparseSet;
 
@@ -144,14 +144,15 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
 
     @Override
     public void onBindChildViewHolder(SeriesViewHolder holder, int groupPosition, int childPosition, int viewType) {
-        Episode episode = seasons.get(seasonIndex(groupPosition)).get(childPosition);
+        List<Episode> season = seasons.get(seasonIndex(groupPosition));
+        Episode episode = season.get(childPosition);
         boolean isChecked;
         if (episode.isSpecial()) {
             isChecked = checkedSpecialEpisodes.contains(episode.getId());
         } else {
             isChecked = !uncheckedEpisodes[seasonIndex(groupPosition)].contains(episode.getId());
         }
-        holder.bind(episode, isChecked);
+        holder.bind(episode, childPosition == season.size() - 1, isChecked);
     }
 
     @Override
@@ -260,16 +261,17 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         }
     }
 
-    static class SeasonShadowDecorator extends ShadowDecorator {
+    static class ShadowDecorator extends SimpleDrawableDecorator {
 
-        public SeasonShadowDecorator(Drawable shadowDrawable) {
+        public ShadowDecorator(Drawable shadowDrawable) {
             super(shadowDrawable);
         }
 
         @Override
         protected boolean applyDecorator(View view, RecyclerView parent) {
             RecyclerView.ViewHolder holder = parent.getChildViewHolder(view);
-            return holder instanceof SeasonViewHolder;
+            return holder instanceof SeasonViewHolder ||
+                    holder instanceof SeriesViewHolder && ((SeriesViewHolder) holder).isLast();
         }
     }
 
@@ -399,6 +401,9 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         private final TextView airDate;
         private final CheckBox checkBox;
         private final View specialIcon;
+        private final View divider;
+
+        private boolean isLast;
 
         public SeriesViewHolder(@NonNull View itemView, @NonNull OnEpisodeCheckedChangeListener listener) {
             super(itemView);
@@ -408,15 +413,22 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
             airDate = (TextView) itemView.findViewById(R.id.air_date);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
             specialIcon = itemView.findViewById(R.id.special_icon);
+            divider = itemView.findViewById(R.id.divider);
         }
 
-        public void bind(@NonNull Episode episode, boolean checked) {
+        public void bind(@NonNull Episode episode, boolean isLast, boolean checked) {
+            this.isLast = isLast;
             seriesTitle.setText(episode.getTitle());
             checkBox.setOnCheckedChangeListener(null);
             checkBox.setChecked(checked);
             checkBox.setOnCheckedChangeListener((v, isChecked) -> listener.onEpisodeCheckedChanged(getAdapterPosition(), episode, isChecked));
+            divider.setVisibility(isLast ? View.GONE : View.VISIBLE);
             setSeriesNumber(episode);
             setAirDate(episode.getAirDate());
+        }
+
+        public boolean isLast() {
+            return isLast;
         }
 
         private void setAirDate(@Nullable String date) {

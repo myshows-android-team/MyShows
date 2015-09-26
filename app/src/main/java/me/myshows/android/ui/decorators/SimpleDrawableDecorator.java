@@ -8,12 +8,12 @@ import android.view.View;
 /**
  * Created by warrior on 17.09.15.
  */
-public class ShadowDecorator extends BaseDecorator {
+public class SimpleDrawableDecorator extends BaseDecorator {
 
-    private final Drawable shadowDrawable;
+    private final Drawable drawable;
 
-    public ShadowDecorator(Drawable shadowDrawable) {
-        this.shadowDrawable = shadowDrawable;
+    public SimpleDrawableDecorator(Drawable drawable) {
+        this.drawable = drawable;
     }
 
     @Override
@@ -29,10 +29,10 @@ public class ShadowDecorator extends BaseDecorator {
                 int left = child.getLeft() + tx;
                 int right = child.getRight() + tx;
                 int top = child.getBottom() + ty;
-                int bottom = child.getBottom() + ty + shadowDrawable.getMinimumHeight();
+                int bottom = child.getBottom() + ty + drawable.getMinimumHeight();
 
-                shadowDrawable.setBounds(left, top, right, bottom);
-                shadowDrawable.draw(c);
+                drawable.setBounds(left, top, right, bottom);
+                drawable.draw(c);
             }
         }
     }

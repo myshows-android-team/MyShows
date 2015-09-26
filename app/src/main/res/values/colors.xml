@@ -12,7 +12,7 @@
     <color name="red_80_opacity">#CCCC0000</color>
     <color name="red_50_opacity">#80CC0000</color>
     <color name="red_30_opacity">#4CCC0000</color>
-    <color name="light_gray">#E2E2E2</color>
+    <color name="light_gray">#E1E1E1</color>
     <color name="dark_gray">#515151</color>
 
     <!-- List show view colors -->

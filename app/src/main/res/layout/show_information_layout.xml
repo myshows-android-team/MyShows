@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:divider="@drawable/show_screen_divider"
-    android:orientation="vertical"
-    android:showDividers="middle">
+    android:orientation="vertical">
 
     <TextView
         style="@style/MyShows.ShowScreen.TextView.Header"
@@ -21,6 +19,11 @@
         android:background="@android:color/white"
         android:textColor="@color/dark_gray"
         tools:text="Heroes is a cult serial saga about people all over the world discovering that they have superpowers and trying to deal with how this change affects their lives." />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/show_screen_divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,9 +51,17 @@
 
     </LinearLayout>
 
-    <View
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/default_half_padding" />
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/default_padding" />
+
+        <include layout="@layout/show_screen_shadow_view" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/genres_container"
@@ -77,12 +88,20 @@
 
     </LinearLayout>
 
-    <TextView
-        style="@style/MyShows.ShowScreen.TextView.Header"
-        android:id="@+id/rating"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Series rating (4.25)" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView.Header"
+            android:id="@+id/rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Series rating (4.25)" />
+
+        <include layout="@layout/show_screen_shadow_view" />
+
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -108,10 +127,18 @@
 
     </FrameLayout>
 
-    <TextView
-        style="@style/MyShows.ShowScreen.TextView.Header"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/seasons" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView.Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/seasons" />
+
+        <include layout="@layout/show_screen_shadow_view" />
+
+    </FrameLayout>
 
 </LinearLayout>

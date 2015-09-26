@@ -2,7 +2,10 @@ package me.myshows.android.ui.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -113,11 +116,19 @@ public class ShowActivity extends RxAppCompatActivity {
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(false);
-        recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_half_padding)));
-        recyclerView.addItemDecoration(new ShowAdapter.SeasonShadowDecorator(getResources().getDrawable(R.drawable.list_season_shadow)));
+        recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_padding)));
+        recyclerView.addItemDecoration(new ShowAdapter.ShadowDecorator(getDrawableById(R.drawable.show_screen_shadow)));
         RecyclerView.ItemAnimator animator = new RefactoredDefaultItemAnimator();
         animator.setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(animator);
+    }
+
+    @SuppressLint("NewApi")
+    private Drawable getDrawableById(@DrawableRes int id) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return getResources().getDrawable(id);
+        }
+        return getDrawable(id);
     }
 
     private void loadData(int showId) {
