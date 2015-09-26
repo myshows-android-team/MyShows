@@ -21,6 +21,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemVie
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import me.myshows.android.R;
@@ -45,10 +46,16 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     private static final int SHOW_INFORMATION_TYPE = 0;
     private static final int SEASON_TYPE = 1;
 
+    private static final Comparator<Episode> EPISODE_COMPARATOR = (e1, e2) -> {
+        int res = Numbers.compare(e1.getAirDateInMillis(), e2.getAirDateInMillis());
+        return res != 0 ? res : Numbers.compare(e1.getSequenceNumber(), e2.getSequenceNumber());
+    };
+
     private final Show show;
     private final List<List<Episode>> seasons;
     private final SparseSet[] uncheckedEpisodes;
     private final SparseSet checkedSpecialEpisodes;
+    private final int seasonCount;
     private final boolean[] expandedSeasons;
 
     private final OnEpisodeCheckedChangeListener seriesListener = this::onEpisodeCheckedChanged;
@@ -62,6 +69,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         this.seasons = seasons;
         this.checkedSpecialEpisodes = checkedSpecialEpisodes;
         this.uncheckedEpisodes = uncheckedEpisodes;
+        this.seasonCount = seasons.size();
         this.expandedSeasons = new boolean[seasons.size()];
         setHasStableIds(true);
     }
@@ -80,7 +88,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         if (groupPosition == 0) {
             return 0;
         }
-        return seasons.get(groupPosition - 1).size();
+        return seasons.get(seasonIndex(groupPosition)).size();
     }
 
     @Override
@@ -90,7 +98,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return seasons.get(groupPosition - 1).get(childPosition).getId();
+        return seasons.get(seasonIndex(groupPosition)).get(childPosition).getId();
     }
 
     @Override
@@ -128,20 +136,20 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         if (viewType == SHOW_INFORMATION_TYPE) {
             ((ShowInformationViewHolder) holder).bind(show, userShow);
         } else {
-            ((SeasonViewHolder) holder).bind(groupPosition,
-                    uncheckedEpisodes[groupPosition - 1].isEmpty(),
-                    expandedSeasons[groupPosition - 1]);
+            ((SeasonViewHolder) holder).bind(seasonIndex(groupPosition),
+                    uncheckedEpisodes[seasonIndex(groupPosition)].isEmpty(),
+                    expandedSeasons[seasonIndex(groupPosition)]);
         }
     }
 
     @Override
     public void onBindChildViewHolder(SeriesViewHolder holder, int groupPosition, int childPosition, int viewType) {
-        Episode episode = seasons.get(groupPosition - 1).get(childPosition);
+        Episode episode = seasons.get(seasonIndex(groupPosition)).get(childPosition);
         boolean isChecked;
         if (episode.isSpecial()) {
             isChecked = checkedSpecialEpisodes.contains(episode.getId());
         } else {
-            isChecked = !uncheckedEpisodes[groupPosition - 1].contains(episode.getId());
+            isChecked = !uncheckedEpisodes[seasonIndex(groupPosition)].contains(episode.getId());
         }
         holder.bind(episode, isChecked);
     }
@@ -154,7 +162,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         SeasonViewHolder seasonHolder = (SeasonViewHolder) holder;
         boolean canExpandOrCollapse = seasonHolder.canExpandOrCollapse(x, y);
         if (canExpandOrCollapse) {
-            expandedSeasons[groupPosition - 1] = expand;
+            expandedSeasons[seasonIndex(groupPosition)] = expand;
         }
         return canExpandOrCollapse;
     }
@@ -178,8 +186,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         }
     }
 
-    public void onSeasonCheckedChanged(int seasonNumber, boolean checked) {
-        int seasonIndex = seasonNumber - 1;
+    public void onSeasonCheckedChanged(int seasonIndex, boolean checked) {
         SparseSet uncheckedSeasonEpisodes = uncheckedEpisodes[seasonIndex];
         if (checked) {
             uncheckedSeasonEpisodes.clear();
@@ -193,10 +200,16 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         notifyDataSetChanged();
     }
 
+    private int seasonIndex(int groupPosition) {
+        return seasonCount - groupPosition;
+    }
+
     public static ShowAdapter create(@NonNull Show show, @NonNull UserShowEpisodes watchedEpisodes) {
         List<List<Episode>> seasons = getSeasons(show);
-        SparseSet[] uncheckedEpisodes = new SparseSet[seasons.size()];
-        for (int i = 0; i < seasons.size(); i++) {
+        int seasonCount = seasons.size();
+
+        SparseSet[] uncheckedEpisodes = new SparseSet[seasonCount];
+        for (int i = 0; i < seasonCount; i++) {
             uncheckedEpisodes[i] = new SparseSet();
         }
         for (List<Episode> season : seasons) {
@@ -229,10 +242,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
             seasonList.add(episode);
         }
         for (List<Episode> season : seasons) {
-            Collections.sort(season, (e1, e2) -> {
-                int res = Numbers.compare(e1.getAirDateInMillis(), e2.getAirDateInMillis());
-                return res != 0 ? res : Numbers.compare(e1.getSequenceNumber(), e2.getSequenceNumber());
-            });
+            Collections.sort(season, (e1, e2) -> EPISODE_COMPARATOR.compare(e2, e1));
         }
         return seasons;
     }
@@ -329,7 +339,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         private final CheckBox checkBox;
         private final View arrow;
 
-        private int number = -Integer.MAX_VALUE;
+        private int seasonIndex = -Integer.MAX_VALUE;
         private boolean expanded;
         private ObjectAnimator animator;
 
@@ -341,12 +351,12 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
             arrow = itemView.findViewById(R.id.arrow);
         }
 
-        public void bind(int number, boolean isChecked, boolean expanded) {
-            seasonNumber.setText(itemView.getResources().getString(R.string.season_number, number));
+        public void bind(int seasonIndex, boolean isChecked, boolean expanded) {
+            seasonNumber.setText(itemView.getResources().getString(R.string.season_number, seasonIndex + 1));
             checkBox.setOnCheckedChangeListener(null);
             checkBox.setChecked(isChecked);
-            checkBox.setOnCheckedChangeListener((v, checked) -> listener.onSeasonCheckedChanged(number, checked));
-            setExpanded(number, expanded);
+            checkBox.setOnCheckedChangeListener((v, checked) -> listener.onSeasonCheckedChanged(seasonIndex, checked));
+            setExpanded(seasonIndex, expanded);
         }
 
         public boolean canExpandOrCollapse(int x, int y) {
@@ -355,8 +365,8 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
             return !hitRect.contains(x, y);
         }
 
-        private void setExpanded(int number, boolean expanded) {
-            if (this.number != number) {
+        private void setExpanded(int seasonIndex, boolean expanded) {
+            if (this.seasonIndex != seasonIndex) {
                 cancelAnimation();
                 arrow.setRotation(expanded ? ROTATION_EXPANDED : ROTATION_COLLAPSED);
             } else if (this.expanded != expanded) {
@@ -365,7 +375,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
                         .setDuration(ANIMATION_DURATION);
                 animator.start();
             }
-            this.number = number;
+            this.seasonIndex = seasonIndex;
             this.expanded = expanded;
         }
 
