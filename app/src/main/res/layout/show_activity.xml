@@ -51,133 +51,16 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EFEFEF"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/show_screen_divider"
-            android:orientation="vertical"
-            android:showDividers="middle">
-
-            <TextView
-                style="@style/MyShows.ShowScreen.TextView.Header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/overview" />
-
-            <TextView
-                style="@style/MyShows.ShowScreen.TextView"
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:textColor="#515151"
-                tools:text="Heroes is a cult serial saga about people all over the world discovering that they have superpowers and trying to deal with how this change affects their lives."/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/MyShows.ShowScreen.TextView"
-                    android:id="@+id/duration"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_show_duration"
-                    tools:text="45 minutes / series" />
-
-                <TextView
-                    style="@style/MyShows.ShowScreen.TextView"
-                    android:id="@+id/status"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_show_status"
-                    tools:text="Ended" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="8dp" />
-
-            <LinearLayout
-                android:id="@+id/genres_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/MyShows.ShowScreen.TextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_drama"
-                    android:text="Drama"
-                    tools:text="Drama" />
-
-                <TextView
-                    style="@style/MyShows.ShowScreen.TextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_super_heroes"
-                    android:text="Super Heroes"
-                    tools:text="Super Heroes" />
-
-            </LinearLayout>
-
-            <TextView
-                style="@style/MyShows.ShowScreen.TextView.Header"
-                android:id="@+id/rating"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="Series rating (4.25)" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white" >
-
-                <TextView
-                    style="@style/MyShows.ShowScreen.TextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
-                    android:text="@string/my_rating"
-                    android:textColor="#717171" />
-
-                <RatingBar
-                    style="@style/MyShows.RatingBar"
-                    android:id="@+id/my_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_margin="12dp"
-                    tools:rating="4" />
-
-            </FrameLayout>
-
-            <TextView
-                style="@style/MyShows.ShowScreen.TextView.Header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/seasons"/>
-
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
         android:src="@drawable/ic_status_not_watching"

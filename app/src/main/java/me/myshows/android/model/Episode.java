@@ -1,8 +1,11 @@
 package me.myshows.android.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import me.myshows.android.utils.DateUtils;
 
 /**
  * @author Whiplash
@@ -11,6 +14,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Episode {
 
+    private static final int SPECIAL_EPISODE_NUMBER = 0;
+    
     private final int id;
     private final String title;
     private final int seasonNumber;
@@ -21,6 +26,7 @@ public class Episode {
     private final String image;
     private final String productionNumber;
     private final int sequenceNumber;
+    private final long airDateInMillis;
 
     @JsonCreator
     public Episode(@JsonProperty("id") int id, @JsonProperty("title") String title,
@@ -38,6 +44,7 @@ public class Episode {
         this.image = image;
         this.productionNumber = productionNumber;
         this.sequenceNumber = sequenceNumber;
+        this.airDateInMillis = DateUtils.parseInMillis(airDate);
     }
 
     @JsonProperty("id")
@@ -88,5 +95,15 @@ public class Episode {
     @JsonProperty("sequenceNumber")
     public int getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    @JsonIgnore
+    public long getAirDateInMillis() {
+        return airDateInMillis;
+    }
+
+    @JsonIgnore
+    public boolean isSpecial() {
+        return episodeNumber == SPECIAL_EPISODE_NUMBER;
     }
 }

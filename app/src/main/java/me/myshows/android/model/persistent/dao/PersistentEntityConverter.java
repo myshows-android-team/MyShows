@@ -2,7 +2,6 @@ package me.myshows.android.model.persistent.dao;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,7 @@ import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserPreview;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
 import me.myshows.android.model.persistent.PersistentEpisode;
 import me.myshows.android.model.persistent.PersistentFeed;
@@ -32,6 +32,7 @@ import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
 import me.myshows.android.model.persistent.PersistentUser;
 import me.myshows.android.model.persistent.PersistentUserEpisode;
 import me.myshows.android.model.persistent.PersistentUserShow;
+import me.myshows.android.model.persistent.PersistentUserShowEpisodes;
 import me.myshows.android.model.serialization.Marshaller;
 
 public class PersistentEntityConverter {
@@ -170,7 +171,7 @@ public class PersistentEntityConverter {
 
     public Feed toFeed(PersistentFeed persistentFeed) {
         try {
-            Date date = new Date(persistentFeed.getDate());
+            long date = persistentFeed.getDate();
             List<UserFeed> userFeeds = marshaller.deserializeList(persistentFeed.getFeeds(), ArrayList.class, UserFeed.class);
             return new Feed(date, userFeeds);
         } catch (IOException e) {
@@ -180,7 +181,7 @@ public class PersistentEntityConverter {
 
     public PersistentFeed fromFeed(Feed feed) {
         try {
-            long millis = feed.getDate().getTime();
+            long millis = feed.getDate();
             byte[] userFeeds = marshaller.serialize(feed.getFeeds());
             return new PersistentFeed(millis, userFeeds);
         } catch (IOException e) {
@@ -200,6 +201,22 @@ public class PersistentEntityConverter {
         return new PersistentRatingShow(ratingShow.getId(), ratingShow.getTitle(), ratingShow.getRuTitle(),
                 ratingShow.getShowStatus().toString(), ratingShow.getYear(), ratingShow.getRating(),
                 ratingShow.getWatching(), ratingShow.getImage(), ratingShow.getPlace());
+    }
+
+    public UserShowEpisodes toUserShowEpisodes(PersistentUserShowEpisodes userShowEpisodes) {
+        List<UserEpisode> episodes = new ArrayList<>(userShowEpisodes.getEpisodes().size());
+        for (PersistentUserEpisode episode : userShowEpisodes.getEpisodes()) {
+            episodes.add(toUserEpisode(episode));
+        }
+        return new UserShowEpisodes(userShowEpisodes.getShowId(), episodes);
+    }
+
+    public PersistentUserShowEpisodes fromUserShowEpisodes(UserShowEpisodes userShowEpisodes) {
+        RealmList<PersistentUserEpisode> episodes = new RealmList<>();
+        for (UserEpisode episode : userShowEpisodes.getEpisodes()) {
+            episodes.add(fromUserEpisode(episode));
+        }
+        return new PersistentUserShowEpisodes(userShowEpisodes.getShowId(), episodes);
     }
 
     private Map<String, Episode> toEpisodeMap(RealmList<PersistentEpisode> persistentEpisodes) {

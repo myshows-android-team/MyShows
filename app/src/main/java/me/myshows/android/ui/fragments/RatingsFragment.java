@@ -154,6 +154,7 @@ public class RatingsFragment extends RxFragment {
                     intent.putExtra(ShowActivity.USER_SHOW, Parcels.wrap(userShow));
                 } else {
                     intent.putExtra(ShowActivity.SHOW_ID, ratingShow.getId());
+                    intent.putExtra(ShowActivity.SHOW_TITLE, ratingShow.getTitle());
                 }
                 context.startActivity(intent);
             });

@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -184,6 +183,7 @@ public class FriendsFragment extends RxFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
                 intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
+                intent.putExtra(ShowActivity.SHOW_TITLE, feed.getTitle());
                 itemView.getContext().startActivity(intent);
             }
 
@@ -216,13 +216,13 @@ public class FriendsFragment extends RxFragment {
                     && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
         }
 
-        public void bind(Date feedDate) {
+        public void bind(long feedDate) {
             header.setText(getText(itemView.getContext(), feedDate));
         }
 
-        private String getText(Context context, Date feedDate) {
+        private String getText(Context context, long feedDate) {
             Calendar feedDateCalendar = Calendar.getInstance();
-            feedDateCalendar.setTime(feedDate);
+            feedDateCalendar.setTimeInMillis(feedDate);
             if (isSameDay(TODAY, feedDateCalendar)) {
                 return context.getString(R.string.today);
             } else if (isSameDay(YESTERDAY, feedDateCalendar)) {
@@ -236,7 +236,7 @@ public class FriendsFragment extends RxFragment {
     private static class FeedAdapter extends RecyclerView.Adapter<FeedHolder> implements StickyRecyclerHeadersAdapter<FeedHeaderHolder> {
 
         private final List<UserFeed> userFeeds;
-        private final List<Date> feedsDate;
+        private final List<Long> feedsDate;
         private final Map<String, String> friendsAvatar;
 
         public FeedAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
@@ -265,7 +265,7 @@ public class FriendsFragment extends RxFragment {
         @Override
         public long getHeaderId(int position) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(feedsDate.get(position));
+            calendar.setTimeInMillis(feedsDate.get(position));
             return calendar.get(Calendar.YEAR) * 367 + calendar.get(Calendar.DAY_OF_YEAR);
         }
 

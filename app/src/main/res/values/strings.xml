@@ -37,11 +37,10 @@
     <string name="pilot">Pilot</string>
     <string name="unknown_status">Unknown</string>
     <!-- Other -->
-    <plurals name="duration">
-        <item quantity="one">%d minute / series</item>
-        <item quantity="other">%d minutes / series</item>
-    </plurals>
+    <string name="duration">%d min / series</string>
     <string name="my_rating">My rating</string>
+    <string name="season_number">%d season</string>
+    <string name="unknown_date">date is N/A</string>
 
     <!-- Feed screen strings -->
     <plurals name="m_watch_series">
