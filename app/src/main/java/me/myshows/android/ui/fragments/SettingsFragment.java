@@ -10,11 +10,11 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
+import android.support.v14.preference.PreferenceFragment;
+import android.support.v14.preference.SwitchPreference;
+import android.support.v7.preference.CheckBoxPreference;
+import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
@@ -40,6 +40,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     public static final int CLEAR_CACHE_REQUEST_CODE = 0;
     public static final int SIGN_OUT_REQUEST_CODE = 1;
+    public static final int RINGTONE_REQUEST_CODE = 2;
 
     private static final String CHECK_NEW_SERIES = MyShowsSettings.CHECK_NEW_SERIES;
     private static final String TIME = MyShowsSettings.TIME;
@@ -52,21 +53,20 @@ public class SettingsFragment extends PreferenceFragment {
 
     private Preference clearCachePreference;
     private Preference timePreference;
-    private RingtonePreference ringtonePreference;
+    private Preference ringtonePreference;
     private CheckBoxPreference vibrationPreference;
 
     private CompositeSubscription subscriptions;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle bundle, String s) {
         addPreferencesFromResource(R.xml.myshows_preference);
         subscriptions = new CompositeSubscription();
 
         clearCachePreference = findPreference(CLEAR_CACHE);
-        CheckBoxPreference checkNewSeriesPreference = (CheckBoxPreference) findPreference(CHECK_NEW_SERIES);
+        SwitchPreference checkNewSeriesPreference = (SwitchPreference) findPreference(CHECK_NEW_SERIES);
         timePreference = findPreference(TIME);
-        ringtonePreference = (RingtonePreference) findPreference(RINGTONE);
+        ringtonePreference = findPreference(RINGTONE);
         vibrationPreference = (CheckBoxPreference) findPreference(VIBRATION);
         Preference signOutPreference = findPreference(SIGN_OUT);
 
@@ -95,6 +95,10 @@ public class SettingsFragment extends PreferenceFragment {
                     break;
                 case SIGN_OUT_REQUEST_CODE:
                     signOutTask();
+                    break;
+                case RINGTONE_REQUEST_CODE:
+                    setRingtoneName(ringtonePreference,
+                            String.valueOf(data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)));
                     break;
             }
         }
@@ -167,7 +171,7 @@ public class SettingsFragment extends PreferenceFragment {
         return bytes;
     }
 
-    private void checkNewSeriesPreferenceInitialize(CheckBoxPreference checkNewSeriesPreference) {
+    private void checkNewSeriesPreferenceInitialize(SwitchPreference checkNewSeriesPreference) {
         setEnabledNotificationsPreferences(checkNewSeriesPreference.isChecked());
         checkNewSeriesPreference.setOnPreferenceChangeListener((preference, value) -> {
             setEnabledNotificationsPreferences((Boolean) value);
@@ -197,16 +201,21 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setTime(Preference preference, int hour, int minute) {
-        SharedPreferences.Editor editor = preference.getEditor();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(preference.getKey(), hour * HOUR + minute);
         editor.apply();
         preference.setSummary(String.format("%d:%02d", hour, minute));
     }
 
-    private void ringtonePreferenceInitialize(RingtonePreference ringtonePreference) {
+    private void ringtonePreferenceInitialize(Preference ringtonePreference) {
         setRingtoneName(ringtonePreference);
-        ringtonePreference.setOnPreferenceChangeListener((preference, value) -> {
-            setRingtoneName(preference, value.toString());
+        ringtonePreference.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone));
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(MyShowsSettings.getRingtone(getActivity())));
+            startActivityForResult(intent, RINGTONE_REQUEST_CODE);
             return true;
         });
     }
@@ -217,9 +226,13 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setRingtoneName(Preference preference, String uri) {
-        if (TextUtils.isEmpty(uri)) {
+        if (TextUtils.isEmpty(uri) || uri.equals("null")) { // "none" ringtone is "null" string
             preference.setSummary(R.string.none_ringtone);
         } else {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(preference.getKey(), uri);
+            editor.apply();
             Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(uri));
             preference.setSummary(ringtone.getTitle(getActivity()));
         }

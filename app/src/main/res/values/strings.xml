@@ -65,6 +65,7 @@
     <string name="compact_mode">Compact mode</string>
     <string name="compact_mode_description">Display show in compact mode (without images)</string>
     <string name="clear_cache">Clear cache</string>
+    <string name="clear_cache_summary">0 bytes</string>
     <string name="clear_cache_dialog_title">Clear cache?</string>
     <string name="clear_cache_dialog_content">The application will clear show data from you device, but you can always download it again.</string>
     <string name="clear_cache_dialog_reject">Cancel</string>
@@ -74,6 +75,7 @@
     <string name="check_new_series">Notify about new series</string>
     <string name="time">Time</string>
     <string name="ringtone">Ringtone</string>
+    <string name="select_ringtone">Select ringtone</string>
     <string name="none_ringtone">None</string>
     <string name="vibration">Vibration</string>
 
