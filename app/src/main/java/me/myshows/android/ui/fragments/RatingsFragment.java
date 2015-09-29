@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle.components.RxFragment;
 
 import org.parceler.Parcels;
 
@@ -32,6 +32,7 @@ import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.WatchStatus;
 import me.myshows.android.ui.activities.ShowActivity;
+import rx.Observable;
 
 /**
  * Created by warrior on 19.07.15.
@@ -39,9 +40,6 @@ import me.myshows.android.ui.activities.ShowActivity;
 public class RatingsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
-
-    private List<RatingShow> ratingShows;
-    private Map<Integer, UserShow> userShows;
 
     @Nullable
     @Override
@@ -60,33 +58,21 @@ public class RatingsFragment extends RxFragment {
 
     private void loadData() {
         MyShowsClient client = MyShowsClientImpl.getInstance();
-        client.ratingShows()
-                .compose(bindToLifecycle())
-                .subscribe(shows -> {
-                            ratingShows = shows;
-                            trySetAdapter();
-                        }
-                );
-        client.profileShows()
-                .compose(bindToLifecycle())
+        Observable<Map<Integer, UserShow>> userShowObservable = client.profileShows()
                 .map(shows -> {
                     Map<Integer, UserShow> userShows = new HashMap<>();
                     for (UserShow show : shows) {
                         userShows.put(show.getShowId(), show);
                     }
                     return userShows;
-                })
-                .subscribe(shows -> {
-                    userShows = shows;
-                    trySetAdapter();
                 });
+        Observable.combineLatest(client.ratingShows(), userShowObservable, RatingShowAdapter::new)
+                .compose(bindToLifecycle())
+                .subscribe(this::setAdapter);
     }
 
-    private void trySetAdapter() {
-        if (ratingShows != null && userShows != null) {
-            RatingShowAdapter adapter = new RatingShowAdapter(ratingShows, userShows);
-            recyclerView.setAdapter(adapter);
-        }
+    private void setAdapter(RatingShowAdapter adapter) {
+        recyclerView.setAdapter(adapter);
     }
 
     private static class RatingShowAdapter extends RecyclerView.Adapter<RatingShowHolder> {
@@ -168,6 +154,7 @@ public class RatingsFragment extends RxFragment {
                     intent.putExtra(ShowActivity.USER_SHOW, Parcels.wrap(userShow));
                 } else {
                     intent.putExtra(ShowActivity.SHOW_ID, ratingShow.getId());
+                    intent.putExtra(ShowActivity.SHOW_TITLE, ratingShow.getTitle());
                 }
                 context.startActivity(intent);
             });

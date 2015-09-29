@@ -1,14 +1,14 @@
 package me.myshows.android.ui.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -59,6 +59,7 @@ public class MainActivity extends RxAppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     private AppBarLayout appbarLayout;
     private ImageView avatar;
+    private ImageView headerBackground;
     private TextView username;
 
     private int currentItemId;
@@ -68,7 +69,7 @@ public class MainActivity extends RxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragmentManager = getSupportFragmentManager();
+        fragmentManager = getFragmentManager();
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
                     .add(R.id.content, new MyShowsFragment(), MyShowsFragment.class.getSimpleName())
@@ -87,10 +88,12 @@ public class MainActivity extends RxAppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         setupNavigationDrawer(navigationView);
 
-        avatar = (ImageView) findViewById(R.id.nav_avatar);
         username = (TextView) findViewById(R.id.nav_username);
+        headerBackground = (ImageView) findViewById(R.id.nav_background);
+        avatar = (ImageView) findViewById(R.id.nav_avatar);
 
         loadData();
+        setHeaderBackground();
     }
 
     @Override
@@ -195,6 +198,14 @@ public class MainActivity extends RxAppCompatActivity {
                             .load(user.getAvatarUrl())
                             .into(avatar);
                 });
+    }
+
+    private void setHeaderBackground() {
+        // TODO: we need use background which user will select
+        Glide.with(this)
+                .load("http://media.myshows.me/shows/normal/d/da/da3e7aee7483129e27208bd8e36c0b64.jpg")
+                .crossFade()
+                .into(headerBackground);
     }
 
     private static class FragmentInfo {

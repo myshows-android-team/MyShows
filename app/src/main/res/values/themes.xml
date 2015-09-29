@@ -24,4 +24,13 @@
     <style name="Theme.MyShows.Login">
         <item name="colorAccent">@android:color/white</item>
     </style>
+
+    <style name="Theme.MyShows.RedControl">
+        <item name="colorControlNormal">@color/accent</item>
+    </style>
+
+    <style name="Theme.MyShows.WhiteControl">
+        <item name="colorAccent">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+    </style>
 </resources>

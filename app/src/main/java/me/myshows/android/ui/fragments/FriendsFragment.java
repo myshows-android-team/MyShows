@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,13 +22,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle.components.RxFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +43,7 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserPreview;
 import me.myshows.android.ui.activities.ShowActivity;
+import rx.Observable;
 
 /**
  * Created by warrior on 19.07.15.
@@ -51,9 +52,6 @@ public class FriendsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
     private StickyRecyclerHeadersDecoration itemDecoration;
-
-    private List<Feed> feeds;
-    private Map<String, String> friendsAvatar;
 
     @Nullable
     @Override
@@ -71,42 +69,35 @@ public class FriendsFragment extends RxFragment {
 
     private void loadData() {
         MyShowsClient client = MyShowsClientImpl.getInstance();
-        client.friendsNews()
+        Observable<Map<String, String>> friendsAvatarObservable = client.profile()
+                .map(FriendsFragment::extractAvatarUrls);
+        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FeedAdapter::new)
                 .compose(bindToLifecycle())
-                .subscribe(feeds -> {
-                    this.feeds = feeds;
-                    trySetAdapter();
-                });
-        client.profile()
-                .compose(bindToLifecycle())
-                .map(this::extractFriendsAvatar)
-                .subscribe(friendsAvatar -> {
-                    this.friendsAvatar = friendsAvatar;
-                    trySetAdapter();
-                });
+                .subscribe(this::setAdapter);
     }
 
-    private void trySetAdapter() {
-        if (feeds != null && friendsAvatar != null) {
-            FeedAdapter adapter = new FeedAdapter(feeds, friendsAvatar);
-            if (itemDecoration != null) {
-                recyclerView.removeItemDecoration(itemDecoration);
+    private void setAdapter(FeedAdapter adapter) {
+        if (itemDecoration != null) {
+            recyclerView.removeItemDecoration(itemDecoration);
+        }
+        recyclerView.setAdapter(adapter);
+        itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
+        recyclerView.addItemDecoration(itemDecoration);
+    }
+
+    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
+        Map<String, String> avatarUrls = new HashMap<>();
+        extractAvatarUrls(avatarUrls, user.getFriends());
+        extractAvatarUrls(avatarUrls, user.getFollowers());
+        return avatarUrls;
+    }
+
+    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
+        if (userPreviews != null) {
+            for (UserPreview userPreview : userPreviews) {
+                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
             }
-            recyclerView.setAdapter(adapter);
-            itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
-            recyclerView.addItemDecoration(itemDecoration);
         }
-    }
-
-    private Map<String, String> extractFriendsAvatar(User user) {
-        Map<String, String> friendsAvatar = new HashMap<>();
-        for (UserPreview friend : user.getFriends()) {
-            friendsAvatar.put(friend.getLogin(), friend.getAvatarUrl());
-        }
-        for (UserPreview follower : user.getFollowers()) {
-            friendsAvatar.put(follower.getLogin(), follower.getAvatarUrl());
-        }
-        return friendsAvatar;
     }
 
     private static class FeedHolder extends RecyclerView.ViewHolder {
@@ -192,6 +183,7 @@ public class FriendsFragment extends RxFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
                 intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
+                intent.putExtra(ShowActivity.SHOW_TITLE, feed.getTitle());
                 itemView.getContext().startActivity(intent);
             }
 
@@ -224,13 +216,13 @@ public class FriendsFragment extends RxFragment {
                     && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
         }
 
-        public void bind(Date feedDate) {
+        public void bind(long feedDate) {
             header.setText(getText(itemView.getContext(), feedDate));
         }
 
-        private String getText(Context context, Date feedDate) {
+        private String getText(Context context, long feedDate) {
             Calendar feedDateCalendar = Calendar.getInstance();
-            feedDateCalendar.setTime(feedDate);
+            feedDateCalendar.setTimeInMillis(feedDate);
             if (isSameDay(TODAY, feedDateCalendar)) {
                 return context.getString(R.string.today);
             } else if (isSameDay(YESTERDAY, feedDateCalendar)) {
@@ -244,7 +236,7 @@ public class FriendsFragment extends RxFragment {
     private static class FeedAdapter extends RecyclerView.Adapter<FeedHolder> implements StickyRecyclerHeadersAdapter<FeedHeaderHolder> {
 
         private final List<UserFeed> userFeeds;
-        private final List<Date> feedsDate;
+        private final List<Long> feedsDate;
         private final Map<String, String> friendsAvatar;
 
         public FeedAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
@@ -273,7 +265,7 @@ public class FriendsFragment extends RxFragment {
         @Override
         public long getHeaderId(int position) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(feedsDate.get(position));
+            calendar.setTimeInMillis(feedsDate.get(position));
             return calendar.get(Calendar.YEAR) * 367 + calendar.get(Calendar.DAY_OF_YEAR);
         }
 

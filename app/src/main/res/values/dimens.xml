@@ -6,13 +6,20 @@
     <dimen name="show_image_height">240dp</dimen>
     <!-- show_image_height / 2 -->
     <dimen name="show_image_gradient_height">120dp</dimen>
+    <dimen name="show_shadow_height">4dp</dimen>
+    <dimen name="show_list_height">48dp</dimen>
+    <dimen name="show_list_left_padding">9dp</dimen>
 
     <dimen name="login_button_corner_radius">4dp</dimen>
 
     <!-- Navigation drawer dimens -->
-    <dimen name="nav_header_height">168dp</dimen>
-    <dimen name="nav_avatar_size">64dp</dimen>
-    <dimen name="nav_avatar_top_margin">0dp</dimen>
+    <dimen name="nav_header_height">172dp</dimen>
+    <!-- nav_header_height / 2 -->
+    <dimen name="nav_header_height_half">86dp</dimen>
+    <dimen name="nav_avatar_top_margin">123dp</dimen>
+    <dimen name="nav_avatar_size">98dp</dimen>
+    <!-- nav_avatar_size / 2 -->
+    <dimen name="nav_avatar_size_half">49dp</dimen>
 
     <!-- List show view dimens -->
     <dimen name="list_show_progress_height">3dp</dimen>
