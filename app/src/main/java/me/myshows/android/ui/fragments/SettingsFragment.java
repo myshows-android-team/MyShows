@@ -189,7 +189,7 @@ public class SettingsFragment extends PreferenceFragment {
         setTime(timePreference);
         timePreference.setOnPreferenceClickListener(preference -> {
             int time = MyShowsSettings.getTimeValue(getActivity());
-            new TimePickerDialog(getActivity(), (timePicker, h, m) -> setTime(preference, h, m),
+            new TimePickerDialog(getActivity(), (timePicker, h, m) -> saveTime(preference, h, m),
                     time / HOUR, time % HOUR, true).show();
             return true;
         });
@@ -197,10 +197,10 @@ public class SettingsFragment extends PreferenceFragment {
 
     private void setTime(Preference preference) {
         int time = MyShowsSettings.getTimeValue(getActivity());
-        setTime(preference, time / HOUR, time % HOUR);
+        saveTime(preference, time / HOUR, time % HOUR);
     }
 
-    private void setTime(Preference preference, int hour, int minute) {
+    private void saveTime(Preference preference, int hour, int minute) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(preference.getKey(), hour * HOUR + minute);
@@ -209,33 +209,44 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void ringtonePreferenceInitialize(Preference ringtonePreference) {
-        setRingtoneName(ringtonePreference);
+        setRingtoneName(ringtonePreference, MyShowsSettings.getRingtone(getActivity()));
         ringtonePreference.setOnPreferenceClickListener(preference -> {
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone));
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(MyShowsSettings.getRingtone(getActivity())));
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,
+                    toUri(MyShowsSettings.getRingtone(getActivity())));
             startActivityForResult(intent, RINGTONE_REQUEST_CODE);
             return true;
         });
     }
 
-    private void setRingtoneName(Preference preference) {
-        String uri = MyShowsSettings.getRingtone(getActivity());
-        setRingtoneName(preference, uri);
+    private void setRingtoneName(Preference preference, String uri) {
+        String correctUri = null;
+        String correctTitle = getString(R.string.none_ringtone);
+        if (!TextUtils.isEmpty(uri) && !uri.equals("null")) { // "none" ringtone is "null" string
+            Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), toUri(uri));
+            if (ringtone != null) {
+                correctUri = uri;
+                correctTitle = ringtone.getTitle(getActivity());
+            }
+        }
+        saveRingtoneUri(preference, correctUri);
+        preference.setSummary(correctTitle);
     }
 
-    private void setRingtoneName(Preference preference, String uri) {
-        if (TextUtils.isEmpty(uri) || uri.equals("null")) { // "none" ringtone is "null" string
-            preference.setSummary(R.string.none_ringtone);
-        } else {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(preference.getKey(), uri);
-            editor.apply();
-            Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(uri));
-            preference.setSummary(ringtone.getTitle(getActivity()));
+    private void saveRingtoneUri(Preference preference, String uri) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(preference.getKey(), uri);
+        editor.apply();
+    }
+
+    private Uri toUri(String value) {
+        if (value == null) {
+            return null;
         }
+        return Uri.parse(value);
     }
 
     private void signOutPreferenceInitialize(Preference signOutPreference) {
