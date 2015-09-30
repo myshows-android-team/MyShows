@@ -16,7 +16,6 @@ import android.support.v14.preference.PreferenceFragment;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
-import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 
@@ -98,8 +97,7 @@ public class SettingsFragment extends PreferenceFragment {
                     signOutTask();
                     break;
                 case RINGTONE_REQUEST_CODE:
-                    setRingtoneName(ringtonePreference,
-                            String.valueOf(data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)));
+                    setRingtoneName(ringtonePreference, data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI));
                     break;
             }
         }
@@ -215,17 +213,17 @@ public class SettingsFragment extends PreferenceFragment {
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, toUri(MyShowsSettings.getRingtone(getActivity())));
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, MyShowsSettings.getRingtone(getActivity()));
             startActivityForResult(intent, RINGTONE_REQUEST_CODE);
             return true;
         });
     }
 
-    private void setRingtoneName(Preference preference, String uri) {
-        String correctUri = null;
+    private void setRingtoneName(Preference preference, Uri uri) {
+        Uri correctUri = null;
         String correctTitle = getString(R.string.none_ringtone);
-        if (!TextUtils.isEmpty(uri) && !uri.equals("null")) { // "none" ringtone is "null" string
-            Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), toUri(uri));
+        if (uri != null) {
+            Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), uri);
             if (ringtone != null) {
                 correctUri = uri;
                 correctTitle = ringtone.getTitle(getActivity());
@@ -235,18 +233,11 @@ public class SettingsFragment extends PreferenceFragment {
         preference.setSummary(correctTitle);
     }
 
-    private void saveRingtoneUri(Preference preference, String uri) {
+    private void saveRingtoneUri(Preference preference, Uri uri) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(preference.getKey(), uri);
+        editor.putString(preference.getKey(), uri == null ? MyShowsSettings.SILENT_MODE : uri.toString());
         editor.apply();
-    }
-
-    private Uri toUri(String value) {
-        if (value == null) {
-            return null;
-        }
-        return Uri.parse(value);
     }
 
     private void signOutPreferenceInitialize(Preference signOutPreference) {

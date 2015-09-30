@@ -2,6 +2,7 @@ package me.myshows.android;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 
@@ -17,6 +18,8 @@ public class MyShowsSettings {
     public static final String TIME = "time";
     public static final String RINGTONE = "ringtone";
     public static final String VIBRATION = "vibration";
+
+    public static final String SILENT_MODE = "myshows_silent_mode";
 
     private static final boolean DEFAULT_CHECK_NEW_SERIES_STATE = true;
     private static final boolean DEFAULT_COMPACT_MODE_STATE = false;
@@ -39,8 +42,12 @@ public class MyShowsSettings {
         return getBooleanPreference(context, VIBRATION, DEFAULT_VIBRATION_STATE);
     }
 
-    public static String getRingtone(Context context) {
-        return getStringPreference(context, RINGTONE, DEFAULT_RINGTONE_VALUE);
+    public static Uri getRingtone(Context context) {
+        String value = getStringPreference(context, RINGTONE, DEFAULT_RINGTONE_VALUE);
+        if (value == null || SILENT_MODE.equals(value)) {
+            return null;
+        }
+        return Uri.parse(value);
     }
 
     public static int getTimeValue(Context context) {
