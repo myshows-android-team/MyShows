@@ -73,7 +73,6 @@
     <string name="check_new_series">Уведомлять о новых сериях</string>
     <string name="time">Время</string>
     <string name="ringtone">Рингтон</string>
-    <string name="select_ringtone">Выберите мелодию для уведомления</string>
     <string name="none_ringtone">Без звука</string>
     <string name="vibration">Вибрация</string>
 

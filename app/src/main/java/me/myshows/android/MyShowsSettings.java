@@ -3,6 +3,7 @@ package me.myshows.android;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +21,7 @@ public class MyShowsSettings {
     private static final boolean DEFAULT_CHECK_NEW_SERIES_STATE = true;
     private static final boolean DEFAULT_COMPACT_MODE_STATE = false;
     private static final boolean DEFAULT_VIBRATION_STATE = true;
-    private static final String DEFAULT_RINGTONE_VALUE = null;
+    private static final String DEFAULT_RINGTONE_VALUE = String.valueOf(Settings.System.DEFAULT_NOTIFICATION_URI);
     private static final int DEFAULT_TIME_VALUE = (int) TimeUnit.HOURS.toMinutes(12);
 
     private MyShowsSettings() {

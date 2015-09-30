@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v14.preference.PreferenceFragment;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.CheckBoxPreference;
@@ -213,9 +214,8 @@ public class SettingsFragment extends PreferenceFragment {
         ringtonePreference.setOnPreferenceClickListener(preference -> {
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.select_ringtone));
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI,
-                    toUri(MyShowsSettings.getRingtone(getActivity())));
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, Settings.System.DEFAULT_NOTIFICATION_URI);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, toUri(MyShowsSettings.getRingtone(getActivity())));
             startActivityForResult(intent, RINGTONE_REQUEST_CODE);
             return true;
         });
