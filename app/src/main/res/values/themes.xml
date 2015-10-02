@@ -16,10 +16,14 @@
 
     <style name="Base.Theme.MyShows.Settings" parent="Base.Theme.MyShows">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:activatedBackgroundIndicator">@drawable/settings_preference_background</item>
+        <item name="android:textAppearanceListItem">@style/MyShows.Preference.TextAppearance.Title</item>
+        <item name="android:textAppearanceSmall">@style/MyShows.Preference.TextAppearance.Summary</item>
     </style>
 
     <style name="Theme.MyShows.Settings" parent="Base.Theme.MyShows.Settings">
-        <item name="android:activatedBackgroundIndicator">@drawable/settings_preference_background</item>
+        <item name="android:listPreferredItemPaddingLeft">@dimen/default_padding</item>
+        <item name="android:listPreferredItemPaddingRight">@dimen/default_padding</item>
     </style>
 
     <style name="Theme.MyShows.Login">
