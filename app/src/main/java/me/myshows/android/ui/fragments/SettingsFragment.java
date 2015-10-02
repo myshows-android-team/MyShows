@@ -13,9 +13,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v14.preference.PreferenceFragment;
-import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.SwitchPreferenceCompat;
 
 import com.bumptech.glide.Glide;
 
@@ -64,7 +64,7 @@ public class SettingsFragment extends PreferenceFragment {
         subscriptions = new CompositeSubscription();
 
         clearCachePreference = findPreference(CLEAR_CACHE);
-        SwitchPreference checkNewSeriesPreference = (SwitchPreference) findPreference(CHECK_NEW_SERIES);
+        SwitchPreferenceCompat checkNewSeriesPreference = (SwitchPreferenceCompat) findPreference(CHECK_NEW_SERIES);
         timePreference = findPreference(TIME);
         ringtonePreference = findPreference(RINGTONE);
         vibrationPreference = (CheckBoxPreference) findPreference(VIBRATION);
@@ -170,7 +170,7 @@ public class SettingsFragment extends PreferenceFragment {
         return bytes;
     }
 
-    private void checkNewSeriesPreferenceInitialize(SwitchPreference checkNewSeriesPreference) {
+    private void checkNewSeriesPreferenceInitialize(SwitchPreferenceCompat checkNewSeriesPreference) {
         setEnabledNotificationsPreferences(checkNewSeriesPreference.isChecked());
         checkNewSeriesPreference.setOnPreferenceChangeListener((preference, value) -> {
             setEnabledNotificationsPreferences((Boolean) value);

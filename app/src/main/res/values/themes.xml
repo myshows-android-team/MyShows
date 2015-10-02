@@ -12,14 +12,15 @@
         <item name="colorAccent">@color/primary</item>
     </style>
 
-    <style name="Theme.MyShows" parent="Base.Theme.MyShows" />
+    <style name="Theme.MyShows" parent="Base.Theme.MyShows"/>
 
     <style name="Base.Theme.MyShows.Settings" parent="Base.Theme.MyShows">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="android:activatedBackgroundIndicator">?android:attr/selectableItemBackground</item>
     </style>
 
-    <style name="Theme.MyShows.Settings" parent="Base.Theme.MyShows.Settings" />
+    <style name="Theme.MyShows.Settings" parent="Base.Theme.MyShows.Settings">
+        <item name="android:activatedBackgroundIndicator">@drawable/settings_preference_background</item>
+    </style>
 
     <style name="Theme.MyShows.Login">
         <item name="colorAccent">@android:color/white</item>
