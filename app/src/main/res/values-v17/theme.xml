@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="Theme.MyShows.Settings" parent="Base.Theme.MyShows.Settings">
         <item name="android:listPreferredItemPaddingStart">@dimen/default_padding</item>
         <item name="android:listPreferredItemPaddingEnd">@dimen/default_padding</item>
     </style>
-
 </resources>
