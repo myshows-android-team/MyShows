@@ -20,7 +20,7 @@ public class SignOutDialogFragment extends DialogFragment {
                 .setMessage(R.string.sign_out_dialog_content)
                 .setNegativeButton(R.string.sign_out_dialog_reject, (dialogInterface, i) ->
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, null))
-                .setPositiveButton(R.string.sign_out_dialog_accept, (dialogInterface1, i) ->
+                .setPositiveButton(R.string.sign_out_dialog_accept, (dialogInterface, i) ->
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, null))
                 .create();
     }
