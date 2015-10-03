@@ -66,4 +66,16 @@
     <style name="MyShows.Preference.TextAppearance.Summary" parent="">
         <item name="android:textSize">14sp</item>
     </style>
+
+    <style name="MyShows.DialogWindowTitle" parent="RtlOverlay.DialogWindowTitle.AppCompat">
+        <item name="android:textAppearance">@style/MyShows.TextAppearance.Title</item>
+    </style>
+
+    <style name="MyShows.TextAppearance.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MyShows.TextAppearance.Dialog.Button" parent="TextAppearance.AppCompat.Widget.Button">
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

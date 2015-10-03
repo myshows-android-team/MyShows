@@ -10,6 +10,8 @@
 
     <style name="Theme.MyShows.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/primary</item>
+        <item name="android:textAppearanceButton">@style/MyShows.TextAppearance.Dialog.Button</item>
+        <item name="android:windowTitleStyle">@style/MyShows.DialogWindowTitle</item>
     </style>
 
     <style name="Theme.MyShows" parent="Base.Theme.MyShows"/>
