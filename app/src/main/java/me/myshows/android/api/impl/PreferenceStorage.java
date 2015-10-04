@@ -55,4 +55,9 @@ public class PreferenceStorage implements ClientStorage {
         editor.putStringSet(MY_SHOWS_COOKIES, cookieValues);
         editor.apply();
     }
+
+    @Override
+    public void clear() {
+        preferences.edit().clear().apply();
+    }
 }

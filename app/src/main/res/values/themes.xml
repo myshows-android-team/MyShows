@@ -1,11 +1,26 @@
 <resources>
+
     <style name="Base.Theme.MyShows" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+
+        <item name="alertDialogTheme">@style/Theme.MyShows.Dialog</item>
+        <item name="android:dialogTheme">@style/Theme.MyShows.Dialog</item>
     </style>
 
-    <style name="Theme.MyShows" parent="Base.Theme.MyShows" />
+    <style name="Theme.MyShows.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:textAppearanceButton">@style/MyShows.TextAppearance.Dialog.Button</item>
+        <item name="android:windowTitleStyle">@style/MyShows.DialogWindowTitle</item>
+    </style>
+
+    <style name="Theme.MyShows" parent="Base.Theme.MyShows">
+        <item name="android:activatedBackgroundIndicator">@drawable/selectable_item_background</item>
+        <item name="android:selectableItemBackground">@drawable/selectable_item_background</item>
+    </style>
 
     <style name="Theme.MyShows.Login">
         <item name="colorAccent">@android:color/white</item>
@@ -18,5 +33,15 @@
     <style name="Theme.MyShows.WhiteControl">
         <item name="colorAccent">@android:color/white</item>
         <item name="colorControlNormal">@android:color/white</item>
+    </style>
+
+    <style name="Base.Theme.MyShows.Settings" parent="Theme.MyShows">
+        <item name="android:textAppearanceListItem">@style/MyShows.Preference.TextAppearance.Title</item>
+        <item name="android:textAppearanceSmall">@style/MyShows.Preference.TextAppearance.Summary</item>
+    </style>
+
+    <style name="Theme.MyShows.Settings" parent="Base.Theme.MyShows.Settings">
+        <item name="android:listPreferredItemPaddingLeft">@dimen/default_padding</item>
+        <item name="android:listPreferredItemPaddingRight">@dimen/default_padding</item>
     </style>
 </resources>

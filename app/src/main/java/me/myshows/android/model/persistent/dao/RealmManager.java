@@ -1,14 +1,27 @@
 package me.myshows.android.model.persistent.dao;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class RealmManager {
+
+    private final RealmConfiguration configuration;
+
+    public RealmManager(Context context) {
+        configuration = new RealmConfiguration.Builder(context)
+                .schemaVersion(0)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(configuration);
+    }
 
     public <T> T insertEntity(T entity, ToPersistentEntity<T> converter) {
         Realm realm = Realm.getDefaultInstance();
@@ -125,5 +138,9 @@ public class RealmManager {
             return query.equalTo(fieldName, (double) value);
         }
         throw new IllegalArgumentException("Unsupported value type");
+    }
+
+    public RealmConfiguration getConfiguration() {
+        return configuration;
     }
 }

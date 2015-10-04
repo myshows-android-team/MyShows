@@ -19,4 +19,8 @@ public abstract class StorageMyShowsClient implements MyShowsClient {
         storage.putCookies(new HashSet<>()); // reset cookie otherwise API returns 401
         return authentication(storage.getCredentials());
     }
+
+    public void clearStorage() {
+        storage.clear();
+    }
 }

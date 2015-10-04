@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_series_background"
+    android:background="@android:color/white"
     android:clickable="true"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/show_list_height"
+        android:background="?android:selectableItemBackground"
         android:divider="@drawable/horizontal_divider"
         android:gravity="center_vertical"
         android:orientation="horizontal"
