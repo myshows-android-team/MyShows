@@ -7,14 +7,12 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import org.parceler.Parcels;
 
@@ -24,12 +22,11 @@ import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.WatchStatus;
-import rx.Subscription;
 
 /**
  * Created by warrior on 19.07.15.
  */
-public class ShowActivity extends RxAppCompatActivity {
+public class ShowActivity extends HomeActivity {
 
     public static final String SHOW_ID = "showId";
     public static final String USER_SHOW = "userShow";
@@ -58,8 +55,7 @@ public class ShowActivity extends RxAppCompatActivity {
         client = MyShowsClientImpl.getInstance();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setupActionBar(toolbar);
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         showImage = (ImageView) findViewById(R.id.show_image);
@@ -82,16 +78,6 @@ public class ShowActivity extends RxAppCompatActivity {
             showId = intent.getIntExtra(SHOW_ID, 0);
         }
         loadData(showId);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void loadData(int showId) {
