@@ -1,6 +1,6 @@
 package me.myshows.android.ui.fragments;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 
 /**
  * Created by warrior on 19.07.15.

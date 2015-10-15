@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle.components.RxFragment;
 
 import org.parceler.Parcels;
 
@@ -154,6 +154,7 @@ public class RatingsFragment extends RxFragment {
                     intent.putExtra(ShowActivity.USER_SHOW, Parcels.wrap(userShow));
                 } else {
                     intent.putExtra(ShowActivity.SHOW_ID, ratingShow.getId());
+                    intent.putExtra(ShowActivity.SHOW_TITLE, ratingShow.getTitle());
                 }
                 context.startActivity(intent);
             });

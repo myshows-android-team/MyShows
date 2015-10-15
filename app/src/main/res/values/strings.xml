@@ -36,11 +36,10 @@
     <string name="pilot">Pilot</string>
     <string name="unknown_status">Unknown</string>
     <!-- Other -->
-    <plurals name="duration">
-        <item quantity="one">%d minute / series</item>
-        <item quantity="other">%d minutes / series</item>
-    </plurals>
+    <string name="duration">%d min / series</string>
     <string name="my_rating">My rating</string>
+    <string name="season_number">%d season</string>
+    <string name="unknown_date">date is N/A</string>
 
     <!-- Feed screen strings -->
     <plurals name="m_watch_series">
@@ -74,4 +73,29 @@
         <item quantity="one">hour</item>
         <item quantity="other">hours</item>
     </plurals>
+
+    <!-- Preference -->
+    <string name="compact_mode">Compact mode</string>
+    <string name="compact_mode_description">Display show in compact mode (without images)</string>
+    <string name="clear_cache">Clear cache</string>
+    <string name="clear_cache_summary">0 bytes</string>
+    <string name="clear_cache_dialog_title">Clear cache?</string>
+    <string name="clear_cache_dialog_content">The application will clear show data from you device, but you can always download it again.</string>
+    <string name="clear_cache_dialog_reject">Cancel</string>
+    <string name="clear_cache_dialog_accept">Clear</string>
+
+    <string name="notification">Notification</string>
+    <string name="check_new_series">Notify about new series</string>
+    <string name="time">Time</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="none_ringtone">None</string>
+    <string name="vibration">Vibration</string>
+
+    <string name="other">Other</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_dialog_title">Sign out?</string>
+    <string name="sign_out_dialog_content">Signing out will delete all data related to this account from this device. Continue?</string>
+    <string name="sign_out_dialog_reject">Cancel</string>
+    <string name="sign_out_dialog_accept">Sign out</string>
+
 </resources>

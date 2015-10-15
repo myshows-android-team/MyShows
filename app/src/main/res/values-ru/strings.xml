@@ -34,12 +34,10 @@
     <string name="pilot">Пилот</string>
     <string name="unknown_status">Неизвестен</string>
     <!-- Other -->
-    <plurals name="duration">
-        <item quantity="one">%d минута / серия</item>
-        <item quantity="few">%d минуты / серия</item>
-        <item quantity="many">%d минут / серия</item>
-    </plurals>
+    <string name="duration">%d мин / серия</string>
     <string name="my_rating">Моя оценка</string>
+    <string name="season_number">%d сезон</string>
+    <string name="unknown_date">не указана</string>
 
     <!-- Feed screen strings -->
     <plurals name="m_watch_series">
@@ -78,4 +76,28 @@
         <item quantity="few">часа</item>
         <item quantity="many">часов</item>
     </plurals>
+
+    <!-- Preference -->
+    <string name="compact_mode">Компактный вид</string>
+    <string name="compact_mode_description">Отображать сериалы в компактном виде (без картинок)</string>
+    <string name="clear_cache">Очистить кэш</string>
+    <string name="clear_cache_dialog_title">Очистить кэш?</string>
+    <string name="clear_cache_dialog_content">Приложение очистит данные о сериалах с вашего устройства, но вы всегда можете загрузить их снова.</string>
+    <string name="clear_cache_dialog_reject">Отмена</string>
+    <string name="clear_cache_dialog_accept">Очистить</string>
+
+    <string name="notification">Уведомления</string>
+    <string name="check_new_series">Уведомлять о новых сериях</string>
+    <string name="time">Время</string>
+    <string name="ringtone">Рингтон</string>
+    <string name="none_ringtone">Без звука</string>
+    <string name="vibration">Вибрация</string>
+
+    <string name="other">Другое</string>
+    <string name="sign_out">Выйти</string>
+    <string name="sign_out_dialog_title">Выйти?</string>
+    <string name="sign_out_dialog_content">При выходе из учетной записи с устройства будут удалены все связанные с ней данные. Продолжить?</string>
+    <string name="sign_out_dialog_reject">Отмена</string>
+    <string name="sign_out_dialog_accept">Выйти</string>
+
 </resources>

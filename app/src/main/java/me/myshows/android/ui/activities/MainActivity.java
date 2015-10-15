@@ -1,14 +1,14 @@
 package me.myshows.android.ui.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -29,6 +29,7 @@ import me.myshows.android.ui.fragments.FavoritesFragment;
 import me.myshows.android.ui.fragments.FriendsFragment;
 import me.myshows.android.ui.fragments.MyShowsFragment;
 import me.myshows.android.ui.fragments.RatingsFragment;
+import me.myshows.android.ui.fragments.SettingsFragment;
 
 /**
  * @author Whiplash
@@ -66,7 +67,7 @@ public class MainActivity extends RxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragmentManager = getSupportFragmentManager();
+        fragmentManager = getFragmentManager();
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
                     .add(R.id.content, new MyShowsFragment(), MyShowsFragment.class.getSimpleName())
@@ -114,6 +115,15 @@ public class MainActivity extends RxAppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == SettingsFragment.SIGN_OUT_REQUEST_CODE) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+    }
+
     private void setupActionBar(Toolbar toolbar) {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -130,20 +140,28 @@ public class MainActivity extends RxAppCompatActivity {
                 .setChecked(true);
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
-                    if (info != null && currentItemId != menuItem.getItemId()) {
-                        currentItemId = menuItem.getItemId();
-                        setActionBarTitle(info.titleId);
-                        Fragment oldFragment = fragmentManager.findFragmentById(R.id.content);
-                        Fragment newFragment = getFragment(info.fragmentClass);
-                        fragmentManager.beginTransaction()
-                                .detach(oldFragment)
-                                .replace(R.id.content, newFragment, info.fragmentClass.getSimpleName())
-                                .attach(newFragment)
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit();
+                    switch (menuItem.getItemId()) {
+                        case R.id.nav_settings:
+                            startActivityForResult(new Intent(this, SettingsActivity.class),
+                                    SettingsFragment.SIGN_OUT_REQUEST_CODE);
+                            break;
+                        default:
+                            FragmentInfo info = MENU_ITEM_ID_TO_FRAGMENT_INFO.get(menuItem.getItemId());
+                            if (info != null && currentItemId != menuItem.getItemId()) {
+                                currentItemId = menuItem.getItemId();
+                                setActionBarTitle(info.titleId);
+                                Fragment oldFragment = fragmentManager.findFragmentById(R.id.content);
+                                Fragment newFragment = getFragment(info.fragmentClass);
+                                fragmentManager.beginTransaction()
+                                        .detach(oldFragment)
+                                        .replace(R.id.content, newFragment, info.fragmentClass.getSimpleName())
+                                        .attach(newFragment)
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .commit();
+                                menuItem.setChecked(true);
+                            }
+                            drawerLayout.closeDrawers();
                     }
-                    drawerLayout.closeDrawers();
                     return true;
                 });
     }
@@ -195,7 +213,8 @@ public class MainActivity extends RxAppCompatActivity {
 
     private static class FragmentInfo {
         public final Class<? extends Fragment> fragmentClass;
-        @StringRes public final int titleId;
+        @StringRes
+        public final int titleId;
 
         public FragmentInfo(Class<? extends Fragment> fragmentClass, @StringRes int titleId) {
             this.fragmentClass = fragmentClass;

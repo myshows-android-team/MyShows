@@ -9,8 +9,8 @@ import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
-import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
+import me.myshows.android.model.UserShowEpisodes;
 import rx.Observable;
 
 /**
@@ -28,7 +28,7 @@ public interface MyShowsClient {
 
     Observable<List<UserShow>> profileShows();
 
-    Observable<List<UserEpisode>> profileEpisodesOfShow(int showId);
+    Observable<UserShowEpisodes> profileEpisodesOfShow(int showId);
 
     Observable<List<UnwatchedEpisode>> profileUnwatchedEpisodes();
 
