@@ -1,5 +1,6 @@
 package me.myshows.android.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
@@ -87,6 +88,11 @@ public class MainActivity extends RxAppCompatActivity {
         username = (TextView) findViewById(R.id.nav_username);
         headerBackground = (ImageView) findViewById(R.id.nav_background);
         avatar = (ImageView) findViewById(R.id.nav_avatar);
+        avatar.setOnClickListener(v -> {
+            drawerLayout.closeDrawers();
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+        });
 
         loadData();
         setHeaderBackground();
