@@ -27,7 +27,6 @@ import me.myshows.android.ui.fragments.CalendarFragment;
 import me.myshows.android.ui.fragments.FavoritesFragment;
 import me.myshows.android.ui.fragments.FriendsFragment;
 import me.myshows.android.ui.fragments.MyShowsFragment;
-import me.myshows.android.ui.fragments.ProfileFragment;
 import me.myshows.android.ui.fragments.RatingsFragment;
 
 /**
@@ -45,7 +44,6 @@ public class MainActivity extends RxAppCompatActivity {
     static {
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_my_series, FragmentInfo.make(MyShowsFragment.class, R.string.my_series));
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_calendar, FragmentInfo.make(CalendarFragment.class, R.string.calendar));
-        MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_profile, FragmentInfo.make(ProfileFragment.class, R.string.profile));
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_friends, FragmentInfo.make(FriendsFragment.class, R.string.friends));
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_favorites, FragmentInfo.make(FavoritesFragment.class, R.string.favorites));
         MENU_ITEM_ID_TO_FRAGMENT_INFO.put(R.id.nav_ratings, FragmentInfo.make(RatingsFragment.class, R.string.ratings));

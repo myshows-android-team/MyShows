@@ -12,10 +12,6 @@
             android:icon="@drawable/nav_calendar"
             android:title="@string/calendar" />
         <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/nav_profile"
-            android:title="@string/profile" />
-        <item
             android:id="@+id/nav_friends"
             android:icon="@drawable/nav_friends"
             android:title="@string/friends" />
