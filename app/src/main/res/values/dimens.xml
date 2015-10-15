@@ -37,4 +37,7 @@
 
     <dimen name="ratings_divider_height">1dp</dimen>
 
+    <!-- Profile dimens -->
+    <dimen name="indicator_size">8dp</dimen>
+
 </resources>
