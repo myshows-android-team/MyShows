@@ -223,10 +223,12 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         SparseSet checkedSpecialEpisodes = new SparseSet();
         for (UserEpisode userEpisode : watchedEpisodes.getEpisodes()) {
             Episode episode = show.getEpisodes().get(String.valueOf(userEpisode.getId()));
-            if (episode.isSpecial()) {
-                checkedSpecialEpisodes.add(episode.getId());
-            } else {
-                uncheckedEpisodes[episode.getSeasonNumber() - 1].remove(episode.getId());
+            if (episode != null) {
+                if (episode.isSpecial()) {
+                    checkedSpecialEpisodes.add(episode.getId());
+                } else {
+                    uncheckedEpisodes[episode.getSeasonNumber() - 1].remove(episode.getId());
+                }
             }
         }
         return new ShowAdapter(show, seasons, uncheckedEpisodes, checkedSpecialEpisodes);
