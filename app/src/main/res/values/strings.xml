@@ -12,7 +12,6 @@
     <!-- Navigation strings -->
     <string name="my_series">My series</string>
     <string name="calendar">Calendar</string>
-    <string name="profile">Profile</string>
     <string name="friends">Friends</string>
     <string name="favorites">Favorites</string>
     <string name="ratings">Ratings</string>
@@ -59,6 +58,21 @@
     <!-- Ratings screen -->
     <string name="watching">%s watching</string>
     <string name="show_rating">Rating \u2014 %.2f</string>
+
+    <!-- Profile screen -->
+    <string name="place">#%s among friends</string>
+    <plurals name="episodes_caption">
+        <item quantity="one">episode</item>
+        <item quantity="other">episodes</item>
+    </plurals>
+    <plurals name="days_caption">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+    <plurals name="hours_caption">
+        <item quantity="one">hour</item>
+        <item quantity="other">hours</item>
+    </plurals>
 
     <!-- Preference -->
     <string name="compact_mode">Compact mode</string>

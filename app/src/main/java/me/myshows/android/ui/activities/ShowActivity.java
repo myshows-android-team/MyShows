@@ -11,14 +11,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import org.parceler.Parcels;
 
@@ -36,7 +34,7 @@ import rx.Observable;
 /**
  * Created by warrior on 19.07.15.
  */
-public class ShowActivity extends RxAppCompatActivity {
+public class ShowActivity extends HomeActivity {
 
     private static final String TAG = ShowActivity.class.getSimpleName();
 
@@ -65,8 +63,7 @@ public class ShowActivity extends RxAppCompatActivity {
         client = MyShowsClientImpl.getInstance();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setupActionBar(toolbar);
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         showImage = (ImageView) findViewById(R.id.show_image);
@@ -90,16 +87,6 @@ public class ShowActivity extends RxAppCompatActivity {
             collapsingToolbar.setTitle(showTitle);
         }
         return showId;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

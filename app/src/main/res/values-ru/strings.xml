@@ -10,7 +10,6 @@
     <!-- Navigation strings -->
     <string name="my_series">Мои сериалы</string>
     <string name="calendar">Календарь</string>
-    <string name="profile">Профиль</string>
     <string name="friends">Друзья</string>
     <string name="favorites">Избранное</string>
     <string name="ratings">Рейтинги</string>
@@ -60,6 +59,24 @@
     <string name="watching">%s смотрят</string>
     <string name="show_rating">Рейтинг \u2014 %.2f</string>
 
+    <!-- Profile screen -->
+    <string name="place">#%s среди друзей</string>
+    <plurals name="episodes_caption">
+        <item quantity="one">эпизод</item>
+        <item quantity="few">эпизода</item>
+        <item quantity="many">эпизодов</item>
+    </plurals>
+    <plurals name="days_caption">
+        <item quantity="one">день</item>
+        <item quantity="few">дня</item>
+        <item quantity="many">дней</item>
+    </plurals>
+    <plurals name="hours_caption">
+        <item quantity="one">час</item>
+        <item quantity="few">часа</item>
+        <item quantity="many">часов</item>
+    </plurals>
+
     <!-- Preference -->
     <string name="compact_mode">Компактный вид</string>
     <string name="compact_mode_description">Отображать сериалы в компактном виде (без картинок)</string>
@@ -82,4 +99,5 @@
     <string name="sign_out_dialog_content">При выходе из учетной записи с устройства будут удалены все связанные с ней данные. Продолжить?</string>
     <string name="sign_out_dialog_reject">Отмена</string>
     <string name="sign_out_dialog_accept">Выйти</string>
+
 </resources>
