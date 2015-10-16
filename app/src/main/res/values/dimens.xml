@@ -6,7 +6,7 @@
     <dimen name="show_image_height">240dp</dimen>
     <!-- show_image_height / 2 -->
     <dimen name="show_image_gradient_height">120dp</dimen>
-    <dimen name="show_shadow_height">4dp</dimen>
+    <dimen name="show_shadow_height">2dp</dimen>
     <dimen name="show_list_height">48dp</dimen>
     <dimen name="show_list_left_padding">9dp</dimen>
 
