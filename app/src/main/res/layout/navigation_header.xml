@@ -28,8 +28,8 @@
         android:layout_marginLeft="14dp"
         android:layout_marginTop="@dimen/nav_avatar_top_margin"
         android:src="@drawable/default_avatar"
-        app:border_color="@android:color/white"
-        app:border_width="2dp" />
+        app:civ_border_color="@android:color/white"
+        app:civ_border_width="2dp" />
 
     <TextView
         android:id="@+id/nav_username"

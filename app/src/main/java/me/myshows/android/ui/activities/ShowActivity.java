@@ -10,6 +10,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 
@@ -105,7 +106,7 @@ public class ShowActivity extends HomeActivity {
         recyclerView.setHasFixedSize(false);
         recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_padding)));
         recyclerView.addItemDecoration(new ShowAdapter.ShadowDecorator(getDrawableById(R.drawable.show_screen_shadow)));
-        RecyclerView.ItemAnimator animator = new RefactoredDefaultItemAnimator();
+        SimpleItemAnimator animator = new RefactoredDefaultItemAnimator();
         animator.setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(animator);
     }

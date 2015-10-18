@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -84,11 +85,11 @@ public class MainActivity extends RxAppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        setupNavigationDrawer(navigationView);
+        View headerView = setupNavigationView(navigationView);
 
-        username = (TextView) findViewById(R.id.nav_username);
-        headerBackground = (ImageView) findViewById(R.id.nav_background);
-        avatar = (ImageView) findViewById(R.id.nav_avatar);
+        username = (TextView) headerView.findViewById(R.id.nav_username);
+        headerBackground = (ImageView) headerView.findViewById(R.id.nav_background);
+        avatar = (ImageView) headerView.findViewById(R.id.nav_avatar);
         avatar.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             Intent intent = new Intent(this, ProfileActivity.class);
@@ -134,7 +135,8 @@ public class MainActivity extends RxAppCompatActivity {
         }
     }
 
-    private void setupNavigationDrawer(NavigationView navigationView) {
+    private View setupNavigationView(NavigationView navigationView) {
+        View headerView = navigationView.inflateHeaderView(R.layout.navigation_header);
         navigationView.getMenu()
                 .findItem(currentItemId)
                 .setChecked(true);
@@ -164,6 +166,7 @@ public class MainActivity extends RxAppCompatActivity {
                     }
                     return true;
                 });
+        return headerView;
     }
 
     private Fragment getFragment(Class<? extends Fragment> clazz) {
