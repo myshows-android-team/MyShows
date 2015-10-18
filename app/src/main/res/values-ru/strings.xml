@@ -54,6 +54,13 @@
     </plurals>
     <string name="m_started_show">Начал смотреть сериал %s</string>
     <string name="f_started_show">Начала смотреть сериал %s</string>
+    <string name="watch_later_show">Хочет посмотреть сериал %s</string>
+    <string name="m_gave_rating">Оценил сериал %1$s на %2$d</string>
+    <string name="f_gave_rating">Оценила сериал %1$s на %2$d</string>
+    <string name="m_stopped_show">Перестал смотреть сериал %s</string>
+    <string name="f_stopped_show">Перестала смотреть сериал %s</string>
+    <string name="m_got_achievement">Получил достижение %s</string>
+    <string name="f_got_achievement">Получила достижение %s</string>
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
 

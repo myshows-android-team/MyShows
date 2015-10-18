@@ -54,6 +54,13 @@
     </plurals>
     <string name="m_started_show">Started watching the show %s</string>
     <string name="f_started_show">Started watching the show %s</string>
+    <string name="watch_later_show">Wants to watch show %s</string>
+    <string name="m_gave_rating">Gave rating %2$d to show %1$s</string>
+    <string name="f_gave_rating">Gave rating %2$d to show %1$s</string>
+    <string name="m_stopped_show">Stopped watching the show %s</string>
+    <string name="f_stopped_show">Stopped watching the show %s</string>
+    <string name="m_got_achievement">Got achievement %s</string>
+    <string name="f_got_achievement">Got achievement %s</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
 

@@ -24,9 +24,8 @@
     <color name="list_show_text_color">@color/white_80_opacity</color>
 
     <!-- List feed view colors -->
-    <color name="list_feed_black_text">@color/dark_gray</color>
     <color name="list_feed_gray_text">#AAAAAA</color>
-    <color name="list_feed_history">#EDEDED</color>
+    <color name="list_feed_background">#EDEDED</color>
 
     <!-- Fab colors -->
     <color name="fab_watching">#78B531</color>

@@ -3,6 +3,7 @@ package me.myshows.android.ui.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
@@ -107,6 +109,7 @@ public class FriendsFragment extends RxFragment {
         private final ImageView avatar;
         private final TextView name;
         private final TextView action;
+        private final View actionBackground;
         private final ImageView actionIcon;
 
         public FeedHolder(View itemView) {
@@ -114,6 +117,7 @@ public class FriendsFragment extends RxFragment {
             avatar = (ImageView) itemView.findViewById(R.id.friend_avatar);
             name = (TextView) itemView.findViewById(R.id.friend_name);
             action = (TextView) itemView.findViewById(R.id.friend_action);
+            actionBackground = itemView.findViewById(R.id.feed_action_background);
             actionIcon = (ImageView) itemView.findViewById(R.id.feed_action_icon);
 
             if (typeface == null) {
@@ -126,14 +130,38 @@ public class FriendsFragment extends RxFragment {
             setAvatar(avatarUrl);
             name.setText(feed.getLogin());
 
-            switch (feed.getAction()) {
+            Action feedAction = feed.getAction();
+            actionIcon.setImageResource(feedAction.getDrawableId());
+            setActionIconBackground(feedAction.getColor());
+
+            switch (feedAction) {
                 case WATCH:
                     setWatchAction(feed);
                     break;
                 case NEW:
                     setNewAction(feed);
                     break;
+                case WATCH_LATER:
+                    setWatchLaterAction(feed);
+                    break;
+                case RATING:
+                    setRatingAction(feed);
+                    break;
+                case STOP_WATCH:
+                    setStopWatchAction(feed);
+                    break;
+                case ACHIEVEMENT:
+                    setAchievementAction(feed);
+                    break;
             }
+        }
+
+        private void setActionIconBackground(int color) {
+            GradientDrawable shape = new GradientDrawable();
+            shape.setCornerRadius(actionBackground.getResources()
+                    .getDimensionPixelSize(R.dimen.list_feed_action_icon_corner_radius));
+            shape.setColor(color);
+            actionBackground.setBackground(shape);
         }
 
         private void setAvatar(String avatarUrl) {
@@ -142,16 +170,7 @@ public class FriendsFragment extends RxFragment {
                     .into(avatar);
         }
 
-        private void setNewAction(UserFeed feed) {
-            actionIcon.setImageResource(Action.NEW.getDrawableId());
-            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_started_show : R.string.m_started_show;
-            String showName = feed.getShow();
-            String actionText = itemView.getContext().getString(stringId, showName);
-            setShowActionText(actionText, feed);
-        }
-
         private void setWatchAction(UserFeed feed) {
-            actionIcon.setImageResource(Action.WATCH.getDrawableId());
             int seriesNumber = feed.getEpisodes();
             String showName = feed.getShow();
             String actionText;
@@ -166,36 +185,82 @@ public class FriendsFragment extends RxFragment {
             setShowActionText(actionText, feed);
         }
 
+        private void setNewAction(UserFeed feed) {
+            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_started_show : R.string.m_started_show;
+            String showName = feed.getShow();
+            String actionText = itemView.getContext().getString(stringId, showName);
+            setShowActionText(actionText, feed);
+        }
+
+        private void setWatchLaterAction(UserFeed feed) {
+            int stringId = R.string.watch_later_show;
+            String showName = feed.getShow();
+            String actionText = itemView.getContext().getString(stringId, showName);
+            setShowActionText(actionText, feed);
+        }
+
+        private void setRatingAction(UserFeed feed) {
+            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_gave_rating : R.string.m_gave_rating;
+            String showName = feed.getShow();
+            int rating = 5; //TODO: get correct rating value
+            String actionText = itemView.getContext().getString(stringId, showName, rating);
+            setShowActionText(actionText, feed);
+        }
+
+        private void setStopWatchAction(UserFeed feed) {
+            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_stopped_show : R.string.m_stopped_show;
+            String showName = feed.getShow();
+            String actionText = itemView.getContext().getString(stringId, showName);
+            setShowActionText(actionText, feed);
+        }
+
+        private void setAchievementAction(UserFeed feed) {
+            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_got_achievement : R.string.m_got_achievement;
+            String achievementName = "${ACHIEVEMENT_NAME}"; //TODO: get correct achievement name
+            String actionText = itemView.getContext().getString(stringId, achievementName);
+            setAchievementActionText(actionText, feed);
+        }
+
         private void setShowActionText(String actionText, UserFeed feed) {
-            int start = actionText.indexOf(feed.getShow());
-            int end = start + feed.getShow().length();
+            setActionTextLink(actionText, feed.getShow(), new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
+                    intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
+                    intent.putExtra(ShowActivity.SHOW_TITLE, feed.getTitle());
+                    itemView.getContext().startActivity(intent);
+                }
+
+                @Override
+                public void updateDrawState(TextPaint textPaint) {
+                    textPaint.setColor(itemView.getResources().getColor(R.color.dark_gray));
+                }
+            });
+        }
+
+        private void setAchievementActionText(String actionText, UserFeed feed) {
+            String achievementName = "${ACHIEVEMENT_NAME}"; //TODO: get correct achievement name
+            setActionTextLink(actionText, achievementName, new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    Toast.makeText(itemView.getContext(), "There should be achievement screen", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void updateDrawState(TextPaint textPaint) {
+                    textPaint.setColor(itemView.getResources().getColor(R.color.dark_gray));
+                }
+            });
+        }
+
+        private void setActionTextLink(String actionText, String link, ClickableSpan clickableSpan) {
+            int start = actionText.indexOf(link);
+            int end = start + link.length();
             SpannableString ss = new SpannableString(actionText);
-            ss.setSpan(new ShowSpan(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ss.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             action.setText(ss, TextView.BufferType.SPANNABLE);
             action.setMovementMethod(LinkMovementMethod.getInstance());
-        }
-
-        private class ShowSpan extends ClickableSpan {
-
-            private final UserFeed feed;
-
-            private ShowSpan(UserFeed feed) {
-                this.feed = feed;
-            }
-
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
-                intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
-                intent.putExtra(ShowActivity.SHOW_TITLE, feed.getTitle());
-                itemView.getContext().startActivity(intent);
-            }
-
-            @Override
-            public void updateDrawState(TextPaint textPaint) {
-                textPaint.setColor(itemView.getResources().getColor(R.color.primary));
-            }
         }
     }
 
