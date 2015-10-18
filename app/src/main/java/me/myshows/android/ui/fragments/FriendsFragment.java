@@ -10,11 +10,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,6 +144,7 @@ public class FriendsFragment extends RxFragment {
             divider = itemView.findViewById(R.id.feed_divider);
 
             name.setTypeface(typeface);
+            action.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
         public void bind(UserFeed feed, String avatarUrl, boolean isFirst, boolean isLast) {
@@ -197,14 +200,26 @@ public class FriendsFragment extends RxFragment {
             String showName = feed.getShow();
             String actionText;
             if (seriesNumber == 1) {
-                String episodeName = "[" + feed.getEpisode() + "]";
-                int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_watch_one_series : R.string.m_watch_one_series;
-                actionText = itemView.getContext().getString(stringId, episodeName, showName);
+                setWatchOneSeriesAction(feed, showName);
             } else {
                 int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
                 actionText = itemView.getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
+                setShowActionText(actionText, feed);
             }
-            setShowActionText(actionText, feed);
+        }
+
+        private void setWatchOneSeriesAction(UserFeed feed, String showName) {
+            String actionText;
+            String episodeName = feed.getEpisode();
+            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_watch_one_series : R.string.m_watch_one_series;
+            actionText = itemView.getContext().getString(stringId, episodeName, showName);
+            Spannable spannable = setShowActionText(actionText, feed);
+
+            int start = actionText.indexOf(episodeName);
+            int end = start + episodeName.length();
+            spannable.setSpan(new ForegroundColorSpan(itemView.getResources().getColor(R.color.dark_gray)),
+                    start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            action.setText(spannable);
         }
 
         private void setNewAction(UserFeed feed) {
@@ -243,8 +258,8 @@ public class FriendsFragment extends RxFragment {
             setAchievementActionText(actionText, feed);
         }
 
-        private void setShowActionText(String actionText, UserFeed feed) {
-            setActionTextLink(actionText, feed.getShow(), new ClickableSpan() {
+        private Spannable setShowActionText(String actionText, UserFeed feed) {
+            return setActionTextLink(actionText, feed.getShow(), new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
                     Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
@@ -260,9 +275,9 @@ public class FriendsFragment extends RxFragment {
             });
         }
 
-        private void setAchievementActionText(String actionText, UserFeed feed) {
+        private Spannable setAchievementActionText(String actionText, UserFeed feed) {
             String achievementName = "${ACHIEVEMENT_NAME}"; //TODO: get correct achievement name
-            setActionTextLink(actionText, achievementName, new ClickableSpan() {
+            return setActionTextLink(actionText, achievementName, new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
                     Toast.makeText(itemView.getContext(), "There should be achievement screen", Toast.LENGTH_LONG).show();
@@ -275,14 +290,13 @@ public class FriendsFragment extends RxFragment {
             });
         }
 
-        private void setActionTextLink(String actionText, String link, ClickableSpan clickableSpan) {
+        private Spannable setActionTextLink(String actionText, String link, ClickableSpan clickableSpan) {
             int start = actionText.indexOf(link);
             int end = start + link.length();
             SpannableString ss = new SpannableString(actionText);
             ss.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
             action.setText(ss, TextView.BufferType.SPANNABLE);
-            action.setMovementMethod(LinkMovementMethod.getInstance());
+            return ss;
         }
     }
 
