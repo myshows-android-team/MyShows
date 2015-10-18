@@ -42,12 +42,14 @@
     <string name="unknown_date">date is N/A</string>
 
     <!-- Feed screen strings -->
+    <string name="m_watch_one_series">Watched %1$s series of %2$s</string>
+    <string name="f_watch_one_series">Watched %1$s series of %2$s</string>
     <plurals name="m_watch_series">
-        <item quantity="one">Watched %3$s series of %2$s</item>
+        <item quantity="one">Watched %1$d series of %2$s</item>
         <item quantity="other">Watched %1$d series of %2$s</item>
     </plurals>
     <plurals name="f_watch_series">
-        <item quantity="one">Watched %3$s series of %2$s</item>
+        <item quantity="one">Watched %1$d series of %2$s</item>
         <item quantity="other">Watched %1$d series of %2$s</item>
     </plurals>
     <string name="m_started_show">Started watching the show %s</string>

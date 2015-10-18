@@ -40,13 +40,15 @@
     <string name="unknown_date">не указана</string>
 
     <!-- Feed screen strings -->
+    <string name="m_watch_one_series">Посмотрел %1$s серию %2$s</string>
+    <string name="f_watch_one_series">Посмотрела %1$s серию %2$s</string>
     <plurals name="m_watch_series">
-        <item quantity="one">Посмотрел %3$s серию %2$s</item>
+        <item quantity="one">Посмотрел %1$d серию %2$s</item>
         <item quantity="few">Посмотрел %1$d серии %2$s</item>
         <item quantity="many">Посмотрел %1$d серий %2$s</item>
     </plurals>
     <plurals name="f_watch_series">
-        <item quantity="one">Посмотрела %3$s серию %2$s</item>
+        <item quantity="one">Посмотрела %1$d серию %2$s</item>
         <item quantity="few">Посмотрела %1$d серии %2$s</item>
         <item quantity="many">Посмотрела %1$d серий %2$s</item>
     </plurals>

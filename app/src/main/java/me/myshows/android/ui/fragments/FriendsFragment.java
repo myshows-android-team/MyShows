@@ -53,6 +53,21 @@ public class FriendsFragment extends RxFragment {
     private RecyclerView recyclerView;
     private StickyRecyclerHeadersDecoration itemDecoration;
 
+    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
+        Map<String, String> avatarUrls = new HashMap<>();
+        extractAvatarUrls(avatarUrls, user.getFriends());
+        extractAvatarUrls(avatarUrls, user.getFollowers());
+        return avatarUrls;
+    }
+
+    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
+        if (userPreviews != null) {
+            for (UserPreview userPreview : userPreviews) {
+                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
+            }
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,21 +98,6 @@ public class FriendsFragment extends RxFragment {
         recyclerView.setAdapter(adapter);
         itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
         recyclerView.addItemDecoration(itemDecoration);
-    }
-
-    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
-        Map<String, String> avatarUrls = new HashMap<>();
-        extractAvatarUrls(avatarUrls, user.getFriends());
-        extractAvatarUrls(avatarUrls, user.getFollowers());
-        return avatarUrls;
-    }
-
-    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
-        if (userPreviews != null) {
-            for (UserPreview userPreview : userPreviews) {
-                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
-            }
-        }
     }
 
     private static class FeedHolder extends RecyclerView.ViewHolder {
@@ -139,7 +139,6 @@ public class FriendsFragment extends RxFragment {
         private void setAvatar(String avatarUrl) {
             Glide.with(itemView.getContext())
                     .load(avatarUrl)
-                    .placeholder(R.drawable.default_avatar)
                     .into(avatar);
         }
 
@@ -153,11 +152,17 @@ public class FriendsFragment extends RxFragment {
 
         private void setWatchAction(UserFeed feed) {
             actionIcon.setImageResource(Action.WATCH.getDrawableId());
-            int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
             int seriesNumber = feed.getEpisodes();
             String showName = feed.getShow();
-            String episodeName = "[" + feed.getEpisode() + "]";
-            String actionText = itemView.getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName, episodeName);
+            String actionText;
+            if (seriesNumber == 1) {
+                String episodeName = "[" + feed.getEpisode() + "]";
+                int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_watch_one_series : R.string.m_watch_one_series;
+                actionText = itemView.getContext().getString(stringId, episodeName, showName);
+            } else {
+                int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
+                actionText = itemView.getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
+            }
             setShowActionText(actionText, feed);
         }
 
