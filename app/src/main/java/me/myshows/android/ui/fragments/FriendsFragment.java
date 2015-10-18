@@ -3,6 +3,7 @@ package me.myshows.android.ui.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,14 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import com.trello.rxlifecycle.components.RxFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -45,6 +43,8 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserPreview;
 import me.myshows.android.ui.activities.ShowActivity;
+import me.myshows.android.ui.decorators.OffsetDecorator;
+import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
 import rx.Observable;
 
 /**
@@ -52,8 +52,9 @@ import rx.Observable;
  */
 public class FriendsFragment extends RxFragment {
 
+    private static Typeface typeface;
+
     private RecyclerView recyclerView;
-    private StickyRecyclerHeadersDecoration itemDecoration;
 
     private static Map<String, String> extractAvatarUrls(@NonNull User user) {
         Map<String, String> avatarUrls = new HashMap<>();
@@ -70,6 +71,17 @@ public class FriendsFragment extends RxFragment {
         }
     }
 
+    private static List<FeedDataHolder> extractData(List<Feed> feeds, Map<String, String> friendsAvatar) {
+        List<FeedDataHolder> feedData = new ArrayList<>();
+        for (Feed feed : feeds) {
+            feedData.add(new FeedDataHolder(feed.getDate()));
+            for (UserFeed userFeed : feed.getFeeds()) {
+                feedData.add(new FeedDataHolder(userFeed, friendsAvatar.get(userFeed.getLogin())));
+            }
+        }
+        return feedData;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +90,14 @@ public class FriendsFragment extends RxFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
+                getResources().getDimensionPixelSize(R.dimen.default_padding)));
+        recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
+                getActivity().getResources().getDrawable(R.drawable.show_screen_shadow)));
+
+        if (typeface == null) {
+            typeface = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Medium.ttf");
+        }
 
         loadData();
 
@@ -88,29 +108,26 @@ public class FriendsFragment extends RxFragment {
         MyShowsClient client = MyShowsClientImpl.getInstance();
         Observable<Map<String, String>> friendsAvatarObservable = client.profile()
                 .map(FriendsFragment::extractAvatarUrls);
-        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FeedAdapter::new)
+        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::extractData)
                 .compose(bindToLifecycle())
                 .subscribe(this::setAdapter);
     }
 
-    private void setAdapter(FeedAdapter adapter) {
-        if (itemDecoration != null) {
-            recyclerView.removeItemDecoration(itemDecoration);
-        }
-        recyclerView.setAdapter(adapter);
-        itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
-        recyclerView.addItemDecoration(itemDecoration);
+    private void setAdapter(List<FeedDataHolder> feedData) {
+        recyclerView.setAdapter(new FeedAdapter(feedData));
     }
 
     private static class FeedHolder extends RecyclerView.ViewHolder {
-
-        private static Typeface typeface;
 
         private final ImageView avatar;
         private final TextView name;
         private final TextView action;
         private final View actionBackground;
         private final ImageView actionIcon;
+
+        private final View topLine;
+        private final View bottomLine;
+        private final View divider;
 
         public FeedHolder(View itemView) {
             super(itemView);
@@ -120,15 +137,20 @@ public class FriendsFragment extends RxFragment {
             actionBackground = itemView.findViewById(R.id.feed_action_background);
             actionIcon = (ImageView) itemView.findViewById(R.id.feed_action_icon);
 
-            if (typeface == null) {
-                typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "Roboto-Medium.ttf");
-            }
+            topLine = itemView.findViewById(R.id.history_line_top);
+            bottomLine = itemView.findViewById(R.id.history_line_bottom);
+            divider = itemView.findViewById(R.id.feed_divider);
+
             name.setTypeface(typeface);
         }
 
-        public void bind(UserFeed feed, String avatarUrl) {
+        public void bind(UserFeed feed, String avatarUrl, boolean isFirst, boolean isLast) {
             setAvatar(avatarUrl);
             name.setText(feed.getLogin());
+
+            topLine.setVisibility(isFirst ? View.INVISIBLE : View.VISIBLE);
+            bottomLine.setVisibility(isLast ? View.INVISIBLE : View.VISIBLE);
+            divider.setVisibility(isLast ? View.GONE : View.VISIBLE);
 
             Action feedAction = feed.getAction();
             actionIcon.setImageResource(feedAction.getDrawableId());
@@ -279,6 +301,7 @@ public class FriendsFragment extends RxFragment {
         public FeedHeaderHolder(View itemView) {
             super(itemView);
             header = (TextView) itemView.findViewById(R.id.feed_header);
+            header.setTypeface(typeface);
         }
 
         private static boolean isSameDay(Calendar first, Calendar second) {
@@ -303,57 +326,122 @@ public class FriendsFragment extends RxFragment {
         }
     }
 
-    private static class FeedAdapter extends RecyclerView.Adapter<FeedHolder> implements StickyRecyclerHeadersAdapter<FeedHeaderHolder> {
+    private static class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private final List<UserFeed> userFeeds;
-        private final List<Long> feedsDate;
-        private final Map<String, String> friendsAvatar;
+        private static final int HEADER_TYPE = 0;
+        private static final int FEED_TYPE = 1;
 
-        public FeedAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
-            this.userFeeds = new ArrayList<>();
-            this.feedsDate = new ArrayList<>();
-            this.friendsAvatar = friendsAvatar;
-            for (Feed feed : feeds) {
-                userFeeds.addAll(feed.getFeeds());
-                feedsDate.addAll(Collections.nCopies(feed.getFeeds().size(), feed.getDate()));
+        private final List<FeedDataHolder> feedData;
+
+        public FeedAdapter(List<FeedDataHolder> feedData) {
+            this.feedData = feedData;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (feedData.get(position).isHeader()) {
+                return HEADER_TYPE;
+            } else {
+                return FEED_TYPE;
             }
         }
 
         @Override
-        public FeedHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_feed_view, parent, false);
-            return new FeedHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == HEADER_TYPE) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_feed_header_view, parent, false);
+                return new FeedHeaderHolder(view);
+            } else {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_feed_view, parent, false);
+                return new FeedHolder(view);
+            }
         }
 
         @Override
-        public void onBindViewHolder(FeedHolder holder, int position) {
-            UserFeed userFeed = userFeeds.get(position);
-            holder.bind(userFeed, friendsAvatar.get(userFeed.getLogin()));
-        }
-
-        @Override
-        public long getHeaderId(int position) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(feedsDate.get(position));
-            return calendar.get(Calendar.YEAR) * 367 + calendar.get(Calendar.DAY_OF_YEAR);
-        }
-
-        @Override
-        public FeedHeaderHolder onCreateHeaderViewHolder(ViewGroup parent) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_feed_header_view, parent, false);
-            return new FeedHeaderHolder(view);
-        }
-
-        @Override
-        public void onBindHeaderViewHolder(FeedHeaderHolder feedHeaderHolder, int position) {
-            feedHeaderHolder.bind(feedsDate.get(position));
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            FeedDataHolder data = feedData.get(position);
+            if (data.isHeader()) {
+                ((FeedHeaderHolder) holder).bind(data.getTimestamp());
+            } else {
+                boolean isFirst = feedData.get(position - 1).isHeader();
+                boolean isLast = feedData.size() - 1 == position || feedData.get(position + 1).isHeader();
+                ((FeedHolder) holder).bind(data.getUserFeed(), data.getAvatarUrl(), isFirst, isLast);
+            }
         }
 
         @Override
         public int getItemCount() {
-            return userFeeds.size();
+            return feedData.size();
+        }
+
+        static class FeedOffsetDecorator extends OffsetDecorator {
+
+            public FeedOffsetDecorator(int offset) {
+                super(offset);
+            }
+
+            @Override
+            protected boolean applyDecorator(View view, RecyclerView parent) {
+                RecyclerView.Adapter adapter = parent.getAdapter();
+                int position = parent.getChildAdapterPosition(view);
+                return position != 0 && adapter.getItemViewType(position) == HEADER_TYPE;
+            }
+        }
+
+        static class FeedShadowDecorator extends SimpleDrawableDecorator {
+
+            public FeedShadowDecorator(Drawable shadowDrawable) {
+                super(shadowDrawable);
+            }
+
+            @Override
+            protected boolean applyDecorator(View view, RecyclerView parent) {
+                RecyclerView.Adapter adapter = parent.getAdapter();
+                int position = parent.getChildAdapterPosition(view);
+                int size = adapter.getItemCount();
+                return size - 1 != position && adapter.getItemViewType(position + 1) == HEADER_TYPE;
+            }
+        }
+    }
+
+    private static class FeedDataHolder {
+
+        private static final long BAD_TIMESTAMP = -1;
+
+        private final long timestamp;
+        private final UserFeed userFeed;
+        private final String avatarUrl;
+
+        public FeedDataHolder(long timestamp) {
+            this(timestamp, null, null);
+        }
+
+        public FeedDataHolder(UserFeed userFeed, String avatarUrl) {
+            this(BAD_TIMESTAMP, userFeed, avatarUrl);
+        }
+
+        private FeedDataHolder(long timestamp, UserFeed userFeed, String avatarUrl) {
+            this.timestamp = timestamp;
+            this.userFeed = userFeed;
+            this.avatarUrl = avatarUrl;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        public UserFeed getUserFeed() {
+            return userFeed;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public boolean isHeader() {
+            return timestamp != BAD_TIMESTAMP;
         }
     }
 }
