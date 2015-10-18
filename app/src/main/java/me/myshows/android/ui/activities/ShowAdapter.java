@@ -61,6 +61,8 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     private final OnEpisodeCheckedChangeListener seriesListener = this::onEpisodeCheckedChanged;
     private final OnSeasonCheckedChangeListener seasonListener = this::onSeasonCheckedChanged;
 
+    private View showInformationView;
+
     private UserShow userShow;
 
     private ShowAdapter(@NonNull Show show, @NonNull List<List<Episode>> seasons,
@@ -118,7 +120,9 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     public AbstractExpandableItemViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == SHOW_INFORMATION_TYPE) {
-            View showInformationView = inflater.inflate(R.layout.show_information_layout, parent, false);
+            if (showInformationView == null) {
+                showInformationView = inflater.inflate(R.layout.show_information_layout, parent, false);
+            }
             return new ShowInformationViewHolder(showInformationView);
         }
         View seasonView = inflater.inflate(R.layout.list_season_view, parent, false);
