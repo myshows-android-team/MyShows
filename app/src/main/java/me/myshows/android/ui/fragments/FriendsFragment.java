@@ -58,6 +58,41 @@ public class FriendsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.friends_fragment, container, false);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
+                getResources().getDimensionPixelSize(R.dimen.default_padding)));
+        recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
+                getResources().getDrawable(R.drawable.show_screen_shadow)));
+
+        if (typeface == null) {
+            typeface = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Medium.ttf");
+        }
+
+        loadData();
+
+        return view;
+    }
+
+    private void loadData() {
+        MyShowsClient client = MyShowsClientImpl.getInstance();
+        Observable<Map<String, String>> friendsAvatarObservable = client.profile()
+                .map(FriendsFragment::extractAvatarUrls);
+        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::extractData)
+                .compose(bindToLifecycle())
+                .subscribe(this::setAdapter);
+    }
+
+    private void setAdapter(List<FeedDataHolder> feedData) {
+        recyclerView.setAdapter(new FeedAdapter(feedData));
+    }
+
     private static Map<String, String> extractAvatarUrls(@NonNull User user) {
         Map<String, String> avatarUrls = new HashMap<>();
         extractAvatarUrls(avatarUrls, user.getFriends());
@@ -82,41 +117,6 @@ public class FriendsFragment extends RxFragment {
             }
         }
         return feedData;
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.friends_fragment, container, false);
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
-                getResources().getDimensionPixelSize(R.dimen.default_padding)));
-        recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
-                getActivity().getResources().getDrawable(R.drawable.show_screen_shadow)));
-
-        if (typeface == null) {
-            typeface = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Medium.ttf");
-        }
-
-        loadData();
-
-        return view;
-    }
-
-    private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.getInstance();
-        Observable<Map<String, String>> friendsAvatarObservable = client.profile()
-                .map(FriendsFragment::extractAvatarUrls);
-        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::extractData)
-                .compose(bindToLifecycle())
-                .subscribe(this::setAdapter);
-    }
-
-    private void setAdapter(List<FeedDataHolder> feedData) {
-        recyclerView.setAdapter(new FeedAdapter(feedData));
     }
 
     private static class FeedHolder extends RecyclerView.ViewHolder {
@@ -264,7 +264,7 @@ public class FriendsFragment extends RxFragment {
                 public void onClick(View widget) {
                     Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
                     intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
-                    intent.putExtra(ShowActivity.SHOW_TITLE, feed.getTitle());
+                    intent.putExtra(ShowActivity.SHOW_TITLE, feed.getShow());
                     itemView.getContext().startActivity(intent);
                 }
 
