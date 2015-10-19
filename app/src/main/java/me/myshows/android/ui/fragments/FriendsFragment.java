@@ -58,6 +58,32 @@ public class FriendsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
 
+    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
+        Map<String, String> avatarUrls = new HashMap<>();
+        extractAvatarUrls(avatarUrls, user.getFriends());
+        extractAvatarUrls(avatarUrls, user.getFollowers());
+        return avatarUrls;
+    }
+
+    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
+        if (userPreviews != null) {
+            for (UserPreview userPreview : userPreviews) {
+                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
+            }
+        }
+    }
+
+    private static List<FeedDataHolder> extractData(List<Feed> feeds, Map<String, String> friendsAvatar) {
+        List<FeedDataHolder> feedData = new ArrayList<>();
+        for (Feed feed : feeds) {
+            feedData.add(new FeedDataHolder(feed.getDate()));
+            for (UserFeed userFeed : feed.getFeeds()) {
+                feedData.add(new FeedDataHolder(userFeed, friendsAvatar.get(userFeed.getLogin())));
+            }
+        }
+        return feedData;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,32 +117,6 @@ public class FriendsFragment extends RxFragment {
 
     private void setAdapter(List<FeedDataHolder> feedData) {
         recyclerView.setAdapter(new FeedAdapter(feedData));
-    }
-
-    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
-        Map<String, String> avatarUrls = new HashMap<>();
-        extractAvatarUrls(avatarUrls, user.getFriends());
-        extractAvatarUrls(avatarUrls, user.getFollowers());
-        return avatarUrls;
-    }
-
-    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
-        if (userPreviews != null) {
-            for (UserPreview userPreview : userPreviews) {
-                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
-            }
-        }
-    }
-
-    private static List<FeedDataHolder> extractData(List<Feed> feeds, Map<String, String> friendsAvatar) {
-        List<FeedDataHolder> feedData = new ArrayList<>();
-        for (Feed feed : feeds) {
-            feedData.add(new FeedDataHolder(feed.getDate()));
-            for (UserFeed userFeed : feed.getFeeds()) {
-                feedData.add(new FeedDataHolder(userFeed, friendsAvatar.get(userFeed.getLogin())));
-            }
-        }
-        return feedData;
     }
 
     private static class FeedHolder extends RecyclerView.ViewHolder {
@@ -157,7 +157,7 @@ public class FriendsFragment extends RxFragment {
 
             Action feedAction = feed.getAction();
             actionIcon.setImageResource(feedAction.getDrawableId());
-            setActionIconBackground(feedAction.getColor());
+            setActionIconBackground(itemView.getResources().getColor(feedAction.getColor()));
 
             switch (feedAction) {
                 case WATCH:

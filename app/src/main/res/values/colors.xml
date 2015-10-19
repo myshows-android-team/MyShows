@@ -35,4 +35,13 @@
 
     <!-- Settings colors -->
     <color name="preference_fallback_accent_color">@color/accent</color>
+
+    <!-- Feed's action -->
+    <color name="action_watch">@color/fab_watching</color>
+    <color name="action_new">@color/fab_not_watching</color>
+    <color name="action_rating">#FCB647</color>
+    <color name="action_watch_later">@color/fab_later</color>
+    <color name="action_stop_watch">@color/action_new</color>
+    <color name="action_achievement">@color/action_rating</color>
+
 </resources>
