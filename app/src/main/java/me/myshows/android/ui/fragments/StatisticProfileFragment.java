@@ -45,8 +45,8 @@ public class StatisticProfileFragment extends ProfileHeaderFragment {
     protected void bind(@NonNull User user) {
         Statistics statistics = user.getStats();
         episodes.setValue(statistics.getWatchedEpisodes());
-        hours.setValue((int) Math.ceil(statistics.getWatchedHours()));
-        days.setValue((int) Math.ceil(statistics.getWatchedDays()));
+        hours.setValue((int) (statistics.getWatchedHours() + 0.5F));
+        days.setValue((int) (statistics.getWatchedDays() + 0.5F));
 
         Observable.from(user.getFriends())
                 .compose(bindUntilEvent(FragmentEvent.DESTROY_VIEW))
