@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/default_half_padding"
                 android:layout_marginRight="@dimen/default_padding"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="sans-serif"
                 android:textColor="@color/dark_gray"
                 android:textSize="16sp"
                 tools:text="Nilera"/>

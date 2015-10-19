@@ -17,6 +17,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +55,38 @@ import rx.Observable;
  */
 public class FriendsFragment extends RxFragment {
 
-    private static Typeface typeface;
-
     private RecyclerView recyclerView;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.friends_fragment, container, false);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
+                getResources().getDimensionPixelSize(R.dimen.default_padding)));
+        recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
+                getResources().getDrawable(R.drawable.show_screen_shadow)));
+
+        loadData();
+
+        return view;
+    }
+
+    private void loadData() {
+        MyShowsClient client = MyShowsClientImpl.getInstance();
+        Observable<Map<String, String>> friendsAvatarObservable = client.profile()
+                .map(FriendsFragment::extractAvatarUrls);
+        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::extractData)
+                .compose(bindToLifecycle())
+                .subscribe(this::setAdapter);
+    }
+
+    private void setAdapter(List<FeedDataHolder> feedData) {
+        recyclerView.setAdapter(new FeedAdapter(feedData));
+    }
 
     private static Map<String, String> extractAvatarUrls(@NonNull User user) {
         Map<String, String> avatarUrls = new HashMap<>();
@@ -84,42 +114,9 @@ public class FriendsFragment extends RxFragment {
         return feedData;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.friends_fragment, container, false);
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
-                getResources().getDimensionPixelSize(R.dimen.default_padding)));
-        recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
-                getResources().getDrawable(R.drawable.show_screen_shadow)));
-
-        if (typeface == null) {
-            typeface = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Medium.ttf");
-        }
-
-        loadData();
-
-        return view;
-    }
-
-    private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.getInstance();
-        Observable<Map<String, String>> friendsAvatarObservable = client.profile()
-                .map(FriendsFragment::extractAvatarUrls);
-        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::extractData)
-                .compose(bindToLifecycle())
-                .subscribe(this::setAdapter);
-    }
-
-    private void setAdapter(List<FeedDataHolder> feedData) {
-        recyclerView.setAdapter(new FeedAdapter(feedData));
-    }
-
     private static class FeedHolder extends RecyclerView.ViewHolder {
+
+        public static final String ROBOTO_REGULAR = "sans-serif";
 
         private final ImageView avatar;
         private final TextView name;
@@ -143,7 +140,6 @@ public class FriendsFragment extends RxFragment {
             bottomLine = itemView.findViewById(R.id.history_line_bottom);
             divider = itemView.findViewById(R.id.feed_divider);
 
-            name.setTypeface(typeface);
             action.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
@@ -219,6 +215,7 @@ public class FriendsFragment extends RxFragment {
             int end = start + episodeName.length();
             spannable.setSpan(new ForegroundColorSpan(itemView.getResources().getColor(R.color.dark_gray)),
                     start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
             action.setText(spannable);
         }
 
@@ -293,10 +290,11 @@ public class FriendsFragment extends RxFragment {
         private Spannable setActionTextLink(String actionText, String link, ClickableSpan clickableSpan) {
             int start = actionText.indexOf(link);
             int end = start + link.length();
-            SpannableString ss = new SpannableString(actionText);
-            ss.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            action.setText(ss, TextView.BufferType.SPANNABLE);
-            return ss;
+            SpannableString spannable = new SpannableString(actionText);
+            spannable.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            action.setText(spannable, TextView.BufferType.SPANNABLE);
+            return spannable;
         }
     }
 
@@ -305,6 +303,8 @@ public class FriendsFragment extends RxFragment {
         private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd MMMM", Locale.getDefault());
         private static final Calendar TODAY = Calendar.getInstance();
         private static final Calendar YESTERDAY = Calendar.getInstance();
+
+        private static Typeface typeface;
 
         static {
             YESTERDAY.add(Calendar.DAY_OF_YEAR, -1);
@@ -315,6 +315,11 @@ public class FriendsFragment extends RxFragment {
         public FeedHeaderHolder(View itemView) {
             super(itemView);
             header = (TextView) itemView.findViewById(R.id.feed_header);
+
+            if (typeface == null) {
+                typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "Roboto-Medium.ttf");
+            }
+
             header.setTypeface(typeface);
         }
 
