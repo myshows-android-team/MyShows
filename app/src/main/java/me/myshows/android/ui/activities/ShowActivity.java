@@ -6,13 +6,19 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
@@ -43,6 +49,9 @@ public class ShowActivity extends HomeActivity {
     public static final String SHOW_TITLE = "showTitle";
     public static final String USER_SHOW = "userShow";
 
+    private static final String OPEN_P_TAG = "<p>";
+    private static final String CLOSE_P_TAG = "</p>";
+
     private MyShowsClient client;
 
     private ImageView showImage;
@@ -50,9 +59,16 @@ public class ShowActivity extends HomeActivity {
     private FloatingActionButton fab;
     private RecyclerView recyclerView;
 
+    private View showInformationView;
+    private TextView description;
+    private View divider;
+    private TextView duration;
+    private TextView status;
+    private TextView rating;
+    private RatingBar myRating;
+
     private RecyclerViewExpandableItemManager expandableItemManager;
     private RecyclerView.Adapter wrappedAdapter;
-    private ShowAdapter adapter;
 
     private UserShow userShow;
 
@@ -71,6 +87,15 @@ public class ShowActivity extends HomeActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         setupRecyclerView();
+
+        showInformationView = LayoutInflater.from(this)
+                .inflate(R.layout.show_information_layout, recyclerView, false);
+        description = (TextView) showInformationView.findViewById(R.id.description);
+        divider = showInformationView.findViewById(R.id.divider);
+        duration = (TextView) showInformationView.findViewById(R.id.duration);
+        status = (TextView) showInformationView.findViewById(R.id.status);
+        rating = (TextView) showInformationView.findViewById(R.id.rating);
+        myRating = (RatingBar) showInformationView.findViewById(R.id.my_rating);
 
         int showId = extractAndBindShowData(getIntent());
         loadData(showId);
@@ -124,7 +149,8 @@ public class ShowActivity extends HomeActivity {
                 .doOnNext(this::bind);
         Observable<UserShowEpisodes> userShowEpisodesObservable = client.profileEpisodesOfShow(showId)
                 .defaultIfEmpty(new UserShowEpisodes(showId, Collections.emptyList()));
-        Observable.combineLatest(showObservable, userShowEpisodesObservable, ShowAdapter::create)
+        Observable.combineLatest(showObservable, userShowEpisodesObservable,
+                (show, episodes) -> ShowAdapter.create(showInformationView, show, episodes))
                 .compose(bindToLifecycle())
                 .subscribe(this::setAdapter);
         if (userShow == null) {
@@ -137,14 +163,7 @@ public class ShowActivity extends HomeActivity {
                 .compose(bindToLifecycle())
                 .flatMap(Observable::from)
                 .filter(show -> show.getShowId() == showId)
-                .doOnNext(this::bind)
-                .subscribe(userShow -> {
-                    this.userShow = userShow;
-                    if (adapter != null) {
-                        adapter.setUserShow(userShow);
-                        adapter.notifyItemChanged(0);
-                    }
-                });
+                .subscribe(this::bind);
     }
 
     @SuppressLint("NewApi")
@@ -153,10 +172,23 @@ public class ShowActivity extends HomeActivity {
         WatchStatus watchStatus = show.getWatchStatus();
         fab.setImageResource(watchStatus.getDrawableId());
         fab.setBackgroundTintList(getResources().getColorStateList(watchStatus.getColorId()));
+        myRating.setRating(show.getRating());
     }
 
     private void bind(Show show) {
         collapsingToolbar.setTitle(show.getTitle());
+        status.setText(show.getShowStatus().getStringId());
+        CharSequence descriptionText = processDescription(show.getDescription());
+        if (descriptionText.length() == 0) {
+            description.setVisibility(View.GONE);
+            divider.setVisibility(View.GONE);
+        } else {
+            description.setVisibility(View.VISIBLE);
+            divider.setVisibility(View.VISIBLE);
+            description.setText(descriptionText);
+        }
+        duration.setText(getString(R.string.duration, show.getRuntime()));
+        rating.setText(getString(R.string.rating, show.getRating()));
         Glide.with(this)
                 .load(show)
                 .centerCrop()
@@ -164,13 +196,20 @@ public class ShowActivity extends HomeActivity {
     }
 
     private void setAdapter(ShowAdapter adapter) {
-        this.adapter = adapter;
-        if (userShow != null) {
-            adapter.setUserShow(userShow);
-        }
         expandableItemManager = new RecyclerViewExpandableItemManager(null);
         wrappedAdapter = expandableItemManager.createWrappedAdapter(adapter);
         recyclerView.setAdapter(wrappedAdapter);
         expandableItemManager.attachRecyclerView(recyclerView);
+    }
+
+    private static CharSequence processDescription(@NonNull String description) {
+        description = description.trim();
+        if (description.startsWith(OPEN_P_TAG)) {
+            description = description.substring(OPEN_P_TAG.length());
+        }
+        if (description.endsWith(CLOSE_P_TAG)) {
+            description = description.substring(0, description.length() - CLOSE_P_TAG.length());
+        }
+        return Html.fromHtml(description);
     }
 }
