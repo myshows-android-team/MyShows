@@ -2,6 +2,7 @@ package me.myshows.android.ui.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -24,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.trello.rxlifecycle.components.RxFragment;
@@ -57,34 +57,6 @@ public class FriendsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
 
-    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
-        Map<String, String> avatarUrls = new HashMap<>();
-        extractAvatarUrls(avatarUrls, user.getFriends());
-        extractAvatarUrls(avatarUrls, user.getFollowers());
-        return avatarUrls;
-    }
-
-    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
-        if (userPreviews != null) {
-            for (UserPreview userPreview : userPreviews) {
-                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
-            }
-        }
-    }
-
-    private static FeedAdapter makeAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
-        SparseArray<Long> headersData = new SparseArray<>(feeds.size());
-        SparseArray<FeedData> feedsData = new SparseArray<>();
-        int i = 0;
-        for (Feed feed : feeds) {
-            headersData.append(i++, feed.getDate());
-            for (UserFeed userFeed : feed.getFeeds()) {
-                feedsData.append(i++, new FeedData(userFeed, friendsAvatar.get(userFeed.getLogin())));
-            }
-        }
-        return new FeedAdapter(headersData, feedsData);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,9 +88,42 @@ public class FriendsFragment extends RxFragment {
         recyclerView.setAdapter(adapter);
     }
 
+    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
+        Map<String, String> avatarUrls = new HashMap<>();
+        extractAvatarUrls(avatarUrls, user.getFriends());
+        extractAvatarUrls(avatarUrls, user.getFollowers());
+        return avatarUrls;
+    }
+
+    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
+        if (userPreviews != null) {
+            for (UserPreview userPreview : userPreviews) {
+                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
+            }
+        }
+    }
+
+    private static FeedAdapter makeAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
+        SparseArray<Long> headersData = new SparseArray<>(feeds.size());
+        SparseArray<FeedData> feedsData = new SparseArray<>();
+        int i = 0;
+        for (Feed feed : feeds) {
+            headersData.append(i++, feed.getDate());
+            for (UserFeed userFeed : feed.getFeeds()) {
+                if (userFeed.getAction() != null) {
+                    feedsData.append(i++, new FeedData(userFeed, friendsAvatar.get(userFeed.getLogin())));
+                }
+            }
+        }
+        return new FeedAdapter(headersData, feedsData);
+    }
+
     private static class FeedHolder extends RecyclerView.ViewHolder {
 
         private static final String ROBOTO_REGULAR = "sans-serif";
+
+        private final Context context;
+        private final Resources resources;
 
         private final ImageView avatar;
         private final TextView name;
@@ -131,6 +136,9 @@ public class FriendsFragment extends RxFragment {
 
         public FeedHolder(View itemView) {
             super(itemView);
+            context = itemView.getContext();
+            resources = context.getResources();
+
             avatar = (ImageView) itemView.findViewById(R.id.friend_avatar);
             name = (TextView) itemView.findViewById(R.id.friend_name);
             action = (TextView) itemView.findViewById(R.id.friend_action);
@@ -153,27 +161,17 @@ public class FriendsFragment extends RxFragment {
 
             Action feedAction = feed.getAction();
             actionIcon.setImageResource(feedAction.getDrawableId());
-            setActionIconBackground(itemView.getResources().getColor(feedAction.getColor()));
+            setActionIconBackground(resources.getColor(feedAction.getColor()));
 
             switch (feedAction) {
                 case WATCH:
                     setWatchAction(feed);
                     break;
                 case NEW:
-                    setNewAction(feed);
-                    break;
                 case WATCH_LATER:
-                    setWatchLaterAction(feed);
-                    break;
                 case RATING:
-                    setRatingAction(feed);
-                    break;
                 case STOP_WATCH:
-                    setStopWatchAction(feed);
-                    break;
                 case ACHIEVEMENT:
-                    setAchievementAction(feed);
-                    break;
             }
         }
 
@@ -185,7 +183,7 @@ public class FriendsFragment extends RxFragment {
         }
 
         private void setAvatar(String avatarUrl) {
-            Glide.with(itemView.getContext())
+            Glide.with(context)
                     .load(avatarUrl)
                     .into(avatar);
         }
@@ -197,7 +195,7 @@ public class FriendsFragment extends RxFragment {
                 setWatchOneSeriesAction(feed, showName);
             } else {
                 int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
-                String actionText = itemView.getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
+                String actionText = resources.getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
                 setShowActionText(actionText, feed);
             }
         }
@@ -205,80 +203,30 @@ public class FriendsFragment extends RxFragment {
         private void setWatchOneSeriesAction(UserFeed feed, String showName) {
             String episodeName = feed.getEpisode();
             int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_watch_one_series : R.string.m_watch_one_series;
-            String actionText = itemView.getContext().getString(stringId, episodeName, showName);
+            String actionText = context.getString(stringId, episodeName, showName);
             Spannable spannable = setShowActionText(actionText, feed);
 
             int start = actionText.indexOf(episodeName);
             int end = start + episodeName.length();
-            spannable.setSpan(new ForegroundColorSpan(itemView.getResources().getColor(R.color.dark_gray)),
+            spannable.setSpan(new ForegroundColorSpan(resources.getColor(R.color.dark_gray)),
                     start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
             action.setText(spannable);
-        }
-
-        private void setNewAction(UserFeed feed) {
-            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_started_show : R.string.m_started_show;
-            String showName = feed.getShow();
-            String actionText = itemView.getContext().getString(stringId, showName);
-            setShowActionText(actionText, feed);
-        }
-
-        private void setWatchLaterAction(UserFeed feed) {
-            String showName = feed.getShow();
-            String actionText = itemView.getContext().getString(R.string.watch_later_show, showName);
-            setShowActionText(actionText, feed);
-        }
-
-        private void setRatingAction(UserFeed feed) {
-            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_gave_rating : R.string.m_gave_rating;
-            String showName = feed.getShow();
-            int rating = 5; //TODO: get correct rating value
-            String actionText = itemView.getContext().getString(stringId, showName, rating);
-            setShowActionText(actionText, feed);
-        }
-
-        private void setStopWatchAction(UserFeed feed) {
-            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_stopped_show : R.string.m_stopped_show;
-            String showName = feed.getShow();
-            String actionText = itemView.getContext().getString(stringId, showName);
-            setShowActionText(actionText, feed);
-        }
-
-        private void setAchievementAction(UserFeed feed) {
-            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_got_achievement : R.string.m_got_achievement;
-            String achievementName = "${ACHIEVEMENT_NAME}"; //TODO: get correct achievement name
-            String actionText = itemView.getContext().getString(stringId, achievementName);
-            setAchievementActionText(actionText, feed);
         }
 
         private Spannable setShowActionText(String actionText, UserFeed feed) {
             return setActionTextLink(actionText, feed.getShow(), new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
-                    Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
+                    Intent intent = new Intent(context, ShowActivity.class);
                     intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
                     intent.putExtra(ShowActivity.SHOW_TITLE, feed.getShow());
-                    itemView.getContext().startActivity(intent);
+                    context.startActivity(intent);
                 }
 
                 @Override
                 public void updateDrawState(TextPaint textPaint) {
-                    textPaint.setColor(itemView.getResources().getColor(R.color.primary));
-                }
-            });
-        }
-
-        private Spannable setAchievementActionText(String actionText, UserFeed feed) {
-            String achievementName = "${ACHIEVEMENT_NAME}"; //TODO: get correct achievement name
-            return setActionTextLink(actionText, achievementName, new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    Toast.makeText(itemView.getContext(), "There should be achievement screen", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void updateDrawState(TextPaint textPaint) {
-                    textPaint.setColor(itemView.getResources().getColor(R.color.primary));
+                    textPaint.setColor(resources.getColor(R.color.primary));
                 }
             });
         }
