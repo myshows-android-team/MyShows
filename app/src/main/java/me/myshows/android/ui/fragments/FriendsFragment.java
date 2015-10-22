@@ -57,6 +57,34 @@ public class FriendsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
 
+    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
+        Map<String, String> avatarUrls = new HashMap<>();
+        extractAvatarUrls(avatarUrls, user.getFriends());
+        extractAvatarUrls(avatarUrls, user.getFollowers());
+        return avatarUrls;
+    }
+
+    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
+        if (userPreviews != null) {
+            for (UserPreview userPreview : userPreviews) {
+                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
+            }
+        }
+    }
+
+    private static FeedAdapter makeAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
+        SparseArray<Long> headersData = new SparseArray<>(feeds.size());
+        SparseArray<FeedData> feedsData = new SparseArray<>();
+        int i = 0;
+        for (Feed feed : feeds) {
+            headersData.append(i++, feed.getDate());
+            for (UserFeed userFeed : feed.getFeeds()) {
+                feedsData.append(i++, new FeedData(userFeed, friendsAvatar.get(userFeed.getLogin())));
+            }
+        }
+        return new FeedAdapter(headersData, feedsData);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,7 +107,7 @@ public class FriendsFragment extends RxFragment {
         MyShowsClient client = MyShowsClientImpl.getInstance();
         Observable<Map<String, String>> friendsAvatarObservable = client.profile()
                 .map(FriendsFragment::extractAvatarUrls);
-        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::extractData)
+        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::makeAdapter)
                 .compose(bindToLifecycle())
                 .subscribe(this::setAdapter);
     }
@@ -88,42 +116,13 @@ public class FriendsFragment extends RxFragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private static Map<String, String> extractAvatarUrls(@NonNull User user) {
-        Map<String, String> avatarUrls = new HashMap<>();
-        extractAvatarUrls(avatarUrls, user.getFriends());
-        extractAvatarUrls(avatarUrls, user.getFollowers());
-        return avatarUrls;
-    }
-
-    private static void extractAvatarUrls(@NonNull Map<String, String> avatarUrls, @Nullable List<UserPreview> userPreviews) {
-        if (userPreviews != null) {
-            for (UserPreview userPreview : userPreviews) {
-                avatarUrls.put(userPreview.getLogin(), userPreview.getAvatarUrl());
-            }
-        }
-    }
-
-    private static FeedAdapter extractData(List<Feed> feeds, Map<String, String> friendsAvatar) {
-        SparseArray<Long> headersData = new SparseArray<>(feeds.size());
-        SparseArray<FeedData> feedsData = new SparseArray<>();
-        int i = 0;
-        for (Feed feed : feeds) {
-            headersData.append(i++, feed.getDate());
-            for (UserFeed userFeed : feed.getFeeds()) {
-                feedsData.append(i++, new FeedData(userFeed, friendsAvatar.get(userFeed.getLogin())));
-            }
-        }
-        return new FeedAdapter(headersData, feedsData);
-    }
-
     private static class FeedHolder extends RecyclerView.ViewHolder {
 
-        public static final String ROBOTO_REGULAR = "sans-serif";
+        private static final String ROBOTO_REGULAR = "sans-serif";
 
         private final ImageView avatar;
         private final TextView name;
         private final TextView action;
-        private final View actionBackground;
         private final ImageView actionIcon;
 
         private final View topLine;
@@ -135,7 +134,6 @@ public class FriendsFragment extends RxFragment {
             avatar = (ImageView) itemView.findViewById(R.id.friend_avatar);
             name = (TextView) itemView.findViewById(R.id.friend_name);
             action = (TextView) itemView.findViewById(R.id.friend_action);
-            actionBackground = itemView.findViewById(R.id.feed_action_background);
             actionIcon = (ImageView) itemView.findViewById(R.id.feed_action_icon);
 
             topLine = itemView.findViewById(R.id.history_line_top);
@@ -181,10 +179,9 @@ public class FriendsFragment extends RxFragment {
 
         private void setActionIconBackground(int color) {
             GradientDrawable shape = new GradientDrawable();
-            shape.setCornerRadius(actionBackground.getResources()
-                    .getDimensionPixelSize(R.dimen.list_feed_action_icon_corner_radius));
+            shape.setShape(GradientDrawable.OVAL);
             shape.setColor(color);
-            actionBackground.setBackground(shape);
+            actionIcon.setBackground(shape);
         }
 
         private void setAvatar(String avatarUrl) {
@@ -196,21 +193,19 @@ public class FriendsFragment extends RxFragment {
         private void setWatchAction(UserFeed feed) {
             int seriesNumber = feed.getEpisodes();
             String showName = feed.getShow();
-            String actionText;
             if (seriesNumber == 1) {
                 setWatchOneSeriesAction(feed, showName);
             } else {
                 int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
-                actionText = itemView.getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
+                String actionText = itemView.getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
                 setShowActionText(actionText, feed);
             }
         }
 
         private void setWatchOneSeriesAction(UserFeed feed, String showName) {
-            String actionText;
             String episodeName = feed.getEpisode();
             int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_watch_one_series : R.string.m_watch_one_series;
-            actionText = itemView.getContext().getString(stringId, episodeName, showName);
+            String actionText = itemView.getContext().getString(stringId, episodeName, showName);
             Spannable spannable = setShowActionText(actionText, feed);
 
             int start = actionText.indexOf(episodeName);
@@ -229,9 +224,8 @@ public class FriendsFragment extends RxFragment {
         }
 
         private void setWatchLaterAction(UserFeed feed) {
-            int stringId = R.string.watch_later_show;
             String showName = feed.getShow();
-            String actionText = itemView.getContext().getString(stringId, showName);
+            String actionText = itemView.getContext().getString(R.string.watch_later_show, showName);
             setShowActionText(actionText, feed);
         }
 

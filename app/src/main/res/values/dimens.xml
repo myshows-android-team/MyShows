@@ -31,11 +31,7 @@
 
     <!-- List feed view dimens -->
     <dimen name="list_feed_avatar_size">18dp</dimen>
-    <dimen name="list_feed_action_icon_min_size">32dp</dimen>
-    <!-- list_feed_action_icon_min_size / 2 -->
-    <dimen name="list_feed_action_icon_corner_radius">16dp</dimen>
-    <!-- middle of circle action icon -->
-    <dimen name="list_feed_line_margin">31.5dp</dimen>
+    <dimen name="list_feed_action_icon_size">32dp</dimen>
     <dimen name="list_feed_line_width">1dp</dimen>
 
     <dimen name="ratings_divider_height">1dp</dimen>

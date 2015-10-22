@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@android:color/white"
-              android:orientation="horizontal">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -16,32 +16,25 @@
             android:id="@+id/history_line_top"
             android:layout_width="1dp"
             android:layout_height="@dimen/default_padding"
-            android:background="@color/list_feed_background"/>
+            android:background="@color/list_feed_background" />
 
-        <FrameLayout
-            android:id="@+id/feed_action_background"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/list_feed_action_icon_min_size"
+        <ImageView
+            android:id="@+id/feed_action_icon"
+            android:layout_width="@dimen/list_feed_action_icon_size"
+            android:layout_height="@dimen/list_feed_action_icon_size"
+            android:layout_gravity="center"
             android:layout_marginLeft="@dimen/default_padding"
             android:layout_marginRight="@dimen/default_padding"
-            android:minWidth="@dimen/list_feed_action_icon_min_size">
-
-            <ImageView
-                android:id="@+id/feed_action_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="Feed action icon"
-                android:src="@drawable/action_watch"/>
-
-        </FrameLayout>
+            android:contentDescription="Feed action icon"
+            android:scaleType="center"
+            android:src="@drawable/action_watch" />
 
         <View
             android:id="@+id/history_line_bottom"
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/list_feed_background"/>
+            android:background="@color/list_feed_background" />
 
     </LinearLayout>
 
@@ -62,7 +55,7 @@
                 android:layout_width="@dimen/list_feed_avatar_size"
                 android:layout_height="@dimen/list_feed_avatar_size"
                 android:layout_gravity="center"
-                android:src="@drawable/default_avatar"/>
+                android:src="@drawable/default_avatar" />
 
             <TextView
                 android:id="@+id/friend_name"
@@ -73,7 +66,7 @@
                 android:fontFamily="sans-serif"
                 android:textColor="@color/dark_gray"
                 android:textSize="16sp"
-                tools:text="Nilera"/>
+                tools:text="Nilera" />
 
         </LinearLayout>
 
@@ -88,13 +81,13 @@
             android:textColor="@color/list_feed_gray_text"
             android:textColorHighlight="@color/red_30_opacity"
             android:textSize="15sp"
-            tools:text="Посмотрел 2 серии Gravity Falls"/>
+            tools:text="Посмотрел 2 серии Gravity Falls" />
 
         <View
             android:id="@+id/feed_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/list_feed_background"/>
+            android:background="@color/list_feed_background" />
 
     </LinearLayout>
 
