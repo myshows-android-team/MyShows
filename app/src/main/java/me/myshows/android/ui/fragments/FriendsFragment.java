@@ -18,6 +18,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ import com.bumptech.glide.Glide;
 import com.trello.rxlifecycle.components.RxFragment;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -84,8 +84,8 @@ public class FriendsFragment extends RxFragment {
                 .subscribe(this::setAdapter);
     }
 
-    private void setAdapter(List<FeedDataHolder> feedData) {
-        recyclerView.setAdapter(new FeedAdapter(feedData));
+    private void setAdapter(FeedAdapter adapter) {
+        recyclerView.setAdapter(adapter);
     }
 
     private static Map<String, String> extractAvatarUrls(@NonNull User user) {
@@ -103,15 +103,17 @@ public class FriendsFragment extends RxFragment {
         }
     }
 
-    private static List<FeedDataHolder> extractData(List<Feed> feeds, Map<String, String> friendsAvatar) {
-        List<FeedDataHolder> feedData = new ArrayList<>();
+    private static FeedAdapter extractData(List<Feed> feeds, Map<String, String> friendsAvatar) {
+        SparseArray<Long> headersData = new SparseArray<>(feeds.size());
+        SparseArray<FeedData> feedsData = new SparseArray<>();
+        int i = 0;
         for (Feed feed : feeds) {
-            feedData.add(new FeedDataHolder(feed.getDate()));
+            headersData.append(i++, feed.getDate());
             for (UserFeed userFeed : feed.getFeeds()) {
-                feedData.add(new FeedDataHolder(userFeed, friendsAvatar.get(userFeed.getLogin())));
+                feedsData.append(i++, new FeedData(userFeed, friendsAvatar.get(userFeed.getLogin())));
             }
         }
-        return feedData;
+        return new FeedAdapter(headersData, feedsData);
     }
 
     private static class FeedHolder extends RecyclerView.ViewHolder {
@@ -350,15 +352,17 @@ public class FriendsFragment extends RxFragment {
         private static final int HEADER_TYPE = 0;
         private static final int FEED_TYPE = 1;
 
-        private final List<FeedDataHolder> feedData;
+        private final SparseArray<Long> headersData;
+        private final SparseArray<FeedData> feedsData;
 
-        public FeedAdapter(List<FeedDataHolder> feedData) {
-            this.feedData = feedData;
+        public FeedAdapter(SparseArray<Long> headersData, SparseArray<FeedData> feedsData) {
+            this.headersData = headersData;
+            this.feedsData = feedsData;
         }
 
         @Override
         public int getItemViewType(int position) {
-            if (feedData.get(position).isHeader()) {
+            if (feedsData.get(position) == null) {
                 return HEADER_TYPE;
             } else {
                 return FEED_TYPE;
@@ -380,19 +384,19 @@ public class FriendsFragment extends RxFragment {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            FeedDataHolder data = feedData.get(position);
-            if (data.isHeader()) {
-                ((FeedHeaderHolder) holder).bind(data.getTimestamp());
+            FeedData feedData = feedsData.get(position);
+            if (feedData == null) {
+                ((FeedHeaderHolder) holder).bind(headersData.get(position));
             } else {
-                boolean isFirst = feedData.get(position - 1).isHeader();
-                boolean isLast = feedData.size() - 1 == position || feedData.get(position + 1).isHeader();
-                ((FeedHolder) holder).bind(data.getUserFeed(), data.getAvatarUrl(), isFirst, isLast);
+                boolean isFirst = feedsData.get(position - 1) == null;
+                boolean isLast = getItemCount() - 1 == position || feedsData.get(position + 1) == null;
+                ((FeedHolder) holder).bind(feedData.getUserFeed(), feedData.getAvatarUrl(), isFirst, isLast);
             }
         }
 
         @Override
         public int getItemCount() {
-            return feedData.size();
+            return headersData.size() + feedsData.size();
         }
 
         static class FeedOffsetDecorator extends OffsetDecorator {
@@ -425,30 +429,14 @@ public class FriendsFragment extends RxFragment {
         }
     }
 
-    private static class FeedDataHolder {
+    private static class FeedData {
 
-        private static final long BAD_TIMESTAMP = -1;
-
-        private final long timestamp;
         private final UserFeed userFeed;
         private final String avatarUrl;
 
-        public FeedDataHolder(long timestamp) {
-            this(timestamp, null, null);
-        }
-
-        public FeedDataHolder(UserFeed userFeed, String avatarUrl) {
-            this(BAD_TIMESTAMP, userFeed, avatarUrl);
-        }
-
-        private FeedDataHolder(long timestamp, UserFeed userFeed, String avatarUrl) {
-            this.timestamp = timestamp;
+        public FeedData(UserFeed userFeed, String avatarUrl) {
             this.userFeed = userFeed;
             this.avatarUrl = avatarUrl;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
         }
 
         public UserFeed getUserFeed() {
@@ -457,10 +445,6 @@ public class FriendsFragment extends RxFragment {
 
         public String getAvatarUrl() {
             return avatarUrl;
-        }
-
-        public boolean isHeader() {
-            return timestamp != BAD_TIMESTAMP;
         }
     }
 }
