@@ -1,19 +1,16 @@
 package me.myshows.android.ui.activities;
 
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
@@ -28,7 +25,6 @@ import me.myshows.android.R;
 import me.myshows.android.model.Episode;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UserEpisode;
-import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.ui.decorators.OffsetDecorator;
 import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
@@ -51,7 +47,8 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         return res != 0 ? res : Numbers.compare(e1.getSequenceNumber(), e2.getSequenceNumber());
     };
 
-    private final Show show;
+    private final View showInformationView;
+
     private final List<List<Episode>> seasons;
     private final SparseSet[] uncheckedEpisodes;
     private final SparseSet checkedSpecialEpisodes;
@@ -61,23 +58,15 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     private final OnEpisodeCheckedChangeListener seriesListener = this::onEpisodeCheckedChanged;
     private final OnSeasonCheckedChangeListener seasonListener = this::onSeasonCheckedChanged;
 
-    private View showInformationView;
-
-    private UserShow userShow;
-
-    private ShowAdapter(@NonNull Show show, @NonNull List<List<Episode>> seasons,
+    private ShowAdapter(@NonNull View showInformationView, @NonNull List<List<Episode>> seasons,
                         @NonNull SparseSet[] uncheckedEpisodes, @NonNull SparseSet checkedSpecialEpisodes) {
-        this.show = show;
+        this.showInformationView = showInformationView;
         this.seasons = seasons;
         this.checkedSpecialEpisodes = checkedSpecialEpisodes;
         this.uncheckedEpisodes = uncheckedEpisodes;
         this.seasonCount = seasons.size();
         this.expandedSeasons = new boolean[seasons.size()];
         setHasStableIds(true);
-    }
-
-    public void setUserShow(@NonNull UserShow userShow) {
-        this.userShow = userShow;
     }
 
     @Override
@@ -120,9 +109,6 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     public AbstractExpandableItemViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == SHOW_INFORMATION_TYPE) {
-            if (showInformationView == null) {
-                showInformationView = inflater.inflate(R.layout.show_information_layout, parent, false);
-            }
             return new ShowInformationViewHolder(showInformationView);
         }
         View seasonView = inflater.inflate(R.layout.list_season_view, parent, false);
@@ -137,9 +123,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
 
     @Override
     public void onBindGroupViewHolder(AbstractExpandableItemViewHolder holder, int groupPosition, int viewType) {
-        if (viewType == SHOW_INFORMATION_TYPE) {
-            ((ShowInformationViewHolder) holder).bind(show, userShow);
-        } else {
+        if (viewType == SEASON_TYPE) {
             ((SeasonViewHolder) holder).bind(seasonIndex(groupPosition),
                     uncheckedEpisodes[seasonIndex(groupPosition)].isEmpty(),
                     expandedSeasons[seasonIndex(groupPosition)]);
@@ -209,7 +193,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         return seasonCount - groupPosition;
     }
 
-    public static ShowAdapter create(@NonNull Show show, @NonNull UserShowEpisodes watchedEpisodes) {
+    public static ShowAdapter create(@NonNull View showInformationView, @NonNull Show show, @NonNull UserShowEpisodes watchedEpisodes) {
         List<List<Episode>> seasons = getSeasons(show);
         int seasonCount = seasons.size();
 
@@ -235,7 +219,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
                 }
             }
         }
-        return new ShowAdapter(show, seasons, uncheckedEpisodes, checkedSpecialEpisodes);
+        return new ShowAdapter(showInformationView, seasons, uncheckedEpisodes, checkedSpecialEpisodes);
     }
 
     private static List<List<Episode>> getSeasons(@NonNull Show show) {
@@ -283,50 +267,8 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
 
     static class ShowInformationViewHolder extends AbstractExpandableItemViewHolder {
 
-        private static final String OPEN_P_TAG = "<p>";
-        private static final String CLOSE_P_TAG = "</p>";
-
-        private final TextView description;
-        private final TextView duration;
-        private final TextView status;
-        private final TextView rating;
-        private final RatingBar myRating;
-
         public ShowInformationViewHolder(@NonNull View itemView) {
             super(itemView);
-            description = (TextView) itemView.findViewById(R.id.description);
-            duration = (TextView) itemView.findViewById(R.id.duration);
-            status = (TextView) itemView.findViewById(R.id.status);
-            rating = (TextView) itemView.findViewById(R.id.rating);
-            myRating = (RatingBar) itemView.findViewById(R.id.my_rating);
-        }
-
-        public void bind(@NonNull Show show, @Nullable UserShow userShow) {
-            if (userShow != null) {
-                myRating.setRating(show.getRating());
-            }
-            status.setText(show.getShowStatus().getStringId());
-            CharSequence descriptionText = processDescription(show.getDescription());
-            if (descriptionText.length() == 0) {
-                description.setVisibility(View.GONE);
-            } else {
-                description.setVisibility(View.VISIBLE);
-                description.setText(descriptionText);
-            }
-            Context context = itemView.getContext();
-            duration.setText(context.getString(R.string.duration, show.getRuntime()));
-            rating.setText(context.getString(R.string.rating, show.getRating()));
-        }
-
-        private static CharSequence processDescription(@NonNull String description) {
-            description = description.trim();
-            if (description.startsWith(OPEN_P_TAG)) {
-                description = description.substring(OPEN_P_TAG.length());
-            }
-            if (description.endsWith(CLOSE_P_TAG)) {
-                description = description.substring(0, description.length() - CLOSE_P_TAG.length());
-            }
-            return Html.fromHtml(description);
         }
     }
 
