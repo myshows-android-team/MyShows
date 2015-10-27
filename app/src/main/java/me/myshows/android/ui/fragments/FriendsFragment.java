@@ -189,56 +189,62 @@ public class FriendsFragment extends RxFragment {
         }
 
         private void setWatchAction(UserFeed feed) {
-            int seriesNumber = feed.getEpisodes();
-            String showName = feed.getShow();
-            if (seriesNumber == 1) {
-                setWatchOneSeriesAction(feed, showName);
-            } else {
-                int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
-                String actionText = resources.getQuantityString(pluralsId, seriesNumber, seriesNumber, showName);
-                setShowActionText(actionText, feed);
-            }
+            Spannable spannable = feed.getEpisodes() == 1 ?
+                    getOneEpisodeSpannable(feed) : getManyEpisodeSpannable(feed);
+            action.setText(spannable, TextView.BufferType.SPANNABLE);
         }
 
-        private void setWatchOneSeriesAction(UserFeed feed, String showName) {
-            String episodeName = feed.getEpisode();
+        private Spannable getOneEpisodeSpannable(UserFeed feed) {
             int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_watch_one_series : R.string.m_watch_one_series;
-            String actionText = context.getString(stringId, episodeName, showName);
-            Spannable spannable = setShowActionText(actionText, feed);
+            String actionText = context.getString(stringId, feed.getEpisode(), feed.getShow());
+            Spannable spannable = getShowActionSpannable(actionText, feed);
+            setEpisodeNameSpannable(spannable, feed.getEpisode(), actionText);
+            return spannable;
+        }
 
+        private Spannable getManyEpisodeSpannable(UserFeed feed) {
+            int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
+            String actionText = resources.getQuantityString(pluralsId, feed.getEpisodes(), feed.getEpisodes(), feed.getShow());
+            return getShowActionSpannable(actionText, feed);
+        }
+
+        private Spannable getShowActionSpannable(String actionText, UserFeed feed) {
+            String showName = feed.getShow();
+            int start = actionText.indexOf(showName);
+            int end = start + showName.length();
+            SpannableString spannable = new SpannableString(actionText);
+            spannable.setSpan(new ShowActionSpannable(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return spannable;
+        }
+
+        private void setEpisodeNameSpannable(Spannable spannable, String episodeName, String actionText) {
             int start = actionText.indexOf(episodeName);
             int end = start + episodeName.length();
-            spannable.setSpan(new ForegroundColorSpan(resources.getColor(R.color.dark_gray)),
-                    start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-            action.setText(spannable);
+            spannable.setSpan(new ForegroundColorSpan(resources.getColor(R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        private Spannable setShowActionText(String actionText, UserFeed feed) {
-            return setActionTextLink(actionText, feed.getShow(), new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    Intent intent = new Intent(context, ShowActivity.class);
-                    intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
-                    intent.putExtra(ShowActivity.SHOW_TITLE, feed.getShow());
-                    context.startActivity(intent);
-                }
+        private class ShowActionSpannable extends ClickableSpan {
 
-                @Override
-                public void updateDrawState(TextPaint textPaint) {
-                    textPaint.setColor(resources.getColor(R.color.primary));
-                }
-            });
-        }
+            private final UserFeed feed;
 
-        private Spannable setActionTextLink(String actionText, String link, ClickableSpan clickableSpan) {
-            int start = actionText.indexOf(link);
-            int end = start + link.length();
-            SpannableString spannable = new SpannableString(actionText);
-            spannable.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-            action.setText(spannable, TextView.BufferType.SPANNABLE);
-            return spannable;
+            private ShowActionSpannable(UserFeed feed) {
+                this.feed = feed;
+            }
+
+            @Override
+            public void onClick(View widget) {
+                Intent intent = new Intent(context, ShowActivity.class);
+                intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
+                intent.putExtra(ShowActivity.SHOW_TITLE, feed.getShow());
+                context.startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint textPaint) {
+                textPaint.setColor(resources.getColor(R.color.primary));
+            }
         }
     }
 
@@ -330,9 +336,8 @@ public class FriendsFragment extends RxFragment {
             if (feedData == null) {
                 ((FeedHeaderHolder) holder).bind(headersData.get(position));
             } else {
-                boolean isFirst = feedsData.get(position - 1) == null;
-                boolean isLast = getItemCount() - 1 == position || feedsData.get(position + 1) == null;
-                ((FeedHolder) holder).bind(feedData.getUserFeed(), feedData.getAvatarUrl(), isFirst, isLast);
+                ((FeedHolder) holder).bind(feedData.getUserFeed(), feedData.getAvatarUrl(),
+                        feedsData.get(position - 1) == null, feedsData.get(position + 1) == null);
             }
         }
 
@@ -365,8 +370,7 @@ public class FriendsFragment extends RxFragment {
             protected boolean applyDecorator(View view, RecyclerView parent) {
                 RecyclerView.Adapter adapter = parent.getAdapter();
                 int position = parent.getChildAdapterPosition(view);
-                int size = adapter.getItemCount();
-                return size - 1 != position && adapter.getItemViewType(position + 1) == HEADER_TYPE;
+                return adapter.getItemViewType(position + 1) == HEADER_TYPE;
             }
         }
     }
