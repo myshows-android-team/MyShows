@@ -164,7 +164,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
         return Observable.<UserShowEpisodes>create(subscriber -> {
             Class<PersistentUserShowEpisodes> clazz = PersistentUserShowEpisodes.class;
             UserShowEpisodes episodes = manager.selectEntity(clazz, converter::toUserShowEpisodes,
-                   new Predicate("showId", showId));
+                    new Predicate("showId", showId));
             if (episodes != null) {
                 subscriber.onNext(episodes);
             }
@@ -239,7 +239,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
             api.friendsNews()
                     .subscribe(
                             uf -> {
-                                manager.upsertEntities(generateFeeds(uf), converter::fromFeed);
+                                manager.truncateAndInsertEntities(generateFeeds(uf), PersistentFeed.class, converter::fromFeed);
                                 subscriber.onNext(manager.selectSortedEntities(clazz, converter::toFeed, "date", false));
                             },
                             e -> subscriber.onCompleted(),

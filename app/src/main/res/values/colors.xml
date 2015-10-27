@@ -24,9 +24,8 @@
     <color name="list_show_text_color">@color/white_80_opacity</color>
 
     <!-- List feed view colors -->
-    <color name="list_feed_black_text">@color/dark_gray</color>
     <color name="list_feed_gray_text">#AAAAAA</color>
-    <color name="list_feed_history">#EDEDED</color>
+    <color name="list_feed_background">#EDEDED</color>
 
     <!-- Fab colors -->
     <color name="fab_watching">#78B531</color>
@@ -36,4 +35,13 @@
 
     <!-- Settings colors -->
     <color name="preference_fallback_accent_color">@color/accent</color>
+
+    <!-- Feed's action -->
+    <color name="action_watch">@color/fab_watching</color>
+    <color name="action_new">@color/fab_not_watching</color>
+    <color name="action_rating">#FCB647</color>
+    <color name="action_watch_later">@color/fab_later</color>
+    <color name="action_stop_watch">@color/action_new</color>
+    <color name="action_achievement">@color/action_rating</color>
+
 </resources>

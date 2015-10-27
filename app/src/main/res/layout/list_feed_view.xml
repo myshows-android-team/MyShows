@@ -3,36 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="horizontal">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/list_feed_action_icon_min_size"
-        android:layout_margin="@dimen/default_padding"
-        android:background="@drawable/feed_action_frame"
-        android:minWidth="@dimen/list_feed_action_icon_min_size">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/history_line_top"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/default_padding"
+            android:background="@color/list_feed_background" />
 
         <ImageView
             android:id="@+id/feed_action_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/list_feed_action_icon_size"
+            android:layout_height="@dimen/list_feed_action_icon_size"
             android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
             android:contentDescription="Feed action icon"
+            android:scaleType="center"
             android:src="@drawable/action_watch" />
 
-    </FrameLayout>
+        <View
+            android:id="@+id/history_line_bottom"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/list_feed_background" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/default_padding"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/default_padding"
-        android:paddingTop="@dimen/default_padding">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_padding"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -47,9 +62,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/default_half_padding"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="@color/list_feed_black_text"
-                android:textSize="18sp"
+                android:layout_marginRight="@dimen/default_padding"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
                 tools:text="Nilera" />
 
         </LinearLayout>
@@ -58,12 +74,20 @@
             android:id="@+id/friend_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
             android:layout_marginTop="@dimen/default_half_padding"
             android:fontFamily="sans-serif-light"
             android:textColor="@color/list_feed_gray_text"
             android:textColorHighlight="@color/red_30_opacity"
             android:textSize="15sp"
             tools:text="Посмотрел 2 серии Gravity Falls" />
+
+        <View
+            android:id="@+id/feed_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/list_feed_background" />
 
     </LinearLayout>
 

@@ -2,17 +2,24 @@ package me.myshows.android.ui.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +27,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
-import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import com.trello.rxlifecycle.components.RxFragment;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +46,8 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserPreview;
 import me.myshows.android.ui.activities.ShowActivity;
+import me.myshows.android.ui.decorators.OffsetDecorator;
+import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
 import rx.Observable;
 
 /**
@@ -51,7 +56,6 @@ import rx.Observable;
 public class FriendsFragment extends RxFragment {
 
     private RecyclerView recyclerView;
-    private StickyRecyclerHeadersDecoration itemDecoration;
 
     @Nullable
     @Override
@@ -61,6 +65,10 @@ public class FriendsFragment extends RxFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
+                getResources().getDimensionPixelSize(R.dimen.default_padding)));
+        recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
+                getResources().getDrawable(R.drawable.show_screen_shadow)));
 
         loadData();
 
@@ -71,18 +79,13 @@ public class FriendsFragment extends RxFragment {
         MyShowsClient client = MyShowsClientImpl.getInstance();
         Observable<Map<String, String>> friendsAvatarObservable = client.profile()
                 .map(FriendsFragment::extractAvatarUrls);
-        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FeedAdapter::new)
+        Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::makeAdapter)
                 .compose(bindToLifecycle())
                 .subscribe(this::setAdapter);
     }
 
     private void setAdapter(FeedAdapter adapter) {
-        if (itemDecoration != null) {
-            recyclerView.removeItemDecoration(itemDecoration);
-        }
         recyclerView.setAdapter(adapter);
-        itemDecoration = new StickyRecyclerHeadersDecoration(adapter);
-        recyclerView.addItemDecoration(itemDecoration);
     }
 
     private static Map<String, String> extractAvatarUrls(@NonNull User user) {
@@ -100,96 +103,147 @@ public class FriendsFragment extends RxFragment {
         }
     }
 
+    private static FeedAdapter makeAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
+        SparseArray<Long> headersData = new SparseArray<>(feeds.size());
+        SparseArray<FeedData> feedsData = new SparseArray<>();
+        int i = 0;
+        for (Feed feed : feeds) {
+            headersData.append(i++, feed.getDate());
+            for (UserFeed userFeed : feed.getFeeds()) {
+                if (userFeed.getAction() != null) {
+                    feedsData.append(i++, new FeedData(userFeed, friendsAvatar.get(userFeed.getLogin())));
+                }
+            }
+        }
+        return new FeedAdapter(headersData, feedsData);
+    }
+
     private static class FeedHolder extends RecyclerView.ViewHolder {
 
-        private static Typeface typeface;
+        private static final String ROBOTO_REGULAR = "sans-serif";
+
+        private final Context context;
+        private final Resources resources;
 
         private final ImageView avatar;
         private final TextView name;
         private final TextView action;
         private final ImageView actionIcon;
 
+        private final View topLine;
+        private final View bottomLine;
+        private final View divider;
+
         public FeedHolder(View itemView) {
             super(itemView);
+            context = itemView.getContext();
+            resources = context.getResources();
+
             avatar = (ImageView) itemView.findViewById(R.id.friend_avatar);
             name = (TextView) itemView.findViewById(R.id.friend_name);
             action = (TextView) itemView.findViewById(R.id.friend_action);
             actionIcon = (ImageView) itemView.findViewById(R.id.feed_action_icon);
 
-            if (typeface == null) {
-                typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "Roboto-Medium.ttf");
-            }
-            name.setTypeface(typeface);
+            topLine = itemView.findViewById(R.id.history_line_top);
+            bottomLine = itemView.findViewById(R.id.history_line_bottom);
+            divider = itemView.findViewById(R.id.feed_divider);
+
+            action.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
-        public void bind(UserFeed feed, String avatarUrl) {
+        public void bind(UserFeed feed, String avatarUrl, boolean isFirst, boolean isLast) {
             setAvatar(avatarUrl);
             name.setText(feed.getLogin());
 
-            switch (feed.getAction()) {
+            topLine.setVisibility(isFirst ? View.INVISIBLE : View.VISIBLE);
+            bottomLine.setVisibility(isLast ? View.INVISIBLE : View.VISIBLE);
+            divider.setVisibility(isLast ? View.GONE : View.VISIBLE);
+
+            Action feedAction = feed.getAction();
+            actionIcon.setImageResource(feedAction.getDrawableId());
+            setActionIconBackground(resources.getColor(feedAction.getColor()));
+
+            switch (feedAction) {
                 case WATCH:
                     setWatchAction(feed);
                     break;
                 case NEW:
-                    setNewAction(feed);
-                    break;
+                case WATCH_LATER:
+                case RATING:
+                case STOP_WATCH:
+                case ACHIEVEMENT:
             }
         }
 
+        private void setActionIconBackground(int color) {
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.OVAL);
+            shape.setColor(color);
+            actionIcon.setBackground(shape);
+        }
+
         private void setAvatar(String avatarUrl) {
-            Glide.with(itemView.getContext())
+            Glide.with(context)
                     .load(avatarUrl)
-                    .placeholder(R.drawable.default_avatar)
                     .into(avatar);
         }
 
-        private void setNewAction(UserFeed feed) {
-            actionIcon.setImageResource(Action.NEW.getDrawableId());
-            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_started_show : R.string.m_started_show;
-            String showName = feed.getShow();
-            String actionText = itemView.getContext().getString(stringId, showName);
-            setShowActionText(actionText, feed);
-        }
-
         private void setWatchAction(UserFeed feed) {
-            actionIcon.setImageResource(Action.WATCH.getDrawableId());
-            int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
-            int seriesNumber = feed.getEpisodes();
-            String showName = feed.getShow();
-            String episodeName = "[" + feed.getEpisode() + "]";
-            String actionText = itemView.getResources().getQuantityString(pluralsId, seriesNumber, seriesNumber, showName, episodeName);
-            setShowActionText(actionText, feed);
+            Spannable spannable = feed.getEpisodes() == 1 ?
+                    getOneEpisodeSpannable(feed) : getManyEpisodeSpannable(feed);
+            action.setText(spannable, TextView.BufferType.SPANNABLE);
         }
 
-        private void setShowActionText(String actionText, UserFeed feed) {
+        private Spannable getOneEpisodeSpannable(UserFeed feed) {
+            int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_watch_one_series : R.string.m_watch_one_series;
+            String actionText = context.getString(stringId, feed.getEpisode(), feed.getShow());
+            SpannableString spannable = new SpannableString(actionText);
+            highlightShow(spannable, actionText, feed);
+            highlightEpisodeName(spannable, actionText, feed);
+            return spannable;
+        }
+
+        private Spannable getManyEpisodeSpannable(UserFeed feed) {
+            int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
+            String actionText = resources.getQuantityString(pluralsId, feed.getEpisodes(), feed.getEpisodes(), feed.getShow());
+            SpannableString spannable = new SpannableString(actionText);
+            highlightShow(spannable, actionText, feed);
+            return spannable;
+        }
+
+        private void highlightEpisodeName(Spannable spannable, String actionText, UserFeed feed) {
+            int start = actionText.indexOf(feed.getEpisode());
+            int end = start + feed.getEpisode().length();
+            spannable.setSpan(new ForegroundColorSpan(resources.getColor(R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        private void highlightShow(Spannable spannable, String actionText, UserFeed feed) {
             int start = actionText.indexOf(feed.getShow());
             int end = start + feed.getShow().length();
-            SpannableString ss = new SpannableString(actionText);
-            ss.setSpan(new ShowSpan(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            action.setText(ss, TextView.BufferType.SPANNABLE);
-            action.setMovementMethod(LinkMovementMethod.getInstance());
+            spannable.setSpan(new ShowActionSpannable(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        private class ShowSpan extends ClickableSpan {
+        private class ShowActionSpannable extends ClickableSpan {
 
             private final UserFeed feed;
 
-            private ShowSpan(UserFeed feed) {
+            private ShowActionSpannable(UserFeed feed) {
                 this.feed = feed;
             }
 
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(itemView.getContext(), ShowActivity.class);
+            public void onClick(View widget) {
+                Intent intent = new Intent(context, ShowActivity.class);
                 intent.putExtra(ShowActivity.SHOW_ID, feed.getShowId());
-                intent.putExtra(ShowActivity.SHOW_TITLE, feed.getTitle());
-                itemView.getContext().startActivity(intent);
+                intent.putExtra(ShowActivity.SHOW_TITLE, feed.getShow());
+                context.startActivity(intent);
             }
 
             @Override
             public void updateDrawState(TextPaint textPaint) {
-                textPaint.setColor(itemView.getResources().getColor(R.color.primary));
+                textPaint.setColor(resources.getColor(R.color.primary));
             }
         }
     }
@@ -200,6 +254,8 @@ public class FriendsFragment extends RxFragment {
         private static final Calendar TODAY = Calendar.getInstance();
         private static final Calendar YESTERDAY = Calendar.getInstance();
 
+        private static Typeface typeface;
+
         static {
             YESTERDAY.add(Calendar.DAY_OF_YEAR, -1);
         }
@@ -209,11 +265,12 @@ public class FriendsFragment extends RxFragment {
         public FeedHeaderHolder(View itemView) {
             super(itemView);
             header = (TextView) itemView.findViewById(R.id.feed_header);
-        }
 
-        private static boolean isSameDay(Calendar first, Calendar second) {
-            return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)
-                    && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
+            if (typeface == null) {
+                typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "Roboto-Medium.ttf");
+            }
+
+            header.setTypeface(typeface);
         }
 
         public void bind(long feedDate) {
@@ -231,59 +288,109 @@ public class FriendsFragment extends RxFragment {
                 return FORMATTER.format(feedDate);
             }
         }
+
+        private static boolean isSameDay(Calendar first, Calendar second) {
+            return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)
+                    && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
+        }
     }
 
-    private static class FeedAdapter extends RecyclerView.Adapter<FeedHolder> implements StickyRecyclerHeadersAdapter<FeedHeaderHolder> {
+    private static class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private final List<UserFeed> userFeeds;
-        private final List<Long> feedsDate;
-        private final Map<String, String> friendsAvatar;
+        private static final int HEADER_TYPE = 0;
+        private static final int FEED_TYPE = 1;
 
-        public FeedAdapter(List<Feed> feeds, Map<String, String> friendsAvatar) {
-            this.userFeeds = new ArrayList<>();
-            this.feedsDate = new ArrayList<>();
-            this.friendsAvatar = friendsAvatar;
-            for (Feed feed : feeds) {
-                userFeeds.addAll(feed.getFeeds());
-                feedsDate.addAll(Collections.nCopies(feed.getFeeds().size(), feed.getDate()));
+        private final SparseArray<Long> headersData;
+        private final SparseArray<FeedData> feedsData;
+
+        public FeedAdapter(SparseArray<Long> headersData, SparseArray<FeedData> feedsData) {
+            this.headersData = headersData;
+            this.feedsData = feedsData;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (feedsData.get(position) == null) {
+                return HEADER_TYPE;
+            } else {
+                return FEED_TYPE;
             }
         }
 
         @Override
-        public FeedHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_feed_view, parent, false);
-            return new FeedHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == HEADER_TYPE) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_feed_header_view, parent, false);
+                return new FeedHeaderHolder(view);
+            } else {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_feed_view, parent, false);
+                return new FeedHolder(view);
+            }
         }
 
         @Override
-        public void onBindViewHolder(FeedHolder holder, int position) {
-            UserFeed userFeed = userFeeds.get(position);
-            holder.bind(userFeed, friendsAvatar.get(userFeed.getLogin()));
-        }
-
-        @Override
-        public long getHeaderId(int position) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(feedsDate.get(position));
-            return calendar.get(Calendar.YEAR) * 367 + calendar.get(Calendar.DAY_OF_YEAR);
-        }
-
-        @Override
-        public FeedHeaderHolder onCreateHeaderViewHolder(ViewGroup parent) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_feed_header_view, parent, false);
-            return new FeedHeaderHolder(view);
-        }
-
-        @Override
-        public void onBindHeaderViewHolder(FeedHeaderHolder feedHeaderHolder, int position) {
-            feedHeaderHolder.bind(feedsDate.get(position));
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            FeedData feedData = feedsData.get(position);
+            if (feedData == null) {
+                ((FeedHeaderHolder) holder).bind(headersData.get(position));
+            } else {
+                ((FeedHolder) holder).bind(feedData.getUserFeed(), feedData.getAvatarUrl(),
+                        feedsData.get(position - 1) == null, feedsData.get(position + 1) == null);
+            }
         }
 
         @Override
         public int getItemCount() {
-            return userFeeds.size();
+            return headersData.size() + feedsData.size();
+        }
+
+        static class FeedOffsetDecorator extends OffsetDecorator {
+
+            public FeedOffsetDecorator(int offset) {
+                super(offset);
+            }
+
+            @Override
+            protected boolean applyDecorator(View view, RecyclerView parent) {
+                RecyclerView.Adapter adapter = parent.getAdapter();
+                int position = parent.getChildAdapterPosition(view);
+                return position != 0 && adapter.getItemViewType(position) == HEADER_TYPE;
+            }
+        }
+
+        static class FeedShadowDecorator extends SimpleDrawableDecorator {
+
+            public FeedShadowDecorator(Drawable shadowDrawable) {
+                super(shadowDrawable);
+            }
+
+            @Override
+            protected boolean applyDecorator(View view, RecyclerView parent) {
+                RecyclerView.Adapter adapter = parent.getAdapter();
+                int position = parent.getChildAdapterPosition(view);
+                return adapter.getItemViewType(position + 1) == HEADER_TYPE;
+            }
+        }
+    }
+
+    private static class FeedData {
+
+        private final UserFeed userFeed;
+        private final String avatarUrl;
+
+        public FeedData(UserFeed userFeed, String avatarUrl) {
+            this.userFeed = userFeed;
+            this.avatarUrl = avatarUrl;
+        }
+
+        public UserFeed getUserFeed() {
+            return userFeed;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
         }
     }
 }

@@ -3,28 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/feed_header"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/list_feed_action_icon_min_size"
-        android:layout_margin="@dimen/default_padding"
-        android:background="@drawable/feed_action_frame"
-        android:minWidth="@dimen/list_feed_action_icon_min_size">
-
-        <TextView
-            android:id="@+id/feed_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-regular"
-            android:paddingLeft="@dimen/default_half_padding"
-            android:paddingRight="@dimen/default_half_padding"
-            android:textAllCaps="true"
-            android:textColor="@color/list_feed_black_text"
-            android:textSize="13sp"
-            tools:text="TODAY" />
-
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/default_half_padding"
+        android:layout_marginLeft="@dimen/default_padding"
+        android:layout_marginTop="@dimen/default_padding"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/primary"
+        android:textSize="13sp"
+        tools:text="Today" />
 
 </LinearLayout>
