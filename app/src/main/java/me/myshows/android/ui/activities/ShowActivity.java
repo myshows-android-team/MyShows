@@ -2,10 +2,7 @@ package me.myshows.android.ui.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -37,6 +34,7 @@ import me.myshows.android.model.Show;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
+import me.myshows.android.utils.Resources;
 import rx.Observable;
 
 /**
@@ -131,18 +129,10 @@ public class ShowActivity extends HomeActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(false);
         recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_padding)));
-        recyclerView.addItemDecoration(new ShowAdapter.ShadowDecorator(getDrawableById(R.drawable.show_screen_shadow)));
+        recyclerView.addItemDecoration(new ShowAdapter.ShadowDecorator(Resources.getDrawable(this, R.drawable.show_screen_shadow)));
         SimpleItemAnimator animator = new RefactoredDefaultItemAnimator();
         animator.setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(animator);
-    }
-
-    @SuppressLint("NewApi")
-    private Drawable getDrawableById(@DrawableRes int id) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return getResources().getDrawable(id);
-        }
-        return getDrawable(id);
     }
 
     private void loadData(int showId) {
@@ -172,7 +162,7 @@ public class ShowActivity extends HomeActivity {
         collapsingToolbar.setTitle(show.getTitle());
         WatchStatus watchStatus = show.getWatchStatus();
         fab.setImageResource(watchStatus.getDrawableId());
-        fab.setBackgroundTintList(getResources().getColorStateList(watchStatus.getColorId()));
+        fab.setBackgroundTintList(Resources.getColorStateList(this, watchStatus.getColorId()));
         myRating.setRating(show.getRating());
     }
 
