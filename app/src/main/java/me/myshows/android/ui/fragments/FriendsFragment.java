@@ -47,7 +47,7 @@ import me.myshows.android.model.UserPreview;
 import me.myshows.android.ui.activities.ShowActivity;
 import me.myshows.android.ui.decorators.OffsetDecorator;
 import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
-import me.myshows.android.utils.Resources;
+import me.myshows.android.utils.ResourcesUtils;
 import rx.Observable;
 
 /**
@@ -68,7 +68,7 @@ public class FriendsFragment extends RxFragment {
         recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
                 getResources().getDimensionPixelSize(R.dimen.default_padding)));
         recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
-                Resources.getDrawable(getActivity(), R.drawable.show_screen_shadow)));
+                ResourcesUtils.getDrawable(getActivity(), R.drawable.show_screen_shadow)));
 
         loadData();
 
@@ -159,7 +159,7 @@ public class FriendsFragment extends RxFragment {
 
             Action feedAction = feed.getAction();
             actionIcon.setImageResource(feedAction.getDrawableId());
-            setActionIconBackground(Resources.getColor(context, feedAction.getColor()));
+            setActionIconBackground(ResourcesUtils.getColor(context, feedAction.getColor()));
 
             switch (feedAction) {
                 case WATCH:
@@ -212,7 +212,7 @@ public class FriendsFragment extends RxFragment {
         private void highlightEpisodeName(Spannable spannable, String actionText, UserFeed feed) {
             int start = actionText.indexOf(feed.getEpisode());
             int end = start + feed.getEpisode().length();
-            spannable.setSpan(new ForegroundColorSpan(Resources.getColor(context, R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new ForegroundColorSpan(ResourcesUtils.getColor(context, R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
@@ -241,7 +241,7 @@ public class FriendsFragment extends RxFragment {
 
             @Override
             public void updateDrawState(TextPaint textPaint) {
-                textPaint.setColor(Resources.getColor(context, R.color.primary));
+                textPaint.setColor(ResourcesUtils.getColor(context, R.color.primary));
             }
         }
     }

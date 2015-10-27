@@ -34,7 +34,7 @@ import me.myshows.android.model.Show;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
-import me.myshows.android.utils.Resources;
+import me.myshows.android.utils.ResourcesUtils;
 import rx.Observable;
 
 /**
@@ -129,7 +129,7 @@ public class ShowActivity extends HomeActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(false);
         recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_padding)));
-        recyclerView.addItemDecoration(new ShowAdapter.ShadowDecorator(Resources.getDrawable(this, R.drawable.show_screen_shadow)));
+        recyclerView.addItemDecoration(new ShowAdapter.ShadowDecorator(ResourcesUtils.getDrawable(this, R.drawable.show_screen_shadow)));
         SimpleItemAnimator animator = new RefactoredDefaultItemAnimator();
         animator.setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(animator);
@@ -162,7 +162,7 @@ public class ShowActivity extends HomeActivity {
         collapsingToolbar.setTitle(show.getTitle());
         WatchStatus watchStatus = show.getWatchStatus();
         fab.setImageResource(watchStatus.getDrawableId());
-        fab.setBackgroundTintList(Resources.getColorStateList(this, watchStatus.getColorId()));
+        fab.setBackgroundTintList(ResourcesUtils.getColorStateList(this, watchStatus.getColorId()));
         myRating.setRating(show.getRating());
     }
 

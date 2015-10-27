@@ -13,9 +13,9 @@ import android.support.annotation.Nullable;
 /**
  * Created by warrior on 24.10.15.
  */
-public class Resources {
+public class ResourcesUtils {
 
-    private Resources() {
+    private ResourcesUtils() {
     }
 
     @Nullable
