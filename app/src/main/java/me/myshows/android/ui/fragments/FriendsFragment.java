@@ -197,31 +197,31 @@ public class FriendsFragment extends RxFragment {
         private Spannable getOneEpisodeSpannable(UserFeed feed) {
             int stringId = feed.getGender() == Gender.FEMALE ? R.string.f_watch_one_series : R.string.m_watch_one_series;
             String actionText = context.getString(stringId, feed.getEpisode(), feed.getShow());
-            Spannable spannable = getShowActionSpannable(actionText, feed);
-            setEpisodeNameSpannable(spannable, feed.getEpisode(), actionText);
+            SpannableString spannable = new SpannableString(actionText);
+            highlightShow(spannable, actionText, feed);
+            highlightEpisodeName(spannable, actionText, feed);
             return spannable;
         }
 
         private Spannable getManyEpisodeSpannable(UserFeed feed) {
             int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
             String actionText = resources.getQuantityString(pluralsId, feed.getEpisodes(), feed.getEpisodes(), feed.getShow());
-            return getShowActionSpannable(actionText, feed);
-        }
-
-        private Spannable getShowActionSpannable(String actionText, UserFeed feed) {
-            String showName = feed.getShow();
-            int start = actionText.indexOf(showName);
-            int end = start + showName.length();
             SpannableString spannable = new SpannableString(actionText);
-            spannable.setSpan(new ShowActionSpannable(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            highlightShow(spannable, actionText, feed);
             return spannable;
         }
 
-        private void setEpisodeNameSpannable(Spannable spannable, String episodeName, String actionText) {
-            int start = actionText.indexOf(episodeName);
-            int end = start + episodeName.length();
+        private void highlightEpisodeName(Spannable spannable, String actionText, UserFeed feed) {
+            int start = actionText.indexOf(feed.getEpisode());
+            int end = start + feed.getEpisode().length();
             spannable.setSpan(new ForegroundColorSpan(resources.getColor(R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        private void highlightShow(Spannable spannable, String actionText, UserFeed feed) {
+            int start = actionText.indexOf(feed.getShow());
+            int end = start + feed.getShow().length();
+            spannable.setSpan(new ShowActionSpannable(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
@@ -273,11 +273,6 @@ public class FriendsFragment extends RxFragment {
             header.setTypeface(typeface);
         }
 
-        private static boolean isSameDay(Calendar first, Calendar second) {
-            return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)
-                    && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
-        }
-
         public void bind(long feedDate) {
             header.setText(getText(itemView.getContext(), feedDate));
         }
@@ -292,6 +287,11 @@ public class FriendsFragment extends RxFragment {
             } else {
                 return FORMATTER.format(feedDate);
             }
+        }
+
+        private static boolean isSameDay(Calendar first, Calendar second) {
+            return (first.get(Calendar.YEAR) == second.get(Calendar.YEAR)
+                    && first.get(Calendar.DAY_OF_YEAR) == second.get(Calendar.DAY_OF_YEAR));
         }
     }
 
