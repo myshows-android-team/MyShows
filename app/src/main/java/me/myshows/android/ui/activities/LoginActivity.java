@@ -29,6 +29,7 @@ import me.myshows.android.R;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.api.impl.MyShowsClientImpl;
+import me.myshows.android.utils.ResourcesUtils;
 import rx.Observable;
 
 /**
@@ -106,7 +107,7 @@ public class LoginActivity extends RxAppCompatActivity {
 
             @Override
             public void updateDrawState(TextPaint ds) {
-                ds.setColor(getResources().getColor(R.color.red_80_opacity));
+                ds.setColor(ResourcesUtils.getColor(LoginActivity.this, R.color.red_80_opacity));
                 ds.setUnderlineText(true);
             }
         };

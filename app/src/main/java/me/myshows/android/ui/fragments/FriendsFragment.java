@@ -2,7 +2,6 @@ package me.myshows.android.ui.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -48,6 +47,7 @@ import me.myshows.android.model.UserPreview;
 import me.myshows.android.ui.activities.ShowActivity;
 import me.myshows.android.ui.decorators.OffsetDecorator;
 import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
+import me.myshows.android.utils.ResourcesUtils;
 import rx.Observable;
 
 /**
@@ -68,7 +68,7 @@ public class FriendsFragment extends RxFragment {
         recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
                 getResources().getDimensionPixelSize(R.dimen.default_padding)));
         recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
-                getResources().getDrawable(R.drawable.show_screen_shadow)));
+                ResourcesUtils.getDrawable(getActivity(), R.drawable.show_screen_shadow)));
 
         loadData();
 
@@ -123,7 +123,6 @@ public class FriendsFragment extends RxFragment {
         private static final String ROBOTO_REGULAR = "sans-serif";
 
         private final Context context;
-        private final Resources resources;
 
         private final ImageView avatar;
         private final TextView name;
@@ -137,7 +136,6 @@ public class FriendsFragment extends RxFragment {
         public FeedHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
-            resources = context.getResources();
 
             avatar = (ImageView) itemView.findViewById(R.id.friend_avatar);
             name = (TextView) itemView.findViewById(R.id.friend_name);
@@ -161,7 +159,7 @@ public class FriendsFragment extends RxFragment {
 
             Action feedAction = feed.getAction();
             actionIcon.setImageResource(feedAction.getDrawableId());
-            setActionIconBackground(resources.getColor(feedAction.getColor()));
+            setActionIconBackground(ResourcesUtils.getColor(context, feedAction.getColor()));
 
             switch (feedAction) {
                 case WATCH:
@@ -205,7 +203,7 @@ public class FriendsFragment extends RxFragment {
 
         private Spannable getManyEpisodeSpannable(UserFeed feed) {
             int pluralsId = feed.getGender() == Gender.FEMALE ? R.plurals.f_watch_series : R.plurals.m_watch_series;
-            String actionText = resources.getQuantityString(pluralsId, feed.getEpisodes(), feed.getEpisodes(), feed.getShow());
+            String actionText = context.getResources().getQuantityString(pluralsId, feed.getEpisodes(), feed.getEpisodes(), feed.getShow());
             SpannableString spannable = new SpannableString(actionText);
             highlightShow(spannable, actionText, feed);
             return spannable;
@@ -214,7 +212,7 @@ public class FriendsFragment extends RxFragment {
         private void highlightEpisodeName(Spannable spannable, String actionText, UserFeed feed) {
             int start = actionText.indexOf(feed.getEpisode());
             int end = start + feed.getEpisode().length();
-            spannable.setSpan(new ForegroundColorSpan(resources.getColor(R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new ForegroundColorSpan(ResourcesUtils.getColor(context, R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
@@ -243,7 +241,7 @@ public class FriendsFragment extends RxFragment {
 
             @Override
             public void updateDrawState(TextPaint textPaint) {
-                textPaint.setColor(resources.getColor(R.color.primary));
+                textPaint.setColor(ResourcesUtils.getColor(context, R.color.primary));
             }
         }
     }
