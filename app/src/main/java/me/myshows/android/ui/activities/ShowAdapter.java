@@ -241,7 +241,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     static class SeasonOffsetDecorator extends OffsetDecorator {
 
         public SeasonOffsetDecorator(int offset) {
-            super(offset);
+            super(offset, TOP_OFFSET);
         }
 
         @Override
