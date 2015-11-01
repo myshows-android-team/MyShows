@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 import me.myshows.android.MyShowsSettings;
 import me.myshows.android.R;
 import me.myshows.android.api.impl.MyShowsClientImpl;
-import rx.Observable;
 import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -104,20 +103,19 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void clearCacheTask() {
-        subscriptions.add(Observable.defer(this::clearCache)
+        subscriptions.add(Single.fromCallable(this::clearCache)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> setCacheSize(clearCachePreference)));
     }
 
-    //TODO: use fromCallable
-    private Observable<Object> clearCache() {
+    private Void clearCache() {
         Glide.get(getActivity()).clearDiskCache();
-        return Observable.just(null);
+        return null;
     }
 
     private void signOutTask() {
-        subscriptions.add(Observable.defer(this::signOut)
+        subscriptions.add(Single.fromCallable(this::signOut)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
@@ -126,10 +124,10 @@ public class SettingsFragment extends PreferenceFragment {
                 }));
     }
 
-    private Observable<Object> signOut() {
+    private Void signOut() {
         MyShowsClientImpl.getInstance().clear();
         PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
-        return Observable.just(null);
+        return null;
     }
 
     private void clearCachePreferenceInitialize(Preference clearCachePreference) {
