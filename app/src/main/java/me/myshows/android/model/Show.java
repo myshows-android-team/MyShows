@@ -31,7 +31,7 @@ public class Show implements QualityShowImage {
     private final int runtime;
     private final String image;
     private final int[] genres;
-    private final Map<String, Episode> episodes;
+    private final Map<String, ShowEpisode> episodes;
     private final int watching;
     private final String[] images;
     private final String description;
@@ -45,7 +45,7 @@ public class Show implements QualityShowImage {
                 @JsonProperty("imdbId") int imdbId, @JsonProperty("voted") int voted,
                 @JsonProperty("rating") float rating, @JsonProperty("runtime") int runtime,
                 @JsonProperty("image") String image, @JsonProperty("genres") int[] genres,
-                @JsonProperty("episodes") Map<String, Episode> episodes, @JsonProperty("watching") int watching,
+                @JsonProperty("episodes") Map<String, ShowEpisode> episodes, @JsonProperty("watching") int watching,
                 @JsonProperty("images") String[] images, @JsonProperty("description") String description) {
         this.id = id;
         this.title = title;
@@ -151,7 +151,7 @@ public class Show implements QualityShowImage {
     }
 
     @JsonProperty("episodes")
-    public Map<String, Episode> getEpisodes() {
+    public Map<String, ShowEpisode> getEpisodes() {
         return episodes;
     }
 

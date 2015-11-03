@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import me.myshows.android.R;
-import me.myshows.android.model.Episode;
+import me.myshows.android.model.ShowEpisode;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShowEpisodes;
@@ -42,14 +42,14 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     private static final int SHOW_INFORMATION_TYPE = 0;
     private static final int SEASON_TYPE = 1;
 
-    private static final Comparator<Episode> EPISODE_COMPARATOR = (e1, e2) -> {
+    private static final Comparator<ShowEpisode> EPISODE_COMPARATOR = (e1, e2) -> {
         int res = Numbers.compare(e1.getAirDateInMillis(), e2.getAirDateInMillis());
         return res != 0 ? res : Numbers.compare(e1.getSequenceNumber(), e2.getSequenceNumber());
     };
 
     private final View showInformationView;
 
-    private final List<List<Episode>> seasons;
+    private final List<List<ShowEpisode>> seasons;
     private final SparseSet[] uncheckedEpisodes;
     private final SparseSet checkedSpecialEpisodes;
     private final int seasonCount;
@@ -58,7 +58,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     private final OnEpisodeCheckedChangeListener seriesListener = this::onEpisodeCheckedChanged;
     private final OnSeasonCheckedChangeListener seasonListener = this::onSeasonCheckedChanged;
 
-    private ShowAdapter(@NonNull View showInformationView, @NonNull List<List<Episode>> seasons,
+    private ShowAdapter(@NonNull View showInformationView, @NonNull List<List<ShowEpisode>> seasons,
                         @NonNull SparseSet[] uncheckedEpisodes, @NonNull SparseSet checkedSpecialEpisodes) {
         this.showInformationView = showInformationView;
         this.seasons = seasons;
@@ -132,8 +132,8 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
 
     @Override
     public void onBindChildViewHolder(SeriesViewHolder holder, int groupPosition, int childPosition, int viewType) {
-        List<Episode> season = seasons.get(seasonIndex(groupPosition));
-        Episode episode = season.get(childPosition);
+        List<ShowEpisode> season = seasons.get(seasonIndex(groupPosition));
+        ShowEpisode episode = season.get(childPosition);
         boolean isChecked;
         if (episode.isSpecial()) {
             isChecked = checkedSpecialEpisodes.contains(episode.getId());
@@ -156,7 +156,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         return canExpandOrCollapse;
     }
 
-    public void onEpisodeCheckedChanged(int position, @NonNull Episode episode, boolean checked) {
+    public void onEpisodeCheckedChanged(int position, @NonNull ShowEpisode episode, boolean checked) {
         if (episode.isSpecial()) {
             if (checked) {
                 checkedSpecialEpisodes.add(episode.getId());
@@ -180,7 +180,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         if (checked) {
             uncheckedSeasonEpisodes.clear();
         } else {
-            for (Episode episode : seasons.get(seasonIndex)) {
+            for (ShowEpisode episode : seasons.get(seasonIndex)) {
                 if (!episode.isSpecial()) {
                     uncheckedSeasonEpisodes.add(episode.getId());
                 }
@@ -194,15 +194,15 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     }
 
     public static ShowAdapter create(@NonNull View showInformationView, @NonNull Show show, @NonNull UserShowEpisodes watchedEpisodes) {
-        List<List<Episode>> seasons = getSeasons(show);
+        List<List<ShowEpisode>> seasons = getSeasons(show);
         int seasonCount = seasons.size();
 
         SparseSet[] uncheckedEpisodes = new SparseSet[seasonCount];
         for (int i = 0; i < seasonCount; i++) {
             uncheckedEpisodes[i] = new SparseSet();
         }
-        for (List<Episode> season : seasons) {
-            for (Episode episode : season) {
+        for (List<ShowEpisode> season : seasons) {
+            for (ShowEpisode episode : season) {
                 if (!episode.isSpecial()) {
                     uncheckedEpisodes[episode.getSeasonNumber() - 1].add(episode.getId());
                 }
@@ -210,7 +210,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         }
         SparseSet checkedSpecialEpisodes = new SparseSet();
         for (UserEpisode userEpisode : watchedEpisodes.getEpisodes()) {
-            Episode episode = show.getEpisodes().get(String.valueOf(userEpisode.getId()));
+            ShowEpisode episode = show.getEpisodes().get(String.valueOf(userEpisode.getId()));
             if (episode != null) {
                 if (episode.isSpecial()) {
                     checkedSpecialEpisodes.add(episode.getId());
@@ -222,17 +222,17 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         return new ShowAdapter(showInformationView, seasons, uncheckedEpisodes, checkedSpecialEpisodes);
     }
 
-    private static List<List<Episode>> getSeasons(@NonNull Show show) {
-        List<List<Episode>> seasons = new ArrayList<>();
-        for (Episode episode : show.getEpisodes().values()) {
+    private static List<List<ShowEpisode>> getSeasons(@NonNull Show show) {
+        List<List<ShowEpisode>> seasons = new ArrayList<>();
+        for (ShowEpisode episode : show.getEpisodes().values()) {
             int seasonIndex = episode.getSeasonNumber() - 1;
             while (seasonIndex >= seasons.size()) {
                 seasons.add(new ArrayList<>());
             }
-            List<Episode> seasonList = seasons.get(seasonIndex);
+            List<ShowEpisode> seasonList = seasons.get(seasonIndex);
             seasonList.add(episode);
         }
-        for (List<Episode> season : seasons) {
+        for (List<ShowEpisode> season : seasons) {
             Collections.sort(season, (e1, e2) -> EPISODE_COMPARATOR.compare(e2, e1));
         }
         return seasons;
@@ -339,7 +339,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     static class SeriesViewHolder extends AbstractExpandableItemViewHolder {
 
         public interface OnEpisodeCheckedChangeListener {
-            void onEpisodeCheckedChanged(int position, @NonNull Episode episode, boolean isChecked);
+            void onEpisodeCheckedChanged(int position, @NonNull ShowEpisode episode, boolean isChecked);
         }
 
         private final OnEpisodeCheckedChangeListener listener;
@@ -364,7 +364,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
             divider = itemView.findViewById(R.id.divider);
         }
 
-        public void bind(@NonNull Episode episode, boolean isLast, boolean checked) {
+        public void bind(@NonNull ShowEpisode episode, boolean isLast, boolean checked) {
             this.isLast = isLast;
             seriesTitle.setText(episode.getTitle());
             checkBox.setOnCheckedChangeListener(null);
@@ -387,7 +387,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
             }
         }
 
-        private void setSeriesNumber(@NonNull Episode episode) {
+        private void setSeriesNumber(@NonNull ShowEpisode episode) {
             if (episode.isSpecial()) {
                 seriesNumber.setVisibility(View.GONE);
                 specialIcon.setVisibility(View.VISIBLE);
