@@ -347,7 +347,7 @@ public class FriendsFragment extends RxFragment {
         static class FeedOffsetDecorator extends OffsetDecorator {
 
             public FeedOffsetDecorator(int offset) {
-                super(offset);
+                super(offset, TOP_OFFSET);
             }
 
             @Override
