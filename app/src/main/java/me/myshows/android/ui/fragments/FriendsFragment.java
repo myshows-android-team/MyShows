@@ -361,7 +361,7 @@ public class FriendsFragment extends RxFragment {
         static class FeedShadowDecorator extends SimpleDrawableDecorator {
 
             public FeedShadowDecorator(Drawable shadowDrawable) {
-                super(shadowDrawable);
+                super(shadowDrawable, Border.BOTTOM);
             }
 
             @Override

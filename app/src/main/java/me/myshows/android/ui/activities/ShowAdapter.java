@@ -254,7 +254,7 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
     static class ShadowDecorator extends SimpleDrawableDecorator {
 
         public ShadowDecorator(Drawable shadowDrawable) {
-            super(shadowDrawable);
+            super(shadowDrawable, Border.BOTTOM);
         }
 
         @Override
