@@ -20,6 +20,12 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
 
+    <!-- My series strings -->
+    <plurals name="remain">
+        <item quantity="one">%d series lefts</item>
+        <item quantity="other">%d series left</item>
+    </plurals>
+
     <!-- Show screen strings -->
     <!-- Headers -->
     <string name="overview">Overview</string>

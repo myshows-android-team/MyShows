@@ -50,7 +50,7 @@ dependencies {
     compile "com.android.support:support-annotations:$supportVersion"
     compile "com.android.support:support-v13:$supportVersion"
 
-    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.3@aar') { transitive = true }
+    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.4@aar') { transitive = true }
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'me.relex:circleindicator:1.1.5@aar'
 

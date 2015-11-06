@@ -18,6 +18,13 @@
     <string name="settings">Настройки</string>
     <string name="about">О программе</string>
 
+    <!-- My series strings -->
+    <plurals name="remain">
+        <item quantity="one">Осталась %d серия</item>
+        <item quantity="few">Осталось %d серии</item>
+        <item quantity="many">Осталось %d серий</item>
+    </plurals>
+
     <!-- Show screen strings -->
     <!-- Headers -->
     <string name="overview">Обзор</string>

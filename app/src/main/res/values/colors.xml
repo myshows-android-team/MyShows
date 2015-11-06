@@ -12,16 +12,13 @@
     <color name="red_80_opacity">#CCCC0000</color>
     <color name="red_50_opacity">#80CC0000</color>
     <color name="red_30_opacity">#4CCC0000</color>
+    <color name="background_gray">#EFEFEF</color>
     <color name="light_gray">#E1E1E1</color>
     <color name="dark_gray">#515151</color>
 
     <!-- Navigation drawer colors -->
     <color name="nav_text_color">#4D4D4D</color>
     <color name="nav_selected_item_color">#EEEEEE</color>
-
-    <!-- List show view colors -->
-    <color name="list_show_progress_background">@color/white_80_opacity</color>
-    <color name="list_show_text_color">@color/white_80_opacity</color>
 
     <!-- List feed view colors -->
     <color name="list_feed_gray_text">#AAAAAA</color>
