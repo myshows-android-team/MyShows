@@ -36,9 +36,9 @@ android {
     }
 }
 
-def supportVersion = '23.1.0'
+def supportVersion = '23.1.1'
 def retrofitVersion = '1.9.0'
-def parcelerVersion = '1.0.3'
+def parcelerVersion = '1.0.4'
 def rxlifecycleVersion = '0.3.0'
 
 dependencies {
@@ -50,15 +50,15 @@ dependencies {
     compile "com.android.support:support-annotations:$supportVersion"
     compile "com.android.support:support-v13:$supportVersion"
 
-    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.3@aar') { transitive = true }
+    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.5@aar') { transitive = true }
     compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'me.relex:circleindicator:1.1.5@aar'
+    compile 'me.relex:circleindicator:1.1.6@aar'
 
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.squareup.okhttp:okhttp:2.6.0'
     compile "com.squareup.retrofit:retrofit:$retrofitVersion"
     compile "com.squareup.retrofit:converter-jackson:$retrofitVersion"
-    compile 'io.realm:realm-android:0.84.1'
-    compile 'io.reactivex:rxjava:1.0.15'
+    compile 'io.realm:realm-android:0.86.0'
+    compile 'io.reactivex:rxjava:1.0.16'
     compile 'io.reactivex:rxandroid:1.0.1'
     compile "com.trello:rxlifecycle:$rxlifecycleVersion"
     compile "com.trello:rxlifecycle-components:$rxlifecycleVersion"
