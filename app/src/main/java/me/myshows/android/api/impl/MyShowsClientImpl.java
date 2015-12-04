@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.realm.Realm;
+import io.realm.Sort;
 import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
@@ -232,7 +233,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     public Observable<List<Feed>> friendsNews() {
         return Observable.<List<Feed>>create(subscriber -> {
             Class<PersistentFeed> clazz = PersistentFeed.class;
-            List<Feed> feeds = manager.selectSortedEntities(clazz, converter::toFeed, "date", false);
+            List<Feed> feeds = manager.selectSortedEntities(clazz, converter::toFeed, "date", Sort.DESCENDING);
             if (feeds != null) {
                 subscriber.onNext(feeds);
             }
@@ -240,7 +241,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
                     .subscribe(
                             uf -> {
                                 manager.truncateAndInsertEntities(generateFeeds(uf), PersistentFeed.class, converter::fromFeed);
-                                subscriber.onNext(manager.selectSortedEntities(clazz, converter::toFeed, "date", false));
+                                subscriber.onNext(manager.selectSortedEntities(clazz, converter::toFeed, "date", Sort.DESCENDING));
                             },
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
@@ -250,7 +251,7 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
 
     public Observable<List<RatingShow>> ratingShows() {
         return Observable.<List<RatingShow>>create(subscriber -> {
-            List<RatingShow> ratingShows = manager.selectSortedEntities(PersistentRatingShow.class, converter::toRatingShow, "place", true);
+            List<RatingShow> ratingShows = manager.selectSortedEntities(PersistentRatingShow.class, converter::toRatingShow, "place", Sort.ASCENDING);
             if (ratingShows != null) {
                 subscriber.onNext(ratingShows);
             }
