@@ -2,7 +2,6 @@ package me.myshows.android.ui.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
@@ -11,7 +10,7 @@ import me.myshows.android.R;
 /**
  * Created by Whiplash on 06.09.2015.
  */
-public class ClearCacheDialogFragment extends DialogFragment {
+public class ClearCacheDialogFragment extends BaseDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

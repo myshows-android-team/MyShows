@@ -67,4 +67,7 @@ dependencies {
 
     compile libraries.commonsCodec
     compile libraries.commonsIO
+
+    debugCompile libraries.leakCanary
+    releaseCompile libraries.leakCanaryNoOp
 }

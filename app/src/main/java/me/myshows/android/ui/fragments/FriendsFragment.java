@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.trello.rxlifecycle.components.RxFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,7 +52,7 @@ import rx.Observable;
 /**
  * Created by warrior on 19.07.15.
  */
-public class FriendsFragment extends RxFragment {
+public class FriendsFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
 

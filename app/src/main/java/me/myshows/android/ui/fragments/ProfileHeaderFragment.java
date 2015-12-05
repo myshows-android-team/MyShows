@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.trello.rxlifecycle.components.RxFragment;
-
 import me.myshows.android.model.User;
 
 /**
  * Created by warrior on 19.07.15.
  */
-public abstract class ProfileHeaderFragment extends RxFragment {
+public abstract class ProfileHeaderFragment extends BaseFragment {
 
     private User user;
 

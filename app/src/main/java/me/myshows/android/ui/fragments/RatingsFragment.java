@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.trello.rxlifecycle.components.RxFragment;
 
 import org.parceler.Parcels;
 
@@ -37,7 +36,7 @@ import rx.Observable;
 /**
  * Created by warrior on 19.07.15.
  */
-public class RatingsFragment extends RxFragment {
+public class RatingsFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
 

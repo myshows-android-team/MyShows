@@ -18,12 +18,14 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.SwitchPreferenceCompat;
 
 import com.bumptech.glide.Glide;
+import com.squareup.leakcanary.RefWatcher;
 
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.MyShowsSettings;
 import me.myshows.android.R;
 import me.myshows.android.api.impl.MyShowsClientImpl;
@@ -82,6 +84,12 @@ public class SettingsFragment extends PreferenceFragment {
             subscriptions.unsubscribe();
         }
         super.onDestroyView();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = MyShowsApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 
     @Override
