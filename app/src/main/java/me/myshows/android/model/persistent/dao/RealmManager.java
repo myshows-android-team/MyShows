@@ -10,6 +10,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class RealmManager {
 
@@ -107,9 +108,9 @@ public class RealmManager {
         return entities;
     }
 
-    public <T, E extends RealmObject> List<T> selectSortedEntities(Class<E> clazz, FromPersistentEntity<T, E> converter, String fieldName, boolean sortAscending, Predicate... predicates) {
+    public <T, E extends RealmObject> List<T> selectSortedEntities(Class<E> clazz, FromPersistentEntity<T, E> converter, String fieldName, Sort sort, Predicate... predicates) {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<E> results = makeQuery(realm, clazz, predicates).findAllSorted(fieldName, sortAscending);
+        RealmResults<E> results = makeQuery(realm, clazz, predicates).findAllSorted(fieldName, sort);
         List<T> entities = null;
         if (results != null) {
             entities = new ArrayList<>();

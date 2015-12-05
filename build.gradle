@@ -3,14 +3,66 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.1'
+        classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        // add maven central repo because gradle can not find 'me.relex:circleindicator' in jcenter
+        mavenCentral()
     }
 }
+
+def versions = [
+        supportLibs     : '23.1.1',
+        retrofit        : '1.9.0',
+        parceler        : '1.0.4',
+        rxLifecycle     : '0.3.0',
+        leakCanary      : '1.3.1'
+]
+
+ext.libraries = [
+        // support libraries
+        appCompat                     : 'com.android.support:appcompat-v7:' + versions.supportLibs,
+        cardView                      : 'com.android.support:cardview-v7:' + versions.supportLibs,
+        design                        : 'com.android.support:design:' + versions.supportLibs,
+        preferenceV14                 : 'com.android.support:preference-v14:' + versions.supportLibs,
+        recyclerView                  : 'com.android.support:recyclerview-v7:' + versions.supportLibs,
+        supportAnnotations            : 'com.android.support:support-annotations:' + versions.supportLibs,
+        supportV13                    : 'com.android.support:support-v13:' + versions.supportLibs,
+
+        // UI libraries
+        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.5@aar',
+        circleImageView               : 'de.hdodenhof:circleimageview:2.0.0',
+        circleIndicator               : 'me.relex:circleindicator:1.1.6@aar',
+
+        // internet libraries
+        okhttp                        : 'com.squareup.okhttp:okhttp:2.6.0',
+        retrofit                      : 'com.squareup.retrofit:retrofit:' + versions.retrofit,
+        retrofitJackson               : 'com.squareup.retrofit:converter-jackson:' + versions.retrofit,
+        glide                         : 'com.github.bumptech.glide:glide:3.6.1',
+        glideOkhttp                   : 'com.github.bumptech.glide:okhttp-integration:1.3.1@aar',
+
+        // rx libraries
+        rxJava                        : 'io.reactivex:rxjava:1.0.16',
+        rxAndroid                     : 'io.reactivex:rxandroid:1.0.1',
+        rxLifecycle                   : 'com.trello:rxlifecycle:' + versions.rxLifecycle,
+        rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
+
+        // database libraries
+        realm                         : 'io.realm:realm-android:0.86.0',
+
+        // other
+        parceler                      : 'org.parceler:parceler:' + versions.parceler,
+        parcelerApi                   : 'org.parceler:parceler-api:' + versions.parceler,
+
+        commonsCodec                  : 'commons-codec:commons-codec:1.5',
+        commonsIO                     : 'commons-io:commons-io:2.4',
+
+        leakCanary                    : 'com.squareup.leakcanary:leakcanary-android:' + versions.leakCanary,
+        leakCanaryNoOp                : 'com.squareup.leakcanary:leakcanary-android-no-op:' + versions.leakCanary
+]

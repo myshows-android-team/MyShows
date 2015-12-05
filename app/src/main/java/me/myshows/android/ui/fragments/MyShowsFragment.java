@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.trello.rxlifecycle.components.RxFragment;
 
 import org.parceler.Parcels;
 
@@ -29,7 +28,7 @@ import me.myshows.android.ui.activities.ShowActivity;
 /**
  * Created by warrior on 06.07.15.
  */
-public class MyShowsFragment extends RxFragment {
+public class MyShowsFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
 

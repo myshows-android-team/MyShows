@@ -36,36 +36,38 @@ android {
     }
 }
 
-def supportVersion = '23.1.0'
-def retrofitVersion = '1.9.0'
-def parcelerVersion = '1.0.3'
-def rxlifecycleVersion = '0.3.0'
-
 dependencies {
-    compile "com.android.support:appcompat-v7:$supportVersion"
-    compile "com.android.support:cardview-v7:$supportVersion"
-    compile "com.android.support:design:$supportVersion"
-    compile "com.android.support:preference-v14:$supportVersion"
-    compile "com.android.support:recyclerview-v7:$supportVersion"
-    compile "com.android.support:support-annotations:$supportVersion"
-    compile "com.android.support:support-v13:$supportVersion"
+    compile libraries.appCompat
+    compile libraries.cardView
+    compile libraries.design
+    compile libraries.preferenceV14
+    compile libraries.recyclerView
+    compile libraries.supportAnnotations
+    compile libraries.supportV13
 
-    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.3@aar') { transitive = true }
-    compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'me.relex:circleindicator:1.1.5@aar'
+    compile (libraries.advRecyclerView) { transitive = true }
+    compile libraries.circleImageView
+    compile libraries.circleIndicator
 
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile "com.squareup.retrofit:retrofit:$retrofitVersion"
-    compile "com.squareup.retrofit:converter-jackson:$retrofitVersion"
-    compile 'io.realm:realm-android:0.84.1'
-    compile 'io.reactivex:rxjava:1.0.15'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile "com.trello:rxlifecycle:$rxlifecycleVersion"
-    compile "com.trello:rxlifecycle-components:$rxlifecycleVersion"
-    compile 'com.github.bumptech.glide:glide:3.6.1'
-    compile 'com.github.bumptech.glide:okhttp-integration:1.3.1'
-    compile 'commons-codec:commons-codec:1.5'
-    compile 'commons-io:commons-io:2.4'
-    compile "org.parceler:parceler-api:$parcelerVersion"
-    apt "org.parceler:parceler:$parcelerVersion"
+    compile libraries.okhttp
+    compile libraries.retrofit
+    compile libraries.retrofitJackson
+    compile libraries.glide
+    compile libraries.glideOkhttp
+
+    compile libraries.rxJava
+    compile libraries.rxAndroid
+    compile libraries.rxLifecycle
+    compile libraries.rxLifecycleComponents
+
+    compile libraries.realm
+
+    apt libraries.parceler
+    compile libraries.parcelerApi
+
+    compile libraries.commonsCodec
+    compile libraries.commonsIO
+
+    debugCompile libraries.leakCanary
+    releaseCompile libraries.leakCanaryNoOp
 }
