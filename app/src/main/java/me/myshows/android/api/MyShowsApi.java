@@ -11,10 +11,11 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
-import retrofit.client.Response;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -24,7 +25,7 @@ import rx.Observable;
 public interface MyShowsApi {
 
     @GET("/profile/login")
-    Observable<Response> login(@Query("login") String login, @Query("password") String md5Password);
+    Observable<Response<ResponseBody>> login(@Query("login") String login, @Query("password") String md5Password);
 
     @GET("/profile/")
     Observable<User> profile();

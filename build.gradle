@@ -19,7 +19,8 @@ allprojects {
 
 def versions = [
         supportLibs     : '23.1.1',
-        retrofit        : '1.9.0',
+        okhttp          : '3.0.1',
+        retrofit        : '2.0.0-beta3',
         parceler        : '1.0.4',
         rxLifecycle     : '0.4.0',
         leakCanary      : '1.4-beta1'
@@ -41,11 +42,14 @@ ext.libraries = [
         circleIndicator               : 'me.relex:circleindicator:1.1.8@aar',
 
         // internet libraries
-        okhttp                        : 'com.squareup.okhttp:okhttp:2.7.2',
-        retrofit                      : 'com.squareup.retrofit:retrofit:' + versions.retrofit,
-        retrofitJackson               : 'com.squareup.retrofit:converter-jackson:' + versions.retrofit,
+        okhttp                        : 'com.squareup.okhttp3:okhttp:' + versions.okhttp,
+        okhttpLogging                 : 'com.squareup.okhttp3:logging-interceptor:' + versions.okhttp,
+        okhttpUrlConnection           : 'com.squareup.okhttp3:okhttp-urlconnection:' + versions.okhttp,
+        retrofit                      : 'com.squareup.retrofit2:retrofit:' + versions.retrofit,
+        retrofitRxJava                : 'com.squareup.retrofit2:adapter-rxjava:' + versions.retrofit,
+        retrofitJackson               : 'com.squareup.retrofit2:converter-jackson:' + versions.retrofit,
         glide                         : 'com.github.bumptech.glide:glide:3.7.0',
-        glideOkhttp                   : 'com.github.bumptech.glide:okhttp-integration:1.4.0@aar',
+        glideOkhttp                   : 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar',
 
         // rx libraries
         rxJava                        : 'io.reactivex:rxjava:1.1.0',

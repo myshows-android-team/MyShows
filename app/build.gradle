@@ -50,7 +50,10 @@ dependencies {
     compile libraries.circleIndicator
 
     compile libraries.okhttp
+    compile libraries.okhttpLogging
+    compile libraries.okhttpUrlConnection
     compile libraries.retrofit
+    compile libraries.retrofitRxJava
     compile libraries.retrofitJackson
     compile libraries.glide
     compile libraries.glideOkhttp
