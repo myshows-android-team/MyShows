@@ -24,7 +24,7 @@ allprojects {
 def versions = [
         supportLibs     : '23.1.1',
         okhttp          : '3.0.1',
-        retrofit        : '2.0.0-beta3',
+        retrofit        : '2.0.0-beta4',
         parceler        : '1.0.4',
         rxLifecycle     : '0.4.0',
         leakCanary      : '1.4-beta1'
