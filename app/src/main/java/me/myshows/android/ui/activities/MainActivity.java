@@ -22,9 +22,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.ui.fragments.CalendarFragment;
 import me.myshows.android.ui.fragments.FavoritesFragment;
 import me.myshows.android.ui.fragments.FriendsFragment;
@@ -195,7 +195,7 @@ public class MainActivity extends RxAppCompatActivity {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.getInstance();
+        MyShowsClient client = MyShowsApplication.getMyShowsClient(this);
         client.profile()
                 .compose(bindToLifecycle())
                 .subscribe(user -> {

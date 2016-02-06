@@ -1,8 +1,8 @@
 package me.myshows.android.api.impl;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
-import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,10 +10,9 @@ import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.Sort;
-import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
-import me.myshows.android.api.StorageMyShowsClient;
+import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
@@ -36,9 +35,8 @@ import me.myshows.android.model.persistent.dao.Predicate;
 import me.myshows.android.model.persistent.dao.RealmManager;
 import me.myshows.android.model.serialization.JsonMarshaller;
 import me.myshows.android.utils.Numbers;
-import okhttp3.JavaNetCookieJar;
+import me.myshows.android.utils.Objects;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.JacksonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
@@ -50,55 +48,41 @@ import rx.schedulers.Schedulers;
  * @author Whiplash
  * @date 14.06.2015
  */
-public class MyShowsClientImpl extends StorageMyShowsClient {
+public class MyShowsClientImpl implements MyShowsClient {
 
     private static final String API_URL = "http://api.myshows.ru";
 
     private static final PersistentEntityConverter CONVERTER = new PersistentEntityConverter(new JsonMarshaller());
 
-    private static MyShowsClientImpl client;
-
-    private final MyShowsApi api;
-    private final CookieManager cookieManager;
-    private final RealmManager manager;
+    private final OkHttpClient okHttpClient;
+    private final ClientStorage storage;
     private final Scheduler observerScheduler;
 
-    private MyShowsClientImpl(Context context, ClientStorage storage, Scheduler observerScheduler) {
-        super(storage);
+    private final RealmManager manager;
+    private final MyShowsApi api;
+
+    private MyShowsClientImpl(@NonNull Context context, @NonNull OkHttpClient okHttpClient,
+                              @NonNull ClientStorage storage, @NonNull Scheduler observerScheduler) {
+        this.okHttpClient = okHttpClient;
+        this.storage = storage;
+        this.observerScheduler = observerScheduler;
+
+        // TODO: 07.02.16 extract to constructor arg as part of storage
         this.manager = new RealmManager(context);
-
-        this.cookieManager = new CookieManager();
-        JavaNetCookieJar cookieJar = new JavaNetCookieJar(cookieManager);
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .addInterceptor(loggingInterceptor)
-                .build();
 
         this.api = new Retrofit.Builder()
                 .baseUrl(API_URL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create())
-                .client(client)
+                .client(okHttpClient)
                 .build()
                 .create(MyShowsApi.class);
-        this.observerScheduler = observerScheduler;
     }
 
-    public static void init(Context context, ClientStorage storage, Scheduler observerScheduler) {
-        client = new MyShowsClientImpl(context, storage, observerScheduler);
-    }
-
-    public static MyShowsClientImpl getInstance() {
-        return client;
-    }
-
+    @Override
     public void clear() {
         Realm.deleteRealm(manager.getConfiguration());
-        cookieManager.getCookieStore().removeAll();
-        clearStorage();
+        storage.clear();
     }
 
     @Override
@@ -116,6 +100,14 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
                             subscriber.onNext(false);
                             subscriber.onCompleted();
                         }));
+    }
+
+    @Override
+    public Observable<Boolean> autoAuthentication() {
+        if (!hasCredentials()) {
+            return Observable.error(new IllegalStateException("Client must have credentials to auto authentication"));
+        }
+        return authentication(storage.getCredentials());
     }
 
     @Override
@@ -288,5 +280,41 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     @Override
     public boolean hasCredentials() {
         return storage.getCredentials() != null;
+    }
+
+    public static class Builder {
+
+        private final Context context;
+
+        private OkHttpClient client;
+        private ClientStorage storage;
+        private Scheduler scheduler;
+
+        public Builder(@NonNull Context context) {
+            this.context = context;
+        }
+
+        public Builder client(@NonNull OkHttpClient client) {
+            this.client = client;
+            return this;
+        }
+
+        public Builder storage(@NonNull ClientStorage storage) {
+            this.storage = storage;
+            return this;
+        }
+
+        public Builder observerScheduler(@NonNull Scheduler scheduler) {
+            this.scheduler = scheduler;
+            return this;
+        }
+
+        public MyShowsClientImpl build() {
+            Objects.requireNonNull(client, "OkHttpClient must be not null");
+            Objects.requireNonNull(storage, "ClientStorage must be not null");
+            Objects.requireNonNull(scheduler, "ObserverScheduler must be not null");
+
+            return new MyShowsClientImpl(context, client, storage, scheduler);
+        }
     }
 }

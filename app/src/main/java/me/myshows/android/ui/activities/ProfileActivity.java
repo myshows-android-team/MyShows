@@ -15,9 +15,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.User;
 import me.myshows.android.ui.fragments.AvatarProfileFragment;
 import me.myshows.android.ui.fragments.ProfileHeaderFragment;
@@ -89,7 +89,7 @@ public class ProfileActivity extends HomeActivity {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.getInstance();
+        MyShowsClient client = MyShowsApplication.getMyShowsClient(this);
         client.profile()
                 .compose(bindToLifecycle())
                 .subscribe(adapter::setUser);
