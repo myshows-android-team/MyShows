@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -29,7 +30,6 @@ import me.myshows.android.R;
 import me.myshows.android.api.StorageMyShowsClient;
 import me.myshows.android.api.impl.Credentials;
 import me.myshows.android.api.impl.MyShowsClientImpl;
-import me.myshows.android.utils.ResourcesUtils;
 import rx.Observable;
 
 /**
@@ -107,7 +107,7 @@ public class LoginActivity extends RxAppCompatActivity {
 
             @Override
             public void updateDrawState(TextPaint ds) {
-                ds.setColor(ResourcesUtils.getColor(LoginActivity.this, R.color.red_80_opacity));
+                ds.setColor(ContextCompat.getColor(LoginActivity.this, R.color.red_80_opacity));
                 ds.setUnderlineText(true);
             }
         };
@@ -146,7 +146,7 @@ public class LoginActivity extends RxAppCompatActivity {
 
     private boolean hasInternetConnection() {
         ConnectivityManager connectivityManager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }

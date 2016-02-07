@@ -8,6 +8,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -26,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.trello.rxlifecycle.components.RxFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,13 +47,12 @@ import me.myshows.android.model.UserPreview;
 import me.myshows.android.ui.activities.ShowActivity;
 import me.myshows.android.ui.decorators.OffsetDecorator;
 import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
-import me.myshows.android.utils.ResourcesUtils;
 import rx.Observable;
 
 /**
  * Created by warrior on 19.07.15.
  */
-public class FriendsFragment extends RxFragment {
+public class FriendsFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
 
@@ -68,7 +67,7 @@ public class FriendsFragment extends RxFragment {
         recyclerView.addItemDecoration(new FeedAdapter.FeedOffsetDecorator(
                 getResources().getDimensionPixelSize(R.dimen.default_padding)));
         recyclerView.addItemDecoration(new FeedAdapter.FeedShadowDecorator(
-                ResourcesUtils.getDrawable(getActivity(), R.drawable.show_screen_shadow)));
+                ContextCompat.getDrawable(getActivity(), R.drawable.show_screen_shadow)));
 
         loadData();
 
@@ -159,7 +158,7 @@ public class FriendsFragment extends RxFragment {
 
             Action feedAction = feed.getAction();
             actionIcon.setImageResource(feedAction.getDrawableId());
-            setActionIconBackground(ResourcesUtils.getColor(context, feedAction.getColor()));
+            setActionIconBackground(ContextCompat.getColor(context, feedAction.getColor()));
 
             switch (feedAction) {
                 case WATCH:
@@ -212,7 +211,7 @@ public class FriendsFragment extends RxFragment {
         private void highlightEpisodeName(Spannable spannable, String actionText, UserFeed feed) {
             int start = actionText.indexOf(feed.getEpisode());
             int end = start + feed.getEpisode().length();
-            spannable.setSpan(new ForegroundColorSpan(ResourcesUtils.getColor(context, R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
@@ -241,7 +240,7 @@ public class FriendsFragment extends RxFragment {
 
             @Override
             public void updateDrawState(TextPaint textPaint) {
-                textPaint.setColor(ResourcesUtils.getColor(context, R.color.primary));
+                textPaint.setColor(ContextCompat.getColor(context, R.color.primary));
             }
         }
     }

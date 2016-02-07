@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -49,7 +50,6 @@ import me.myshows.android.ui.common.SeriesViewHolder;
 import me.myshows.android.ui.decorators.OffsetDecorator;
 import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
 import me.myshows.android.utils.Numbers;
-import me.myshows.android.utils.ResourcesUtils;
 import me.myshows.android.utils.SparseSet;
 import rx.Observable;
 
@@ -145,7 +145,7 @@ public class ShowActivity extends HomeActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(false);
         recyclerView.addItemDecoration(new SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_padding)));
-        recyclerView.addItemDecoration(new ShadowDecorator(ResourcesUtils.getDrawable(this, R.drawable.show_screen_shadow)));
+        recyclerView.addItemDecoration(new ShadowDecorator(ContextCompat.getDrawable(this, R.drawable.show_screen_shadow)));
         SimpleItemAnimator animator = new RefactoredDefaultItemAnimator();
         animator.setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(animator);
@@ -178,7 +178,7 @@ public class ShowActivity extends HomeActivity {
         collapsingToolbar.setTitle(show.getTitle());
         WatchStatus watchStatus = show.getWatchStatus();
         fab.setImageResource(watchStatus.getDrawableId());
-        fab.setBackgroundTintList(ResourcesUtils.getColorStateList(this, watchStatus.getColorId()));
+        fab.setBackgroundTintList(ContextCompat.getColorStateList(this, watchStatus.getColorId()));
         myRating.setRating(show.getRating());
     }
 

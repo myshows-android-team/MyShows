@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -23,7 +24,6 @@ import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandab
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
-import com.trello.rxlifecycle.components.RxFragment;
 
 import org.parceler.Parcels;
 
@@ -43,7 +43,6 @@ import me.myshows.android.ui.common.SeasonViewHolder;
 import me.myshows.android.ui.common.SeriesViewHolder;
 import me.myshows.android.ui.decorators.OffsetDecorator;
 import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
-import me.myshows.android.utils.ResourcesUtils;
 import rx.Observable;
 
 import static me.myshows.android.ui.common.SeasonViewHolder.OnSeasonCheckedChangeListener;
@@ -52,7 +51,7 @@ import static me.myshows.android.ui.common.SeriesViewHolder.OnEpisodeCheckedChan
 /**
  * Created by warrior on 03.11.15.
  */
-public class MyShowsFragment extends RxFragment {
+public class MyShowsFragment extends BaseFragment {
 
     private static final String TAG = MyShowsFragment.class.getSimpleName();
 
@@ -71,8 +70,8 @@ public class MyShowsFragment extends RxFragment {
         recyclerView.setHasFixedSize(false);
         int offset = getResources().getDimensionPixelSize(R.dimen.default_padding);
         recyclerView.addItemDecoration(new ShowOffsetDecorator(offset));
-        recyclerView.addItemDecoration(new SeasonDividerDecorator(ResourcesUtils.getDrawable(getActivity(), R.drawable.season_divider), offset));
-        recyclerView.addItemDecoration(new ShadowDecorator(ResourcesUtils.getDrawable(getActivity(), R.drawable.show_screen_shadow)));
+        recyclerView.addItemDecoration(new SeasonDividerDecorator(ContextCompat.getDrawable(getActivity(), R.drawable.season_divider), offset));
+        recyclerView.addItemDecoration(new ShadowDecorator(ContextCompat.getDrawable(getActivity(), R.drawable.show_screen_shadow)));
         SimpleItemAnimator animator = new RefactoredDefaultItemAnimator();
         animator.setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(animator);
@@ -90,7 +89,7 @@ public class MyShowsFragment extends RxFragment {
         if (wrappedAdapter != null) {
             WrapperAdapterUtils.releaseAll(wrappedAdapter);
         }
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     private void loadData() {
