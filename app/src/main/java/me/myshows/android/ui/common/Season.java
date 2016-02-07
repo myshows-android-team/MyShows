@@ -88,17 +88,9 @@ public class Season<T extends Episode> {
     public void setEpisodeChecked(int i, boolean checked) {
         Episode episode = episodes.get(i);
         if (episode.isSpecial()) {
-            if (checked) {
-                checkedSpecialEpisodes.add(episode.getId());
-            } else {
-                checkedSpecialEpisodes.remove(episode.getId());
-            }
+            setEpisodeChecked(checkedSpecialEpisodes, episode, checked);
         } else {
-            if (checked) {
-                checkedEpisodes.add(episode.getId());
-            } else {
-                checkedEpisodes.remove(episode.getId());
-            }
+            setEpisodeChecked(checkedEpisodes, episode, checked);
         }
     }
 
@@ -132,6 +124,14 @@ public class Season<T extends Episode> {
         }
         seasons.add(new Season<>(seasonNumber, seasonEpisodes));
         return seasons;
+    }
+
+    private static void setEpisodeChecked(@NonNull SparseSet episodesSet, @NonNull Episode episode, boolean checked) {
+        if (checked) {
+            episodesSet.add(episode.getId());
+        } else {
+            episodesSet.remove(episode.getId());
+        }
     }
 
     private static <T extends Episode> int countSpecialEpisodes(@NonNull List<T> episodes) {
