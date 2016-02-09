@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import io.realm.RealmList;
+import me.myshows.android.model.Comment;
+import me.myshows.android.model.CommentsInformation;
 import me.myshows.android.model.Episode;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.Gender;
 import me.myshows.android.model.NextEpisode;
+import me.myshows.android.model.RatingEpisode;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.ShowStatus;
@@ -23,6 +26,7 @@ import me.myshows.android.model.UserPreview;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
+import me.myshows.android.model.persistent.PersistentCommentsInformation;
 import me.myshows.android.model.persistent.PersistentEpisode;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
@@ -123,18 +127,29 @@ public class PersistentEntityConverter {
     }
 
     public Episode toEpisode(PersistentEpisode persistentEpisode) {
-        return new Episode(persistentEpisode.getId(), persistentEpisode.getTitle(),
-                persistentEpisode.getSequenceNumber(), persistentEpisode.getSeasonNumber(),
-                persistentEpisode.getEpisodeNumber(), persistentEpisode.getAirDate(),
-                persistentEpisode.getShortName(), persistentEpisode.getTvrageLink(),
-                persistentEpisode.getImage(), persistentEpisode.getProductionNumber());
+        try {
+            RatingEpisode rating = marshaller.deserialize(persistentEpisode.getRating(), RatingEpisode.class);
+            return new Episode(persistentEpisode.getId(), persistentEpisode.getTitle(),
+                    persistentEpisode.getSequenceNumber(), persistentEpisode.getSeasonNumber(),
+                    persistentEpisode.getEpisodeNumber(), persistentEpisode.getAirDate(),
+                    persistentEpisode.getShortName(), persistentEpisode.getTvrageLink(),
+                    persistentEpisode.getImage(), persistentEpisode.getProductionNumber(),
+                    persistentEpisode.getTotalWatched(), rating);
+        } catch (IOException e) {
+            throw new RuntimeException("Unreachable state", e);
+        }
     }
 
     public PersistentEpisode fromEpisode(Episode episode) {
-        return new PersistentEpisode(episode.getId(), episode.getTitle(), episode.getSeasonNumber(),
-                episode.getEpisodeNumber(), episode.getAirDate(), episode.getShortName(),
-                episode.getTvrageLink(), episode.getImage(), episode.getProductionNumber(),
-                episode.getSequenceNumber());
+        try {
+            byte[] rating = marshaller.serialize(episode.getRating());
+            return new PersistentEpisode(episode.getId(), episode.getTitle(), episode.getSeasonNumber(),
+                    episode.getEpisodeNumber(), episode.getAirDate(), episode.getShortName(),
+                    episode.getTvrageLink(), episode.getImage(), episode.getProductionNumber(),
+                    episode.getSequenceNumber(), episode.getTotalWatched(), rating);
+        } catch (IOException e) {
+            throw new RuntimeException("Unreachable state", e);
+        }
     }
 
     public Show toShow(PersistentShow persistentShow) {
@@ -217,6 +232,26 @@ public class PersistentEntityConverter {
             episodes.add(fromUserEpisode(episode));
         }
         return new PersistentUserShowEpisodes(userShowEpisodes.getShowId(), episodes);
+    }
+
+    public CommentsInformation toCommentsInformation(PersistentCommentsInformation information) {
+        try {
+            List<Comment> comments = marshaller.deserializeList(information.getComments(), ArrayList.class, Comment.class);
+            return new CommentsInformation(information.isTracking(), information.getCount(),
+                    information.getNewCount(), information.isShow(), comments);
+        } catch (IOException e) {
+            throw new RuntimeException("Unreachable state", e);
+        }
+    }
+
+    public PersistentCommentsInformation fromCommentsInformation(int episodeId, CommentsInformation information) {
+        try {
+            byte[] comments = marshaller.serialize(information.getComments());
+            return new PersistentCommentsInformation(episodeId, information.isTracking(), information.getCount(),
+                    information.getNewCount(), information.isShow(), comments);
+        } catch (IOException e) {
+            throw new RuntimeException("Unreachable state", e);
+        }
     }
 
     private Map<String, Episode> toEpisodeMap(RealmList<PersistentEpisode> persistentEpisodes) {

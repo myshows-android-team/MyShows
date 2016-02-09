@@ -19,10 +19,14 @@ public class PersistentEpisode extends RealmObject {
     private String productionNumber;
     private int sequenceNumber;
 
+    private int totalWatched;
+    private byte[] rating;
+
     public PersistentEpisode() {
     }
 
-    public PersistentEpisode(int id, String title, int seasonNumber, int episodeNumber, String airDate, String shortName, String tvrageLink, String image, String productionNumber, int sequenceNumber) {
+    public PersistentEpisode(int id, String title, int seasonNumber, int episodeNumber, String airDate, String shortName, String tvrageLink, String image, String productionNumber, int sequenceNumber,
+                             int totalWatched, byte[] rating) {
         this.id = id;
         this.title = title;
         this.seasonNumber = seasonNumber;
@@ -33,6 +37,8 @@ public class PersistentEpisode extends RealmObject {
         this.image = image;
         this.productionNumber = productionNumber;
         this.sequenceNumber = sequenceNumber;
+        this.totalWatched = totalWatched;
+        this.rating = rating;
     }
 
     public int getId() {
@@ -113,5 +119,21 @@ public class PersistentEpisode extends RealmObject {
 
     public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+    }
+
+    public int getTotalWatched() {
+        return totalWatched;
+    }
+
+    public void setTotalWatched(int totalWatched) {
+        this.totalWatched = totalWatched;
+    }
+
+    public byte[] getRating() {
+        return rating;
+    }
+
+    public void setRating(byte[] rating) {
+        this.rating = rating;
     }
 }

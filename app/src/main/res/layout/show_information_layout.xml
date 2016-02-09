@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/default_padding" />
 
-        <include layout="@layout/show_screen_shadow_view" />
+        <include layout="@layout/information_screen_shadow_view" />
 
     </FrameLayout>
 
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             tools:text="Series rating (4.25)" />
 
-        <include layout="@layout/show_screen_shadow_view" />
+        <include layout="@layout/information_screen_shadow_view" />
 
     </FrameLayout>
 
@@ -138,7 +138,7 @@
             android:layout_height="wrap_content"
             android:text="@string/seasons" />
 
-        <include layout="@layout/show_screen_shadow_view" />
+        <include layout="@layout/information_screen_shadow_view" />
 
     </FrameLayout>
 

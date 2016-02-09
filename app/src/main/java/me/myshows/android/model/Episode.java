@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
+
 import me.myshows.android.utils.DateUtils;
 
 /**
@@ -15,7 +18,7 @@ import me.myshows.android.utils.DateUtils;
 public class Episode {
 
     private static final int SPECIAL_EPISODE_NUMBER = 0;
-    
+
     private final int id;
     private final String title;
     private final int seasonNumber;
@@ -28,12 +31,17 @@ public class Episode {
     private final int sequenceNumber;
     private final long airDateInMillis;
 
+    // episode information request fields
+    private final int totalWatched;
+    private final RatingEpisode rating;
+
     @JsonCreator
     public Episode(@JsonProperty("id") int id, @JsonProperty("title") String title,
                    @JsonProperty("sequenceNumber") int sequenceNumber, @JsonProperty("seasonNumber") int seasonNumber,
                    @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate,
                    @JsonProperty("shortName") String shortName, @JsonProperty("tvrageLink") String tvrageLink,
-                   @JsonProperty("image") String image, @JsonProperty("productionNumber") String productionNumber) {
+                   @JsonProperty("image") String image, @JsonProperty("productionNumber") String productionNumber,
+                   @JsonProperty("totalWatched") int totalWatched, @JsonProperty("rating") RatingEpisode rating) {
         this.id = id;
         this.title = title;
         this.seasonNumber = seasonNumber;
@@ -45,6 +53,8 @@ public class Episode {
         this.productionNumber = productionNumber;
         this.sequenceNumber = sequenceNumber;
         this.airDateInMillis = DateUtils.parseInMillis(airDate);
+        this.totalWatched = totalWatched;
+        this.rating = rating;
     }
 
     @JsonProperty("id")
@@ -100,6 +110,16 @@ public class Episode {
     @JsonIgnore
     public long getAirDateInMillis() {
         return airDateInMillis;
+    }
+
+    @JsonProperty("totalWatched")
+    public int getTotalWatched() {
+        return totalWatched;
+    }
+
+    @JsonProperty("rating")
+    public RatingEpisode getRating() {
+        return rating;
     }
 
     @JsonIgnore

@@ -1,6 +1,8 @@
 package me.myshows.android.ui.activities;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
@@ -367,12 +370,21 @@ class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemVi
         public void bind(@NonNull Episode episode, boolean isLast, boolean checked) {
             this.isLast = isLast;
             seriesTitle.setText(episode.getTitle());
+            itemView.setOnClickListener(v -> startEpisodeActivity(episode));
             checkBox.setOnCheckedChangeListener(null);
             checkBox.setChecked(checked);
             checkBox.setOnCheckedChangeListener((v, isChecked) -> listener.onEpisodeCheckedChanged(getAdapterPosition(), episode, isChecked));
             divider.setVisibility(isLast ? View.GONE : View.VISIBLE);
             setSeriesNumber(episode);
             setAirDate(episode.getAirDate());
+        }
+
+        private void startEpisodeActivity(Episode episode) {
+            Context context = itemView.getContext();
+            Intent intent = new Intent(context, EpisodeActivity.class);
+            intent.putExtra(EpisodeActivity.EPISODE_ID, episode.getId());
+            intent.putExtra(EpisodeActivity.EPISODE_TITLE, episode.getTitle());
+            context.startActivity(intent);
         }
 
         public boolean isLast() {

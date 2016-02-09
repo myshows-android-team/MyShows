@@ -14,6 +14,8 @@ import me.myshows.android.BuildConfig;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.StorageMyShowsClient;
+import me.myshows.android.model.CommentsInformation;
+import me.myshows.android.model.Episode;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
@@ -23,6 +25,8 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
+import me.myshows.android.model.persistent.PersistentCommentsInformation;
+import me.myshows.android.model.persistent.PersistentEpisode;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentRatingShow;
@@ -239,6 +243,23 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
     }
 
     @Override
+    public Observable<Episode> episodeInformation(int episodeId) {
+        return Observable.<Episode>create(subscriber -> {
+            Episode episode = manager.selectEntity(PersistentEpisode.class, CONVERTER::toEpisode,
+                    new Predicate("id", episodeId));
+            if (episode != null) {
+                subscriber.onNext(episode);
+            }
+            api.episodeInformation(episodeId)
+                    .subscribe(
+                            e -> subscriber.onNext(manager.upsertEntity(e, CONVERTER::fromEpisode)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
     public Observable<List<Feed>> friendsNews() {
         return Observable.<List<Feed>>create(subscriber -> {
             Class<PersistentFeed> clazz = PersistentFeed.class;
@@ -271,6 +292,23 @@ public class MyShowsClientImpl extends StorageMyShowsClient {
                     })
                     .subscribe(
                             shows -> subscriber.onNext(manager.truncateAndInsertEntities(shows, PersistentRatingShow.class, CONVERTER::fromRatingShow)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<CommentsInformation> comments(int episodeId) {
+        return Observable.<CommentsInformation>create(subscriber -> {
+            CommentsInformation information = manager.selectEntity(PersistentCommentsInformation.class,
+                    CONVERTER::toCommentsInformation, new Predicate("episodeId", episodeId));
+            if (information != null) {
+                subscriber.onNext(information);
+            }
+            api.comments(episodeId)
+                    .subscribe(
+                            info -> subscriber.onNext(manager.upsertEntity(info, entity -> CONVERTER.fromCommentsInformation(episodeId, info))),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );

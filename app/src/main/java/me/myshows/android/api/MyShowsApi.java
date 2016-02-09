@@ -3,6 +3,8 @@ package me.myshows.android.api;
 import java.util.List;
 import java.util.Map;
 
+import me.myshows.android.model.CommentsInformation;
+import me.myshows.android.model.Episode;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
@@ -48,9 +50,15 @@ public interface MyShowsApi {
     @GET("/shows/{show_id}")
     Observable<Show> showInformation(@Path("show_id") int showId);
 
+    @GET("/episodes/{episode_id}")
+    Observable<Episode> episodeInformation(@Path("episode_id") int episodeId);
+
     @GET("/profile/news/")
     Observable<Map<String, List<UserFeed>>> friendsNews();
 
     @GET("/shows/top/all/")
     Observable<List<RatingShow>> ratingShows();
+
+    @GET("/profile/comments/episode/{episode_id}")
+    Observable<CommentsInformation> comments(@Path("episode_id") int episodeId);
 }
