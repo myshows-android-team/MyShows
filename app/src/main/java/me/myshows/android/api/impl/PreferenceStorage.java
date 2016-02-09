@@ -2,7 +2,10 @@ package me.myshows.android.api.impl;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import java.net.CookieStore;
 
 import me.myshows.android.api.ClientStorage;
 
@@ -13,8 +16,10 @@ public class PreferenceStorage implements ClientStorage {
     private static final String MY_SHOWS_PASSWORD = "my_shows_password_hash_token";
 
     private final SharedPreferences preferences;
+    private final CookieStore cookieStore;
 
-    public PreferenceStorage(Context context) {
+    public PreferenceStorage(@NonNull Context context, @NonNull CookieStore cookieStore) {
+        this.cookieStore = cookieStore;
         this.preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
@@ -39,6 +44,7 @@ public class PreferenceStorage implements ClientStorage {
 
     @Override
     public void clear() {
+        cookieStore.removeAll();
         preferences.edit().clear().apply();
     }
 }
