@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.CommentsInformation;
 import me.myshows.android.model.Episode;
 import me.myshows.android.model.RatingEpisode;
@@ -47,7 +47,7 @@ public class EpisodeActivity extends HomeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.episode_activity);
 
-        client = MyShowsClientImpl.getInstance();
+        client = MyShowsApplication.getMyShowsClient(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setupActionBar(toolbar);

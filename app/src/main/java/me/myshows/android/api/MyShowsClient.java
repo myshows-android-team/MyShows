@@ -22,7 +22,11 @@ public interface MyShowsClient {
 
     boolean hasCredentials();
 
+    void clear();
+
     Observable<Boolean> authentication(Credentials credentials);
+
+    Observable<Boolean> autoAuthentication();
 
     Observable<User> profile();
 

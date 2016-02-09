@@ -29,9 +29,9 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserPreview;
 import me.myshows.android.model.UserShow;
@@ -137,7 +137,7 @@ public class ProfileActivity extends HomeActivity {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.getInstance();
+        MyShowsClient client = MyShowsApplication.getMyShowsClient(this);
         Observable<User> profile = client.profile()
                 .doOnNext(this::onUserLoaded);
         Observable.combineLatest(profile, client.profileShows(), (user, shows) -> ProfileAdapter.create(friendLayout, shows))

@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.WatchStatus;
@@ -56,7 +56,7 @@ public class RatingsFragment extends BaseFragment {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.getInstance();
+        MyShowsClient client = MyShowsApplication.getMyShowsClient(getActivity());
         Observable<Map<Integer, UserShow>> userShowObservable = client.profileShows()
                 .map(shows -> {
                     Map<Integer, UserShow> userShows = new HashMap<>();

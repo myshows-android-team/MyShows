@@ -26,10 +26,10 @@ import android.widget.Toast;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
-import me.myshows.android.api.StorageMyShowsClient;
+import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.Credentials;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.Observable;
 
 /**
@@ -41,7 +41,7 @@ public class LoginActivity extends RxAppCompatActivity {
     private static final String REGISTER_URL = "http://myshows.me/";
     private static final int ANIMATION_DURATION = 500;
 
-    private StorageMyShowsClient client;
+    private MyShowsClient client;
 
     private View logo;
     private ViewGroup loginLayout;
@@ -59,7 +59,7 @@ public class LoginActivity extends RxAppCompatActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
 
-        client = MyShowsClientImpl.getInstance();
+        client = MyShowsApplication.getMyShowsClient(this);
 
         logo = findViewById(R.id.logo);
         loginLayout = (ViewGroup) findViewById(R.id.login_layout);
@@ -82,7 +82,7 @@ public class LoginActivity extends RxAppCompatActivity {
             if (hasInternetConnection()) {
                 needAnimate = true;
                 setEnabled(loginLayout, false);
-                processAuthenticationObserver(client.authentication());
+                processAuthenticationObserver(client.autoAuthentication());
             } else {
                 changeActivity();
             }
