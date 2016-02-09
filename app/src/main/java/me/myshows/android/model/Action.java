@@ -15,12 +15,12 @@ import me.myshows.android.R;
  * Created by Whiplash on 13.08.2015.
  */
 public enum Action {
-    WATCH(R.drawable.action_watch, R.color.action_watch),
-    NEW(R.drawable.action_new, R.color.action_new),
-    RATING(R.drawable.action_rating, R.color.action_rating),
-    WATCH_LATER(R.drawable.action_watch_later, R.color.action_watch_later),
-    STOP_WATCH(R.drawable.action_stop_watch, R.color.action_stop_watch),
-    ACHIEVEMENT(R.drawable.action_achievement, R.color.action_achievement);
+    WATCH(R.drawable.action_watch, R.color.state_green),
+    NEW(R.drawable.action_new, R.color.state_red),
+    RATING(R.drawable.action_rating, R.color.state_orange),
+    WATCH_LATER(R.drawable.action_watch_later, R.color.state_blue),
+    STOP_WATCH(R.drawable.action_stop_watch, R.color.state_red),
+    ACHIEVEMENT(R.drawable.action_achievement, R.color.state_orange);
 
     private static Map<String, Action> strToAction = new HashMap<>(Action.values().length);
 

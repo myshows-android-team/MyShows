@@ -15,11 +15,11 @@ import me.myshows.android.R;
  * Created by warrior on 08.08.15.
  */
 public enum WatchStatus {
-    WATCHING(R.drawable.ic_status_watching, R.color.fab_watching),
-    FINISHED(R.drawable.ic_status_watching, R.color.fab_watching),
-    LATER(R.drawable.ic_status_later, R.color.fab_later),
-    CANCELLED(R.drawable.ic_status_cancelled, R.color.fab_cancelled),
-    NOT_WATCHING(R.drawable.ic_status_not_watching, R.color.fab_not_watching);
+    WATCHING(R.drawable.ic_status_watching, R.color.state_green),
+    FINISHED(R.drawable.ic_status_watching, R.color.state_green),
+    LATER(R.drawable.ic_status_later, R.color.state_blue),
+    CANCELLED(R.drawable.ic_status_cancelled, R.color.state_yellow),
+    NOT_WATCHING(R.drawable.ic_status_not_watching, R.color.state_red);
 
     private static Map<String, WatchStatus> strToStatus = new HashMap<>(WatchStatus.values().length);
 
