@@ -78,4 +78,8 @@
     <style name="MyShows.TextAppearance.Dialog.Button" parent="TextAppearance.AppCompat.Widget.Button">
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="MyShows.TextAppearance.Profile.CollapsingToolbar.Expanded" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
 </resources>

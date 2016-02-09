@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="-8dp"
+    android:layout_marginRight="-8dp"
+    android:orientation="vertical">
+        
+    <TextView
+        style="@style/MyShows.ShowScreen.TextView.Header"
+        android:id="@+id/friend_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EFEFEF"
+        android:gravity="left|center_vertical"
+        android:text="@string/profile_friends" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friend_list"
+        android:layout_width="match_parent"
+        android:layout_height="118dp"
+        android:overScrollMode="never"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EFEFEF">
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView.Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:text="@string/profile_my_series" />
+
+        <include layout="@layout/show_screen_shadow_view" />
+
+    </FrameLayout>
+
+</LinearLayout>
