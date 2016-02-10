@@ -5,7 +5,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
     }
 
@@ -23,7 +23,7 @@ allprojects {
 
 def versions = [
         supportLibs     : '23.1.1',
-        okhttp          : '3.0.1',
+        okhttp          : '3.1.1',
         retrofit        : '2.0.0-beta4',
         parceler        : '1.0.4',
         rxLifecycle     : '0.4.0',
@@ -41,7 +41,7 @@ ext.libraries = [
         supportV13                    : 'com.android.support:support-v13:' + versions.supportLibs,
 
         // UI libraries
-        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.5@aar',
+        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.6@aar',
         circleImageView               : 'de.hdodenhof:circleimageview:2.0.0',
         circleIndicator               : 'me.relex:circleindicator:1.1.8@aar',
 
