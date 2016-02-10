@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.Action;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.Gender;
@@ -75,7 +75,7 @@ public class FriendsFragment extends BaseFragment {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.getInstance();
+        MyShowsClient client = MyShowsApplication.getMyShowsClient(getActivity());
         Observable<Map<String, String>> friendsAvatarObservable = client.profile()
                 .map(FriendsFragment::extractAvatarUrls);
         Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::makeAdapter)

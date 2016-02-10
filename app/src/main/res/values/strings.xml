@@ -75,6 +75,7 @@
     <string name="show_rating">Rating \u2014 %.2f</string>
 
     <!-- Profile screen -->
+    <string name="profile">Profile</string>
     <string name="place">#%s among friends</string>
     <plurals name="episodes_caption">
         <item quantity="one">episode</item>
@@ -88,6 +89,8 @@
         <item quantity="one">hour</item>
         <item quantity="other">hours</item>
     </plurals>
+    <string name="profile_friends">Friends</string>
+    <string name="profile_my_series">My series</string>
 
     <!-- Preference -->
     <string name="compact_mode">Compact mode</string>

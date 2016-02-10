@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.MyShowsSettings;
 import me.myshows.android.R;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -133,7 +132,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private Void signOut() {
-        MyShowsClientImpl.getInstance().clear();
+        MyShowsApplication.getMyShowsClient(getActivity()).clear();
         PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
         return null;
     }

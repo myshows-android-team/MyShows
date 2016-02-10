@@ -35,9 +35,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.ShowEpisode;
 import me.myshows.android.model.UserEpisode;
@@ -92,7 +92,7 @@ public class ShowActivity extends HomeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_activity);
 
-        client = MyShowsClientImpl.getInstance();
+        client = MyShowsApplication.getMyShowsClient(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setupActionBar(toolbar);

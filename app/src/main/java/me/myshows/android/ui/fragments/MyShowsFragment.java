@@ -32,9 +32,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.ui.activities.ShowActivity;
@@ -94,7 +94,7 @@ public class MyShowsFragment extends BaseFragment {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsClientImpl.getInstance();
+        MyShowsClient client = MyShowsApplication.getMyShowsClient(getActivity());
         Observable<SparseArray<UserShow>> userShows = client.profileShows()
                 .map(showList -> {
                     SparseArray<UserShow> shows = new SparseArray<>(showList.size());

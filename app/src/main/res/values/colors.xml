@@ -16,6 +16,12 @@
     <color name="light_gray">#E1E1E1</color>
     <color name="dark_gray">#515151</color>
 
+    <color name="state_red">@color/accent</color>
+    <color name="state_orange">#FCB647</color>
+    <color name="state_yellow">#F8DA37</color>
+    <color name="state_green">#78B531</color>
+    <color name="state_blue">#3894E8</color>
+
     <!-- Navigation drawer colors -->
     <color name="nav_text_color">#4D4D4D</color>
     <color name="nav_selected_item_color">#EEEEEE</color>
@@ -24,21 +30,6 @@
     <color name="list_feed_gray_text">#AAAAAA</color>
     <color name="list_feed_background">#EDEDED</color>
 
-    <!-- Fab colors -->
-    <color name="fab_watching">#78B531</color>
-    <color name="fab_later">#3894E8</color>
-    <color name="fab_cancelled">#F8DA37</color>
-    <color name="fab_not_watching">@color/accent</color>
-
     <!-- Settings colors -->
     <color name="preference_fallback_accent_color">@color/accent</color>
-
-    <!-- Feed's action -->
-    <color name="action_watch">@color/fab_watching</color>
-    <color name="action_new">@color/fab_not_watching</color>
-    <color name="action_rating">#FCB647</color>
-    <color name="action_watch_later">@color/fab_later</color>
-    <color name="action_stop_watch">@color/action_new</color>
-    <color name="action_achievement">@color/action_rating</color>
-
 </resources>
