@@ -57,6 +57,7 @@ public class MyShowsFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
 
+    private MyShowsAdapter originalAdapter;
     private RecyclerViewExpandableItemManager expandableItemManager;
     private RecyclerView.Adapter wrappedAdapter;
 
@@ -102,16 +103,21 @@ public class MyShowsFragment extends BaseFragment {
                     }
                     return shows;
                 });
-        Observable.combineLatest(userShows, client.profileUnwatchedEpisodes(), MyShowsAdapter::create)
+        Observable.combineLatest(userShows, client.profileUnwatchedEpisodes(), MyShowsAdapter::prepareData)
                 .compose(bindToLifecycle())
-                .subscribe(this::setAdapter);
+                .subscribe(this::bindData);
     }
 
-    public void setAdapter(MyShowsAdapter adapter) {
-        expandableItemManager = new RecyclerViewExpandableItemManager(null);
-        wrappedAdapter = expandableItemManager.createWrappedAdapter(adapter);
-        recyclerView.setAdapter(wrappedAdapter);
-        expandableItemManager.attachRecyclerView(recyclerView);
+    public void bindData(@NonNull AdapterData data) {
+        if (originalAdapter == null) {
+            originalAdapter = new MyShowsAdapter(data);
+            expandableItemManager = new RecyclerViewExpandableItemManager(null);
+            wrappedAdapter = expandableItemManager.createWrappedAdapter(originalAdapter);
+            recyclerView.setAdapter(wrappedAdapter);
+            expandableItemManager.attachRecyclerView(recyclerView);
+        } else {
+            originalAdapter.changeData(data);
+        }
     }
 
     private static class MyShowsAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemViewHolder, SeriesViewHolder<UnwatchedEpisode>> {
@@ -119,16 +125,22 @@ public class MyShowsFragment extends BaseFragment {
         private static final int SHOW_HEADER_TYPE = 0;
         private static final int SEASON_TYPE = 1;
 
-        private final SparseArray<ShowData> shows;
-        private final SparseArray<Season<UnwatchedEpisode>> seasons;
-
         private final OnEpisodeCheckedChangeListener<UnwatchedEpisode> seriesListener = this::onEpisodeCheckedChanged;
         private final OnSeasonCheckedChangeListener<UnwatchedEpisode> seasonListener = season -> notifyDataSetChanged();
 
-        private MyShowsAdapter(SparseArray<ShowData> shows, SparseArray<Season<UnwatchedEpisode>> seasons) {
-            this.shows = shows;
-            this.seasons = seasons;
+        private SparseArray<ShowData> shows;
+        private SparseArray<Season<UnwatchedEpisode>> seasons;
+
+        public MyShowsAdapter(@NonNull AdapterData data) {
+            shows = data.shows;
+            seasons = data.seasons;
             setHasStableIds(true);
+        }
+
+        public void changeData(@NonNull AdapterData data) {
+            shows = data.shows;
+            seasons = data.seasons;
+            notifyDataSetChanged();
         }
 
         @Override
@@ -232,7 +244,7 @@ public class MyShowsFragment extends BaseFragment {
             }
         }
 
-        public static MyShowsAdapter create(@NonNull SparseArray<UserShow> userShows, @NonNull List<UnwatchedEpisode> unwatchedEpisodes) {
+        public static AdapterData prepareData(@NonNull SparseArray<UserShow> userShows, @NonNull List<UnwatchedEpisode> unwatchedEpisodes) {
             LinkedHashMap<Integer, List<UnwatchedEpisode>> groupedEpisodes = new LinkedHashMap<>();
             for (UnwatchedEpisode episode : unwatchedEpisodes) {
                 List<UnwatchedEpisode> showEpisodes = groupedEpisodes.get(episode.getShowId());
@@ -259,7 +271,7 @@ public class MyShowsFragment extends BaseFragment {
                 }
             }
 
-            return new MyShowsAdapter(shows, seasons);
+            return new AdapterData(shows, seasons);
         }
     }
 
@@ -271,6 +283,16 @@ public class MyShowsFragment extends BaseFragment {
         public ShowData(UserShow show, int seriesLeft) {
             this.show = show;
             this.seriesLeft = seriesLeft;
+        }
+    }
+
+    private static class AdapterData {
+        public final SparseArray<ShowData> shows;
+        public final SparseArray<Season<UnwatchedEpisode>> seasons;
+
+        public AdapterData(SparseArray<ShowData> shows, SparseArray<Season<UnwatchedEpisode>> seasons) {
+            this.shows = shows;
+            this.seasons = seasons;
         }
     }
 
