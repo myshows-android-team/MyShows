@@ -90,6 +90,7 @@ public class MyShowsFragment extends BaseFragment {
         if (wrappedAdapter != null) {
             WrapperAdapterUtils.releaseAll(wrappedAdapter);
         }
+        originalAdapter = null;
         super.onDestroyView();
     }
 
