@@ -21,12 +21,6 @@
     <!-- nav_avatar_size / 2 -->
     <dimen name="nav_avatar_size_half">49dp</dimen>
 
-    <!-- List show view dimens -->
-    <dimen name="list_show_progress_height">3dp</dimen>
-    <dimen name="list_show_text_height">50dp</dimen>
-    <dimen name="list_show_shadow_height">4dp</dimen>
-    <dimen name="list_show_text_size">18sp</dimen>
-
     <dimen name="fab_margin">0dp</dimen>
 
     <!-- List feed view dimens -->

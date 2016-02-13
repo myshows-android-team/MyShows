@@ -10,10 +10,17 @@ import android.view.View;
  */
 public class SimpleDrawableDecorator extends BaseDecorator {
 
-    private final Drawable drawable;
+    public enum Border {
+        TOP,
+        BOTTOM
+    }
 
-    public SimpleDrawableDecorator(Drawable drawable) {
+    private final Drawable drawable;
+    private final Border border;
+
+    public SimpleDrawableDecorator(Drawable drawable, Border border) {
         this.drawable = drawable;
+        this.border = border;
     }
 
     @Override
@@ -28,8 +35,15 @@ public class SimpleDrawableDecorator extends BaseDecorator {
 
                 int left = child.getLeft() + tx;
                 int right = child.getRight() + tx;
-                int top = child.getBottom() + ty;
-                int bottom = child.getBottom() + ty + drawable.getMinimumHeight();
+                int top;
+                int bottom;
+                if (border == Border.TOP) {
+                    top = child.getTop() + ty - drawable.getMinimumHeight();
+                    bottom = child.getTop() + ty;
+                } else {
+                    top = child.getBottom() + ty;
+                    bottom = child.getBottom() + ty + drawable.getMinimumHeight();
+                }
 
                 drawable.setBounds(left, top, right, bottom);
                 drawable.draw(c);
