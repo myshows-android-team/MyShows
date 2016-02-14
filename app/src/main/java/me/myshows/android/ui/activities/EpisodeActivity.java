@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -16,9 +17,9 @@ import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.model.CommentsInformation;
-import me.myshows.android.model.Episode;
 import me.myshows.android.model.RatingEpisode;
 import me.myshows.android.model.ShowEpisode;
+import rx.Observable;
 
 /**
  * Created by Whiplash on 2/9/2016.
@@ -36,6 +37,7 @@ public class EpisodeActivity extends HomeActivity {
     private CollapsingToolbarLayout collapsingToolbar;
     private FloatingActionButton fab;
 
+    private View episodeInformation;
     private TextView watched;
     private TextView airDate;
     private TextView rating;
@@ -57,6 +59,7 @@ public class EpisodeActivity extends HomeActivity {
         episodeImage = (ImageView) findViewById(R.id.episode_image);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
+        episodeInformation = findViewById(R.id.episode_information);
         watched = (TextView) findViewById(R.id.watched);
         airDate = (TextView) findViewById(R.id.air_date);
         rating = (TextView) findViewById(R.id.rating);
@@ -76,13 +79,16 @@ public class EpisodeActivity extends HomeActivity {
     }
 
     private void loadData(int episodeId) {
-        client.episodeInformation(episodeId)
+        Observable.combineLatest(client.episodeInformation(episodeId), client.comments(episodeId),
+                (episode, information) -> new Pair<>(episode, information))
                 .compose(bindToLifecycle())
-                .subscribe(this::bindEpisode);
+                .subscribe(this::bind);
+    }
 
-        client.comments(episodeId)
-                .compose(bindToLifecycle())
-                .subscribe(this::bindComments);
+    private void bind(Pair<ShowEpisode, CommentsInformation> pair) {
+        bindEpisode(pair.first);
+        bindComments(pair.second);
+        episodeInformation.setVisibility(View.VISIBLE);
     }
 
     private void bindEpisode(ShowEpisode episode) {
