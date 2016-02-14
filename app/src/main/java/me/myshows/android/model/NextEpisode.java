@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @date 22.06.2015
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NextEpisode {
+public class NextEpisode extends AbstractEpisode {
 
     private final int episodeId;
     private final String title;
@@ -22,6 +22,7 @@ public class NextEpisode {
     public NextEpisode(@JsonProperty("episodeId") int episodeId, @JsonProperty("title") String title,
                        @JsonProperty("showId") int showId, @JsonProperty("seasonNumber") int seasonNumber,
                        @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate) {
+        super(airDate);
         this.episodeId = episodeId;
         this.title = title;
         this.showId = showId;
@@ -31,32 +32,37 @@ public class NextEpisode {
     }
 
     @JsonProperty("episodeId")
-    public int getEpisodeId() {
+    @Override
+    public int getId() {
         return episodeId;
     }
 
     @JsonProperty("title")
+    @Override
     public String getTitle() {
         return title;
     }
 
-    @JsonProperty("showId")
-    public int getShowId() {
-        return showId;
-    }
-
     @JsonProperty("seasonNumber")
+    @Override
     public int getSeasonNumber() {
         return seasonNumber;
     }
 
     @JsonProperty("episodeNumber")
+    @Override
     public int getEpisodeNumber() {
         return episodeNumber;
     }
 
     @JsonProperty("airDate")
+    @Override
     public String getAirDate() {
         return airDate;
+    }
+
+    @JsonProperty("showId")
+    public int getShowId() {
+        return showId;
     }
 }

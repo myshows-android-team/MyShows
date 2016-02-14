@@ -5,7 +5,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class PersistentEpisode extends RealmObject {
+public class PersistentShowEpisode extends RealmObject {
 
     @PrimaryKey
     private int id;
@@ -22,11 +22,11 @@ public class PersistentEpisode extends RealmObject {
     private int totalWatched;
     private byte[] rating;
 
-    public PersistentEpisode() {
+    public PersistentShowEpisode() {
     }
 
-    public PersistentEpisode(int id, String title, int seasonNumber, int episodeNumber, String airDate, String shortName, String tvrageLink, String image, String productionNumber, int sequenceNumber,
-                             int totalWatched, byte[] rating) {
+    public PersistentShowEpisode(int id, String title, int seasonNumber, int episodeNumber, String airDate, String shortName, String tvrageLink, String image, String productionNumber, int sequenceNumber,
+                                 int totalWatched, byte[] rating) {
         this.id = id;
         this.title = title;
         this.seasonNumber = seasonNumber;

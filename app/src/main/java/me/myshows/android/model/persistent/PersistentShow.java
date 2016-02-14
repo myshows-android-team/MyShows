@@ -25,7 +25,7 @@ public class PersistentShow extends RealmObject {
     private int runtime;
     private String image;
     private byte[] genres;
-    private RealmList<PersistentEpisode> episodes;
+    private RealmList<PersistentShowEpisode> episodes;
     private int watching;
     private byte[] images;
     private String description;
@@ -36,7 +36,7 @@ public class PersistentShow extends RealmObject {
     public PersistentShow(int id, String title, String ruTitle, String showStatus, String country,
                           String started, String ended, int year, int kinopoiskId, int tvrageId,
                           int imdbId, int voted, float rating, int runtime, String image,
-                          byte[] genres, RealmList<PersistentEpisode> episodes, int watching, byte[] images, String description) {
+                          byte[] genres, RealmList<PersistentShowEpisode> episodes, int watching, byte[] images, String description) {
         this.id = id;
         this.title = title;
         this.ruTitle = ruTitle;
@@ -187,11 +187,11 @@ public class PersistentShow extends RealmObject {
         this.genres = genres;
     }
 
-    public RealmList<PersistentEpisode> getEpisodes() {
+    public RealmList<PersistentShowEpisode> getEpisodes() {
         return episodes;
     }
 
-    public void setEpisodes(RealmList<PersistentEpisode> episodes) {
+    public void setEpisodes(RealmList<PersistentShowEpisode> episodes) {
         this.episodes = episodes;
     }
 

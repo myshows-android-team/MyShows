@@ -9,6 +9,7 @@ import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
+import me.myshows.android.model.ShowEpisode;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserShow;
@@ -42,7 +43,7 @@ public interface MyShowsClient {
 
     Observable<Show> showInformation(int showId);
 
-    Observable<Episode> episodeInformation(int episodeId);
+    Observable<ShowEpisode> episodeInformation(int episodeId);
 
     Observable<List<Feed>> friendsNews();
 

@@ -18,6 +18,7 @@ import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.model.CommentsInformation;
 import me.myshows.android.model.Episode;
 import me.myshows.android.model.RatingEpisode;
+import me.myshows.android.model.ShowEpisode;
 
 /**
  * Created by Whiplash on 2/9/2016.
@@ -84,7 +85,7 @@ public class EpisodeActivity extends HomeActivity {
                 .subscribe(this::bindComments);
     }
 
-    private void bindEpisode(Episode episode) {
+    private void bindEpisode(ShowEpisode episode) {
         Glide.with(this)
                 .load(episode.getImage())
                 .centerCrop()

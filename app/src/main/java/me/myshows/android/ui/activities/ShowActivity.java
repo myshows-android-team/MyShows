@@ -2,7 +2,9 @@ package me.myshows.android.ui.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +17,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -22,19 +25,32 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
+import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
+import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
 import org.parceler.Parcels;
 
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.model.Show;
+import me.myshows.android.model.ShowEpisode;
+import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
+import me.myshows.android.ui.common.Season;
+import me.myshows.android.ui.common.SeasonViewHolder;
+import me.myshows.android.ui.common.SeriesViewHolder;
+import me.myshows.android.ui.decorators.OffsetDecorator;
+import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
+import me.myshows.android.utils.Numbers;
+import me.myshows.android.utils.SparseSet;
 import rx.Observable;
 
 /**
@@ -128,8 +144,8 @@ public class ShowActivity extends HomeActivity {
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(false);
-        recyclerView.addItemDecoration(new ShowAdapter.SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_padding)));
-        recyclerView.addItemDecoration(new ShowAdapter.ShadowDecorator(ContextCompat.getDrawable(this, R.drawable.show_screen_shadow)));
+        recyclerView.addItemDecoration(new SeasonOffsetDecorator(getResources().getDimensionPixelSize(R.dimen.default_padding)));
+        recyclerView.addItemDecoration(new ShadowDecorator(ContextCompat.getDrawable(this, R.drawable.show_screen_shadow)));
         SimpleItemAnimator animator = new RefactoredDefaultItemAnimator();
         animator.setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(animator);
@@ -207,5 +223,182 @@ public class ShowActivity extends HomeActivity {
             description = description.substring(0, description.length() - CLOSE_P_TAG.length());
         }
         return Html.fromHtml(description);
+    }
+
+    private static class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemViewHolder, SeriesViewHolder<ShowEpisode>> {
+
+        private static final int SHOW_INFORMATION_TYPE = 0;
+        private static final int SEASON_TYPE = 1;
+
+        private static final Comparator<ShowEpisode> EPISODE_COMPARATOR = (e1, e2) -> {
+            int res = Numbers.compare(e2.getAirDateInMillis(), e1.getAirDateInMillis());
+            return res != 0 ? res : Numbers.compare(e2.getSequenceNumber(), e1.getSequenceNumber());
+        };
+
+        private final View showInformationView;
+
+        private final List<Season<ShowEpisode>> seasons;
+
+        private final SeriesViewHolder.OnEpisodeCheckedChangeListener<ShowEpisode> seriesListener = this::onEpisodeCheckedChanged;
+        private final SeasonViewHolder.OnSeasonCheckedChangeListener<ShowEpisode> seasonListener = season -> notifyDataSetChanged();
+
+        private ShowAdapter(@NonNull View showInformationView, @NonNull List<Season<ShowEpisode>> seasons) {
+            this.showInformationView = showInformationView;
+            this.seasons = seasons;
+            setHasStableIds(true);
+        }
+
+        @Override
+        public int getGroupCount() {
+            return seasons.size() + 1;
+        }
+
+        @Override
+        public int getChildCount(int groupPosition) {
+            if (groupPosition == 0) {
+                return 0;
+            }
+            return seasons.get(seasonIndex(groupPosition)).size();
+        }
+
+        @Override
+        public long getGroupId(int groupPosition) {
+            return groupPosition + 1;
+        }
+
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return seasons.get(seasonIndex(groupPosition)).get(childPosition).getId();
+        }
+
+        @Override
+        public int getGroupItemViewType(int groupPosition) {
+            if (groupPosition == 0) {
+                return SHOW_INFORMATION_TYPE;
+            }
+            return SEASON_TYPE;
+        }
+
+        @Override
+        public int getChildItemViewType(int groupPosition, int childPosition) {
+            return 0;
+        }
+
+        @Override
+        public AbstractExpandableItemViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            if (viewType == SHOW_INFORMATION_TYPE) {
+                return new ShowInformationViewHolder(showInformationView);
+            }
+            View seasonView = inflater.inflate(R.layout.list_season_view, parent, false);
+            return new SeasonViewHolder<>(seasonView, seasonListener);
+        }
+
+        @Override
+        public SeriesViewHolder<ShowEpisode> onCreateChildViewHolder(ViewGroup parent, int viewType) {
+            View seriesView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_series_view, parent, false);
+            return new SeriesViewHolder<>(seriesView, seriesListener);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onBindGroupViewHolder(AbstractExpandableItemViewHolder holder, int groupPosition, int viewType) {
+            if (viewType == SEASON_TYPE) {
+                ((SeasonViewHolder<ShowEpisode>) holder).bind(seasons.get(seasonIndex(groupPosition)));
+            }
+        }
+
+        @Override
+        public void onBindChildViewHolder(SeriesViewHolder<ShowEpisode> holder, int groupPosition, int childPosition, int viewType) {
+            holder.bind(seasons.get(seasonIndex(groupPosition)), childPosition);
+        }
+
+        @Override
+        public boolean onCheckCanExpandOrCollapseGroup(AbstractExpandableItemViewHolder holder, int groupPosition, int x, int y, boolean expand) {
+            if (groupPosition == 0) {
+                return false;
+            }
+            SeasonViewHolder seasonHolder = (SeasonViewHolder) holder;
+            boolean canExpandOrCollapse = seasonHolder.canExpandOrCollapse(x, y);
+            if (canExpandOrCollapse) {
+                seasons.get(seasonIndex(groupPosition)).setExpanded(expand);
+            }
+            return canExpandOrCollapse;
+        }
+
+        public void onEpisodeCheckedChanged(@NonNull Season<ShowEpisode> season, int position, int adapterPosition) {
+            if (season.get(position).isSpecial()) {
+                notifyItemChanged(position);
+            } else {
+                notifyDataSetChanged();
+            }
+        }
+
+        private int seasonIndex(int groupPosition) {
+            return seasons.size() - groupPosition;
+        }
+
+        public static ShowAdapter create(@NonNull View showInformationView, @NonNull Show show, @NonNull UserShowEpisodes watchedEpisodes) {
+            List<Season<ShowEpisode>> seasons = Season.splitToSeasons(show.getEpisodes().values(), EPISODE_COMPARATOR);
+            int seasonCount = seasons.size();
+
+            SparseSet[] checkedEpisodes = new SparseSet[seasonCount];
+            SparseSet[] checkedSpecialEpisodes = new SparseSet[seasonCount];
+            for (int i = 0; i < seasonCount; i++) {
+                checkedEpisodes[i] = new SparseSet();
+                checkedSpecialEpisodes[i] = new SparseSet();
+            }
+
+            for (UserEpisode userEpisode : watchedEpisodes.getEpisodes()) {
+                ShowEpisode episode = show.getEpisodes().get(String.valueOf(userEpisode.getId()));
+                if (episode != null) {
+                    int seasonIndex = episode.getSeasonNumber() - 1;
+                    if (episode.isSpecial()) {
+                        checkedSpecialEpisodes[seasonIndex].add(episode.getId());
+                    } else {
+                        checkedEpisodes[seasonIndex].add(episode.getId());
+                    }
+                }
+            }
+            for (int i = 0; i < seasonCount; i++) {
+                seasons.get(i).setCheckedEpisodes(checkedEpisodes[i]);
+                seasons.get(i).setCheckedSpecialEpisodes(checkedSpecialEpisodes[i]);
+            }
+            return new ShowAdapter(showInformationView, seasons);
+        }
+    }
+
+    private static class ShowInformationViewHolder extends AbstractExpandableItemViewHolder {
+
+        public ShowInformationViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
+    private static class SeasonOffsetDecorator extends OffsetDecorator {
+
+        public SeasonOffsetDecorator(int offset) {
+            super(offset, TOP_OFFSET);
+        }
+
+        @Override
+        protected boolean applyDecorator(View view, RecyclerView parent) {
+            RecyclerView.ViewHolder holder = parent.getChildViewHolder(view);
+            return holder instanceof SeasonViewHolder && holder.getAdapterPosition() != 1;
+        }
+    }
+
+    private static class ShadowDecorator extends SimpleDrawableDecorator {
+
+        public ShadowDecorator(Drawable shadowDrawable) {
+            super(shadowDrawable, Border.BOTTOM);
+        }
+
+        @Override
+        protected boolean applyDecorator(View view, RecyclerView parent) {
+            RecyclerView.ViewHolder holder = parent.getChildViewHolder(view);
+            return holder instanceof SeasonViewHolder ||
+                    holder instanceof SeriesViewHolder && ((SeriesViewHolder) holder).isLast();
+        }
     }
 }
