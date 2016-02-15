@@ -9,10 +9,11 @@ import java.util.Map;
 import io.realm.RealmList;
 import me.myshows.android.model.Comment;
 import me.myshows.android.model.EpisodeComments;
+import me.myshows.android.model.EpisodeInformation;
+import me.myshows.android.model.EpisodeRating;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.Gender;
 import me.myshows.android.model.NextEpisode;
-import me.myshows.android.model.EpisodeRating;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.ShowEpisode;
@@ -27,6 +28,7 @@ import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
 import me.myshows.android.model.persistent.PersistentEpisodeComments;
+import me.myshows.android.model.persistent.PersistentEpisodeInformation;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentRatingShow;
@@ -127,26 +129,41 @@ public class PersistentEntityConverter {
     }
 
     public ShowEpisode toEpisode(PersistentShowEpisode persistentEpisode) {
+        return new ShowEpisode(persistentEpisode.getId(), persistentEpisode.getTitle(),
+                persistentEpisode.getSequenceNumber(), persistentEpisode.getSeasonNumber(),
+                persistentEpisode.getEpisodeNumber(), persistentEpisode.getAirDate(),
+                persistentEpisode.getShortName(), persistentEpisode.getTvrageLink(),
+                persistentEpisode.getImage(), persistentEpisode.getProductionNumber());
+    }
+
+    public PersistentShowEpisode fromEpisode(ShowEpisode episode) {
+        return new PersistentShowEpisode(episode.getId(), episode.getTitle(), episode.getSeasonNumber(),
+                episode.getEpisodeNumber(), episode.getAirDate(), episode.getShortName(),
+                episode.getTvrageLink(), episode.getImage(), episode.getProductionNumber(),
+                episode.getSequenceNumber());
+    }
+
+    public EpisodeInformation toEpisodeInformation(PersistentEpisodeInformation persistentEpisode) {
         try {
             EpisodeRating rating = marshaller.deserialize(persistentEpisode.getRating(), EpisodeRating.class);
-            return new ShowEpisode(persistentEpisode.getId(), persistentEpisode.getTitle(),
+            return new EpisodeInformation(persistentEpisode.getId(), persistentEpisode.getTitle(),
                     persistentEpisode.getSequenceNumber(), persistentEpisode.getSeasonNumber(),
                     persistentEpisode.getEpisodeNumber(), persistentEpisode.getAirDate(),
                     persistentEpisode.getShortName(), persistentEpisode.getTvrageLink(),
                     persistentEpisode.getImage(), persistentEpisode.getProductionNumber(),
-                    persistentEpisode.getTotalWatched(), rating);
+                    persistentEpisode.getTotalWatched(), rating, persistentEpisode.getShowId());
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
     }
 
-    public PersistentShowEpisode fromEpisode(ShowEpisode episode) {
+    public PersistentEpisodeInformation fromEpisodeInformation(EpisodeInformation episode) {
         try {
             byte[] rating = marshaller.serialize(episode.getRating());
-            return new PersistentShowEpisode(episode.getId(), episode.getTitle(), episode.getSeasonNumber(),
+            return new PersistentEpisodeInformation(episode.getId(), episode.getTitle(), episode.getSeasonNumber(),
                     episode.getEpisodeNumber(), episode.getAirDate(), episode.getShortName(),
                     episode.getTvrageLink(), episode.getImage(), episode.getProductionNumber(),
-                    episode.getSequenceNumber(), episode.getTotalWatched(), rating);
+                    episode.getSequenceNumber(), episode.getTotalWatched(), rating, episode.getShodId());
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }

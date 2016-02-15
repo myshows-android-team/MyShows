@@ -2,6 +2,8 @@ package me.myshows.android.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
@@ -17,8 +19,10 @@ import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.model.EpisodeComments;
+import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.EpisodeRating;
-import me.myshows.android.model.ShowEpisode;
+import me.myshows.android.model.UserEpisode;
+import me.myshows.android.model.UserShowEpisodes;
 import rx.Observable;
 
 /**
@@ -37,7 +41,7 @@ public class EpisodeActivity extends HomeActivity {
     private CollapsingToolbarLayout collapsingToolbar;
     private FloatingActionButton fab;
 
-    private View episodeInformation;
+    private View episodeInformationLayout;
     private TextView watched;
     private TextView airDate;
     private TextView rating;
@@ -59,7 +63,7 @@ public class EpisodeActivity extends HomeActivity {
         episodeImage = (ImageView) findViewById(R.id.episode_image);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        episodeInformation = findViewById(R.id.episode_information);
+        episodeInformationLayout = findViewById(R.id.episode_information);
         watched = (TextView) findViewById(R.id.watched);
         airDate = (TextView) findViewById(R.id.air_date);
         rating = (TextView) findViewById(R.id.rating);
@@ -79,24 +83,33 @@ public class EpisodeActivity extends HomeActivity {
     }
 
     private void loadData(int episodeId) {
-        Observable.combineLatest(client.episodeInformation(episodeId), client.comments(episodeId),
-                Pair::create)
+        client.episodeInformation(episodeId)
                 .compose(bindToLifecycle())
-                .subscribe(this::bind);
+                .subscribe(episode -> {
+                    bindEpisodePreviewImage(episode.getImage());
+                    Observable.combineLatest(client.comments(episodeId),
+                            client.profileEpisodesOfShow(episode.getShodId()), Pair::create)
+                            .compose(bindToLifecycle())
+                            .subscribe(pair -> bind(episode, pair));
+                });
     }
 
-    private void bind(Pair<ShowEpisode, EpisodeComments> pair) {
-        bindEpisode(pair.first);
-        bindComments(pair.second);
-        episodeInformation.setVisibility(View.VISIBLE);
-    }
-
-    private void bindEpisode(ShowEpisode episode) {
+    private void bindEpisodePreviewImage(String url) {
         Glide.with(this)
-                .load(episode.getImage())
+                .load(url)
                 .centerCrop()
                 .into(episodeImage);
+    }
 
+    private void bind(@NonNull EpisodeInformation episode,
+                      @NonNull Pair<EpisodeComments, UserShowEpisodes> pair) {
+        bindEpisode(episode);
+        bindComments(pair.first);
+        bindMyRating(episode.getId(), pair.second);
+        episodeInformationLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void bindEpisode(@NonNull EpisodeInformation episode) {
         bindWatched(episode.getTotalWatched());
         airDate.setText(episode.getAirDate());
         bindRating(episode.getRating());
@@ -110,22 +123,29 @@ public class EpisodeActivity extends HomeActivity {
         }
     }
 
-    private void bindRating(EpisodeRating episodeRating) {
+    private void bindRating(@Nullable EpisodeRating episodeRating) {
         if (episodeRating != null && episodeRating.getRating() != 0) {
             rating.setText(getString(R.string.episode_rating, episodeRating.getRating()));
         } else {
             rating.setText(getString(R.string.episode_empty_rating));
         }
-        //TODO: set correct rating
-        myRating.setRating(0);
     }
 
-    private void bindComments(EpisodeComments information) {
+    private void bindComments(@NonNull EpisodeComments information) {
         int count = information.getCount();
         if (count == 0) {
             commentsInformation.setText(getString(R.string.empty_comments));
         } else {
             commentsInformation.setText(getResources().getQuantityString(R.plurals.read_comments, count, count));
+        }
+    }
+
+    private void bindMyRating(int episodeId, @NonNull UserShowEpisodes userShowEpisodes) {
+        for (UserEpisode userEpisode : userShowEpisodes.getEpisodes()) {
+            if (userEpisode.getId() == episodeId) {
+                myRating.setRating(userEpisode.getRating());
+                break;
+            }
         }
     }
 }

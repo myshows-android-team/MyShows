@@ -14,22 +14,22 @@ import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.model.EpisodeComments;
+import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
-import me.myshows.android.model.ShowEpisode;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.persistent.PersistentEpisodeComments;
+import me.myshows.android.model.persistent.PersistentEpisodeInformation;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentRatingShow;
 import me.myshows.android.model.persistent.PersistentShow;
-import me.myshows.android.model.persistent.PersistentShowEpisode;
 import me.myshows.android.model.persistent.PersistentUnwatchedEpisode;
 import me.myshows.android.model.persistent.PersistentUser;
 import me.myshows.android.model.persistent.PersistentUserShow;
@@ -235,16 +235,16 @@ public class MyShowsClientImpl implements MyShowsClient {
     }
 
     @Override
-    public Observable<ShowEpisode> episodeInformation(int episodeId) {
-        return Observable.<ShowEpisode>create(subscriber -> {
-            ShowEpisode episode = manager.selectEntity(PersistentShowEpisode.class, CONVERTER::toEpisode,
+    public Observable<EpisodeInformation> episodeInformation(int episodeId) {
+        return Observable.<EpisodeInformation>create(subscriber -> {
+            EpisodeInformation episode = manager.selectEntity(PersistentEpisodeInformation.class, CONVERTER::toEpisodeInformation,
                     new Predicate("id", episodeId));
             if (episode != null) {
                 subscriber.onNext(episode);
             }
             api.episodeInformation(episodeId)
                     .subscribe(
-                            e -> subscriber.onNext(manager.upsertEntity(e, CONVERTER::fromEpisode)),
+                            e -> subscriber.onNext(manager.upsertEntity(e, CONVERTER::fromEpisodeInformation)),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
