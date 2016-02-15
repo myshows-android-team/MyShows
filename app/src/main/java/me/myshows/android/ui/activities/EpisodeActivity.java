@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.Collections;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -87,11 +89,25 @@ public class EpisodeActivity extends HomeActivity {
                 .compose(bindToLifecycle())
                 .subscribe(episode -> {
                     bindEpisodePreviewImage(episode.getImage());
-                    Observable.combineLatest(client.comments(episodeId),
-                            client.profileEpisodesOfShow(episode.getShodId()), Pair::create)
+
+                    Observable<Integer> userShowEpisodesObservable = client.profileEpisodesOfShow(episode.getShowId())
+                            .defaultIfEmpty(new UserShowEpisodes(episode.getShowId(), Collections.emptyList()))
+                            .map(userShowEpisodes -> extractMyRating(userShowEpisodes, episodeId));
+
+                    Observable.combineLatest(client.comments(episodeId), userShowEpisodesObservable,
+                            Pair::create)
                             .compose(bindToLifecycle())
                             .subscribe(pair -> bind(episode, pair));
                 });
+    }
+
+    private int extractMyRating(@NonNull UserShowEpisodes userShowEpisodes, int episodeId) {
+        for (UserEpisode userEpisode : userShowEpisodes.getEpisodes()) {
+            if (userEpisode.getId() == episodeId) {
+                return userEpisode.getRating();
+            }
+        }
+        return 0;
     }
 
     private void bindEpisodePreviewImage(String url) {
@@ -102,10 +118,10 @@ public class EpisodeActivity extends HomeActivity {
     }
 
     private void bind(@NonNull EpisodeInformation episode,
-                      @NonNull Pair<EpisodeComments, UserShowEpisodes> pair) {
+                      @NonNull Pair<EpisodeComments, Integer> pair) {
         bindEpisode(episode);
         bindComments(pair.first);
-        bindMyRating(episode.getId(), pair.second);
+        myRating.setRating(pair.second);
         episodeInformationLayout.setVisibility(View.VISIBLE);
     }
 
@@ -137,15 +153,6 @@ public class EpisodeActivity extends HomeActivity {
             commentsInformation.setText(getString(R.string.empty_comments));
         } else {
             commentsInformation.setText(getResources().getQuantityString(R.plurals.read_comments, count, count));
-        }
-    }
-
-    private void bindMyRating(int episodeId, @NonNull UserShowEpisodes userShowEpisodes) {
-        for (UserEpisode userEpisode : userShowEpisodes.getEpisodes()) {
-            if (userEpisode.getId() == episodeId) {
-                myRating.setRating(userEpisode.getRating());
-                break;
-            }
         }
     }
 }

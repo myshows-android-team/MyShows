@@ -23,7 +23,7 @@ public class EpisodeInformation extends AbstractEpisode {
     private final int sequenceNumber;
     private final int totalWatched;
     private final EpisodeRating rating;
-    private final int shodId;
+    private final int showId;
 
     @JsonCreator
     public EpisodeInformation(@JsonProperty("id") int id, @JsonProperty("title") String title,
@@ -46,7 +46,7 @@ public class EpisodeInformation extends AbstractEpisode {
         this.sequenceNumber = sequenceNumber;
         this.totalWatched = totalWatched;
         this.rating = rating;
-        this.shodId = showId;
+        this.showId = showId;
     }
 
     @JsonProperty("id")
@@ -115,7 +115,7 @@ public class EpisodeInformation extends AbstractEpisode {
     }
 
     @JsonProperty("showId")
-    public int getShodId() {
-        return shodId;
+    public int getShowId() {
+        return showId;
     }
 }

@@ -163,7 +163,7 @@ public class PersistentEntityConverter {
             return new PersistentEpisodeInformation(episode.getId(), episode.getTitle(), episode.getSeasonNumber(),
                     episode.getEpisodeNumber(), episode.getAirDate(), episode.getShortName(),
                     episode.getTvrageLink(), episode.getImage(), episode.getProductionNumber(),
-                    episode.getSequenceNumber(), episode.getTotalWatched(), rating, episode.getShodId());
+                    episode.getSequenceNumber(), episode.getTotalWatched(), rating, episode.getShowId());
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
