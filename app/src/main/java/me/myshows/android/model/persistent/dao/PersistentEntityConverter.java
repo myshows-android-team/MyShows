@@ -8,11 +8,11 @@ import java.util.Map;
 
 import io.realm.RealmList;
 import me.myshows.android.model.Comment;
-import me.myshows.android.model.CommentsInformation;
+import me.myshows.android.model.EpisodeComments;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.Gender;
 import me.myshows.android.model.NextEpisode;
-import me.myshows.android.model.RatingEpisode;
+import me.myshows.android.model.EpisodeRating;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
 import me.myshows.android.model.ShowEpisode;
@@ -26,7 +26,7 @@ import me.myshows.android.model.UserPreview;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
-import me.myshows.android.model.persistent.PersistentCommentsInformation;
+import me.myshows.android.model.persistent.PersistentEpisodeComments;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentRatingShow;
@@ -128,7 +128,7 @@ public class PersistentEntityConverter {
 
     public ShowEpisode toEpisode(PersistentShowEpisode persistentEpisode) {
         try {
-            RatingEpisode rating = marshaller.deserialize(persistentEpisode.getRating(), RatingEpisode.class);
+            EpisodeRating rating = marshaller.deserialize(persistentEpisode.getRating(), EpisodeRating.class);
             return new ShowEpisode(persistentEpisode.getId(), persistentEpisode.getTitle(),
                     persistentEpisode.getSequenceNumber(), persistentEpisode.getSeasonNumber(),
                     persistentEpisode.getEpisodeNumber(), persistentEpisode.getAirDate(),
@@ -234,20 +234,20 @@ public class PersistentEntityConverter {
         return new PersistentUserShowEpisodes(userShowEpisodes.getShowId(), episodes);
     }
 
-    public CommentsInformation toCommentsInformation(PersistentCommentsInformation information) {
+    public EpisodeComments toCommentsInformation(PersistentEpisodeComments information) {
         try {
             List<Comment> comments = marshaller.deserializeList(information.getComments(), ArrayList.class, Comment.class);
-            return new CommentsInformation(information.isTracking(), information.getCount(),
+            return new EpisodeComments(information.isTracking(), information.getCount(),
                     information.getNewCount(), information.isShow(), comments);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
     }
 
-    public PersistentCommentsInformation fromCommentsInformation(int episodeId, CommentsInformation information) {
+    public PersistentEpisodeComments fromCommentsInformation(int episodeId, EpisodeComments information) {
         try {
             byte[] comments = marshaller.serialize(information.getComments());
-            return new PersistentCommentsInformation(episodeId, information.isTracking(), information.getCount(),
+            return new PersistentEpisodeComments(episodeId, information.isTracking(), information.getCount(),
                     information.getNewCount(), information.isShow(), comments);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);

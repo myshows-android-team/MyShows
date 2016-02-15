@@ -17,7 +17,6 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -44,6 +43,7 @@ import me.myshows.android.model.Gender;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserPreview;
+import me.myshows.android.ui.activities.EpisodeActivity;
 import me.myshows.android.ui.activities.ShowActivity;
 import me.myshows.android.ui.decorators.OffsetDecorator;
 import me.myshows.android.ui.decorators.SimpleDrawableDecorator;
@@ -211,7 +211,7 @@ public class FriendsFragment extends BaseFragment {
         private void highlightEpisodeName(Spannable spannable, String actionText, UserFeed feed) {
             int start = actionText.indexOf(feed.getEpisode());
             int end = start + feed.getEpisode().length();
-            spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.dark_gray)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new EpisodeActionSpannable(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
@@ -220,6 +220,28 @@ public class FriendsFragment extends BaseFragment {
             int end = start + feed.getShow().length();
             spannable.setSpan(new ShowActionSpannable(feed), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new TypefaceSpan(ROBOTO_REGULAR), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        private class EpisodeActionSpannable extends ClickableSpan {
+
+            private final UserFeed feed;
+
+            private EpisodeActionSpannable(UserFeed feed) {
+                this.feed = feed;
+            }
+
+            @Override
+            public void onClick(View widget) {
+                Intent intent = new Intent(context, EpisodeActivity.class);
+                intent.putExtra(EpisodeActivity.EPISODE_ID, feed.getEpisodeId());
+                intent.putExtra(EpisodeActivity.EPISODE_TITLE, feed.getTitle());
+                context.startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint textPaint) {
+                textPaint.setColor(ContextCompat.getColor(context, R.color.dark_gray));
+            }
         }
 
         private class ShowActionSpannable extends ClickableSpan {

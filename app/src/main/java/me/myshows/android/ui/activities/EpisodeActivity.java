@@ -16,8 +16,8 @@ import com.bumptech.glide.Glide;
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.model.CommentsInformation;
-import me.myshows.android.model.RatingEpisode;
+import me.myshows.android.model.EpisodeComments;
+import me.myshows.android.model.EpisodeRating;
 import me.myshows.android.model.ShowEpisode;
 import rx.Observable;
 
@@ -80,12 +80,12 @@ public class EpisodeActivity extends HomeActivity {
 
     private void loadData(int episodeId) {
         Observable.combineLatest(client.episodeInformation(episodeId), client.comments(episodeId),
-                (episode, information) -> new Pair<>(episode, information))
+                Pair::create)
                 .compose(bindToLifecycle())
                 .subscribe(this::bind);
     }
 
-    private void bind(Pair<ShowEpisode, CommentsInformation> pair) {
+    private void bind(Pair<ShowEpisode, EpisodeComments> pair) {
         bindEpisode(pair.first);
         bindComments(pair.second);
         episodeInformation.setVisibility(View.VISIBLE);
@@ -110,9 +110,9 @@ public class EpisodeActivity extends HomeActivity {
         }
     }
 
-    private void bindRating(RatingEpisode ratingEpisode) {
-        if (ratingEpisode != null && ratingEpisode.getRating() != 0) {
-            rating.setText(getString(R.string.episode_rating, ratingEpisode.getRating()));
+    private void bindRating(EpisodeRating episodeRating) {
+        if (episodeRating != null && episodeRating.getRating() != 0) {
+            rating.setText(getString(R.string.episode_rating, episodeRating.getRating()));
         } else {
             rating.setText(getString(R.string.episode_empty_rating));
         }
@@ -120,7 +120,7 @@ public class EpisodeActivity extends HomeActivity {
         myRating.setRating(0);
     }
 
-    private void bindComments(CommentsInformation information) {
+    private void bindComments(EpisodeComments information) {
         int count = information.getCount();
         if (count == 0) {
             commentsInformation.setText(getString(R.string.empty_comments));

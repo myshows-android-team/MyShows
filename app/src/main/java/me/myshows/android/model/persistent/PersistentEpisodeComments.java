@@ -8,7 +8,7 @@ import io.realm.annotations.RealmClass;
  * Created by Whiplash on 2/9/2016.
  */
 @RealmClass
-public class PersistentCommentsInformation extends RealmObject {
+public class PersistentEpisodeComments extends RealmObject {
 
     @PrimaryKey
     private int episodeId;
@@ -18,10 +18,10 @@ public class PersistentCommentsInformation extends RealmObject {
     private boolean isShow;
     private byte[] comments;
 
-    public PersistentCommentsInformation() {
+    public PersistentEpisodeComments() {
     }
 
-    public PersistentCommentsInformation(int episodeId, boolean isTracking, int count, int newCount, boolean isShow, byte[] comments) {
+    public PersistentEpisodeComments(int episodeId, boolean isTracking, int count, int newCount, boolean isShow, byte[] comments) {
         this.episodeId = episodeId;
         this.isTracking = isTracking;
         this.count = count;

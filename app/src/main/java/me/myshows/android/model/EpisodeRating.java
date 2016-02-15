@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by Whiplash on 2/9/2016.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RatingEpisode {
+public class EpisodeRating {
 
     private final int showId;
     private final int episodeId;
@@ -21,7 +21,7 @@ public class RatingEpisode {
     private final float rating;
 
     @JsonCreator
-    public RatingEpisode(@JsonProperty("showId") int showId, @JsonProperty("episodeId") int episodeId,
+    public EpisodeRating(@JsonProperty("showId") int showId, @JsonProperty("episodeId") int episodeId,
                          @JsonProperty("r1") int r1, @JsonProperty("r2") int r2,
                          @JsonProperty("r3") int r3, @JsonProperty("r4") int r4,
                          @JsonProperty("r5") int r5, @JsonProperty("votes") int votes,

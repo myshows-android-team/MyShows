@@ -24,7 +24,7 @@ public class ShowEpisode extends AbstractEpisode {
 
     // episode information request fields
     private final int totalWatched;
-    private final RatingEpisode rating;
+    private final EpisodeRating rating;
 
     @JsonCreator
     public ShowEpisode(@JsonProperty("id") int id, @JsonProperty("title") String title,
@@ -32,7 +32,7 @@ public class ShowEpisode extends AbstractEpisode {
                        @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate,
                        @JsonProperty("shortName") String shortName, @JsonProperty("tvrageLink") String tvrageLink,
                        @JsonProperty("image") String image, @JsonProperty("productionNumber") String productionNumber,
-                       @JsonProperty("totalWatched") int totalWatched, @JsonProperty("rating") RatingEpisode rating) {
+                       @JsonProperty("totalWatched") int totalWatched, @JsonProperty("rating") EpisodeRating rating) {
         super(airDate);
         this.id = id;
         this.title = title;
@@ -109,7 +109,7 @@ public class ShowEpisode extends AbstractEpisode {
     }
 
     @JsonProperty("rating")
-    public RatingEpisode getRating() {
+    public EpisodeRating getRating() {
         return rating;
     }
 }

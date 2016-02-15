@@ -14,7 +14,7 @@ public class Comment {
     private final int showId;
     private final int episodeId;
     private final int siteUserId;
-    private final User siteUser;
+    private final EpisodeUser siteUser;
     private final String comment;
     private final String image;
     private final int parentCommentId;
@@ -31,7 +31,7 @@ public class Comment {
     @JsonCreator
     public Comment(@JsonProperty("userCommentId") int userCommentId, @JsonProperty("showId") int showId,
                    @JsonProperty("episodeId") int episodeId, @JsonProperty("siteUserId") int siteUserId,
-                   @JsonProperty("siteUser") User siteUser, @JsonProperty("comment") String comment,
+                   @JsonProperty("siteUser") EpisodeUser siteUser, @JsonProperty("comment") String comment,
                    @JsonProperty("image") String image, @JsonProperty("parentCommentId") int parentCommentId,
                    @JsonProperty("createdAt") String createdAt, @JsonProperty("statusId") int statusId,
                    @JsonProperty("isNew") boolean isNew, @JsonProperty("isMyPlus") boolean isMyPlus,
@@ -78,7 +78,7 @@ public class Comment {
     }
 
     @JsonProperty("siteUser")
-    public User getSiteUser() {
+    public EpisodeUser getSiteUser() {
         return siteUser;
     }
 

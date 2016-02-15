@@ -3,8 +3,7 @@ package me.myshows.android.api;
 import java.util.List;
 import java.util.Map;
 
-import me.myshows.android.model.CommentsInformation;
-import me.myshows.android.model.Episode;
+import me.myshows.android.model.EpisodeComments;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
@@ -61,5 +60,5 @@ public interface MyShowsApi {
     Observable<List<RatingShow>> ratingShows();
 
     @GET("/profile/comments/episode/{episode_id}")
-    Observable<CommentsInformation> comments(@Path("episode_id") int episodeId);
+    Observable<EpisodeComments> comments(@Path("episode_id") int episodeId);
 }

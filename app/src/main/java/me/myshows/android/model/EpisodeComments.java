@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Whiplash on 2/9/2016.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommentsInformation {
+public class EpisodeComments {
 
     private final boolean isTracking;
     private final int count;
@@ -19,9 +19,9 @@ public class CommentsInformation {
     private final List<Comment> comments;
 
     @JsonCreator
-    public CommentsInformation(@JsonProperty("isTracking") boolean isTracking,
-                               @JsonProperty("count") int count, @JsonProperty("newCount") int newCount,
-                               @JsonProperty("isShow") boolean isShow, @JsonProperty("comments") List<Comment> comments) {
+    public EpisodeComments(@JsonProperty("isTracking") boolean isTracking,
+                           @JsonProperty("count") int count, @JsonProperty("newCount") int newCount,
+                           @JsonProperty("isShow") boolean isShow, @JsonProperty("comments") List<Comment> comments) {
         this.isTracking = isTracking;
         this.count = count;
         this.newCount = newCount;
