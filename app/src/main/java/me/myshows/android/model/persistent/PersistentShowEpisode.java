@@ -9,6 +9,7 @@ public class PersistentShowEpisode extends RealmObject {
 
     @PrimaryKey
     private int id;
+    private int showId;
     private String title;
     private int seasonNumber;
     private int episodeNumber;
@@ -22,8 +23,9 @@ public class PersistentShowEpisode extends RealmObject {
     public PersistentShowEpisode() {
     }
 
-    public PersistentShowEpisode(int id, String title, int seasonNumber, int episodeNumber, String airDate, String shortName, String tvrageLink, String image, String productionNumber, int sequenceNumber) {
+    public PersistentShowEpisode(int id, int showId, String title, int seasonNumber, int episodeNumber, String airDate, String shortName, String tvrageLink, String image, String productionNumber, int sequenceNumber) {
         this.id = id;
+        this.showId = showId;
         this.title = title;
         this.seasonNumber = seasonNumber;
         this.episodeNumber = episodeNumber;
@@ -41,6 +43,14 @@ public class PersistentShowEpisode extends RealmObject {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getShowId() {
+        return showId;
+    }
+
+    public void setShowId(int showId) {
+        this.showId = showId;
     }
 
     public String getTitle() {

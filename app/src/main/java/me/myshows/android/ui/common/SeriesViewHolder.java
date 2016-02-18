@@ -67,6 +67,7 @@ public class SeriesViewHolder<T extends Episode> extends AbstractExpandableItemV
         Intent intent = new Intent(context, EpisodeActivity.class);
         intent.putExtra(EpisodeActivity.EPISODE_ID, episode.getId());
         intent.putExtra(EpisodeActivity.EPISODE_TITLE, episode.getTitle());
+        intent.putExtra(EpisodeActivity.SHOW_ID, episode.getShowId());
         context.startActivity(intent);
     }
 

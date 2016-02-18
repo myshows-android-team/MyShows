@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.View;
@@ -25,7 +27,9 @@ import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.EpisodeRating;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShowEpisodes;
+import me.myshows.android.model.WatchStatus;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Whiplash on 2/9/2016.
@@ -36,6 +40,9 @@ public class EpisodeActivity extends HomeActivity {
 
     public static final String EPISODE_ID = "episodeId";
     public static final String EPISODE_TITLE = "episodeTitle";
+    public static final String SHOW_ID = "showId";
+
+    private static final int NOT_WATCHED_EPISODE_RATING = -1;
 
     private MyShowsClient client;
 
@@ -64,6 +71,7 @@ public class EpisodeActivity extends HomeActivity {
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         episodeImage = (ImageView) findViewById(R.id.episode_image);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        hideFab();
 
         episodeInformationLayout = findViewById(R.id.episode_information);
         watched = (TextView) findViewById(R.id.watched);
@@ -73,32 +81,43 @@ public class EpisodeActivity extends HomeActivity {
         commentsLayout = findViewById(R.id.comments_layout);
         commentsInformation = (TextView) findViewById(R.id.comments_information);
 
-        int episodeId = extractAndBindEpisodeData(getIntent());
-        loadData(episodeId);
+        Pair<Integer, Integer> pair = extractAndBindEpisodeData(getIntent());
+        loadData(pair.first, pair.second);
     }
 
-    private int extractAndBindEpisodeData(Intent intent) {
+    private void hideFab() {
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        p.setBehavior(null);
+        p.setAnchorId(View.NO_ID);
+        fab.setLayoutParams(p);
+        fab.setVisibility(View.GONE);
+    }
+
+    private void showFab() {
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        p.setBehavior(new FloatingActionButton.Behavior());
+        p.setAnchorId(R.id.appbar);
+        fab.setLayoutParams(p);
+    }
+
+    private Pair<Integer, Integer> extractAndBindEpisodeData(Intent intent) {
         int episodeId = intent.getIntExtra(EPISODE_ID, 0);
         String episodeTitle = intent.getStringExtra(EPISODE_TITLE);
+        int showId = intent.getIntExtra(SHOW_ID, 0);
         collapsingToolbar.setTitle(episodeTitle);
-        return episodeId;
+        return Pair.create(episodeId, showId);
     }
 
-    private void loadData(int episodeId) {
-        client.episodeInformation(episodeId)
+    private void loadData(int episodeId, int showId) {
+        Observable<Integer> userShowEpisodesObservable = client.profileEpisodesOfShow(showId)
+                .defaultIfEmpty(new UserShowEpisodes(showId, Collections.emptyList()))
+                .map(userShowEpisodes -> extractMyRating(userShowEpisodes, episodeId))
+                .subscribeOn(Schedulers.computation());
+
+        Observable.combineLatest(client.episodeInformation(episodeId), client.comments(episodeId),
+                userShowEpisodesObservable, ActivityInformation::new)
                 .compose(bindToLifecycle())
-                .subscribe(episode -> {
-                    bindEpisodePreviewImage(episode.getImage());
-
-                    Observable<Integer> userShowEpisodesObservable = client.profileEpisodesOfShow(episode.getShowId())
-                            .defaultIfEmpty(new UserShowEpisodes(episode.getShowId(), Collections.emptyList()))
-                            .map(userShowEpisodes -> extractMyRating(userShowEpisodes, episodeId));
-
-                    Observable.combineLatest(client.comments(episodeId), userShowEpisodesObservable,
-                            Pair::create)
-                            .compose(bindToLifecycle())
-                            .subscribe(pair -> bind(episode, pair));
-                });
+                .subscribe(this::bind);
     }
 
     private int extractMyRating(@NonNull UserShowEpisodes userShowEpisodes, int episodeId) {
@@ -107,7 +126,25 @@ public class EpisodeActivity extends HomeActivity {
                 return userEpisode.getRating();
             }
         }
-        return 0;
+        return NOT_WATCHED_EPISODE_RATING;
+    }
+
+    private void bind(@NonNull ActivityInformation information) {
+        bindEpisode(information.episode);
+        bindComments(information.comments);
+
+        myRating.setRating(information.myRating);
+        bindWatchStatus(information.myRating != NOT_WATCHED_EPISODE_RATING);
+
+        episodeInformationLayout.setVisibility(View.VISIBLE);
+        showFab();
+    }
+
+    private void bindEpisode(@NonNull EpisodeInformation episode) {
+        bindEpisodePreviewImage(episode.getImage());
+        bindWatched(episode.getTotalWatched());
+        airDate.setText(episode.getAirDate());
+        bindRating(episode.getRating());
     }
 
     private void bindEpisodePreviewImage(String url) {
@@ -115,20 +152,6 @@ public class EpisodeActivity extends HomeActivity {
                 .load(url)
                 .centerCrop()
                 .into(episodeImage);
-    }
-
-    private void bind(@NonNull EpisodeInformation episode,
-                      @NonNull Pair<EpisodeComments, Integer> pair) {
-        bindEpisode(episode);
-        bindComments(pair.first);
-        myRating.setRating(pair.second);
-        episodeInformationLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void bindEpisode(@NonNull EpisodeInformation episode) {
-        bindWatched(episode.getTotalWatched());
-        airDate.setText(episode.getAirDate());
-        bindRating(episode.getRating());
     }
 
     private void bindWatched(int watched) {
@@ -153,6 +176,25 @@ public class EpisodeActivity extends HomeActivity {
             commentsInformation.setText(getString(R.string.empty_comments));
         } else {
             commentsInformation.setText(getResources().getQuantityString(R.plurals.read_comments, count, count));
+        }
+    }
+
+    private void bindWatchStatus(boolean isWatched) {
+        WatchStatus watchStatus = isWatched ? WatchStatus.WATCHING : WatchStatus.NOT_WATCHING;
+        fab.setImageResource(watchStatus.getDrawableId());
+        fab.setBackgroundTintList(ContextCompat.getColorStateList(this, watchStatus.getColorId()));
+    }
+
+    private static class ActivityInformation {
+
+        public final EpisodeInformation episode;
+        public final EpisodeComments comments;
+        public final int myRating;
+
+        public ActivityInformation(EpisodeInformation episode, EpisodeComments comments, int myRating) {
+            this.episode = episode;
+            this.comments = comments;
+            this.myRating = myRating;
         }
     }
 }

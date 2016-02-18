@@ -7,6 +7,8 @@ public interface Episode {
 
     int getId();
 
+    int getShowId();
+
     String getTitle();
 
     int getSeasonNumber();

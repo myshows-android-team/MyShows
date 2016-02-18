@@ -235,6 +235,7 @@ public class FriendsFragment extends BaseFragment {
                 Intent intent = new Intent(context, EpisodeActivity.class);
                 intent.putExtra(EpisodeActivity.EPISODE_ID, feed.getEpisodeId());
                 intent.putExtra(EpisodeActivity.EPISODE_TITLE, feed.getTitle());
+                intent.putExtra(EpisodeActivity.SHOW_ID, feed.getShowId());
                 context.startActivity(intent);
             }
 

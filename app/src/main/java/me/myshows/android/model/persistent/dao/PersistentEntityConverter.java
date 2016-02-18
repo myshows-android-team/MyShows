@@ -129,7 +129,7 @@ public class PersistentEntityConverter {
     }
 
     public ShowEpisode toEpisode(PersistentShowEpisode persistentEpisode) {
-        return new ShowEpisode(persistentEpisode.getId(), persistentEpisode.getTitle(),
+        return new ShowEpisode(persistentEpisode.getId(), persistentEpisode.getShowId(), persistentEpisode.getTitle(),
                 persistentEpisode.getSequenceNumber(), persistentEpisode.getSeasonNumber(),
                 persistentEpisode.getEpisodeNumber(), persistentEpisode.getAirDate(),
                 persistentEpisode.getShortName(), persistentEpisode.getTvrageLink(),
@@ -137,7 +137,7 @@ public class PersistentEntityConverter {
     }
 
     public PersistentShowEpisode fromEpisode(ShowEpisode episode) {
-        return new PersistentShowEpisode(episode.getId(), episode.getTitle(), episode.getSeasonNumber(),
+        return new PersistentShowEpisode(episode.getId(), episode.getShowId(), episode.getTitle(), episode.getSeasonNumber(),
                 episode.getEpisodeNumber(), episode.getAirDate(), episode.getShortName(),
                 episode.getTvrageLink(), episode.getImage(), episode.getProductionNumber(),
                 episode.getSequenceNumber());

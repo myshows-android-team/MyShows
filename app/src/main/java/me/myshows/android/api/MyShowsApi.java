@@ -8,7 +8,6 @@ import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
 import me.myshows.android.model.Show;
-import me.myshows.android.model.ShowEpisode;
 import me.myshows.android.model.UnwatchedEpisode;
 import me.myshows.android.model.User;
 import me.myshows.android.model.UserEpisode;
