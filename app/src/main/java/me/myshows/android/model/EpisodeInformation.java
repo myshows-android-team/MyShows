@@ -4,12 +4,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.IOException;
+import java.util.Map;
+
+import me.myshows.android.model.serialization.JsonMarshaller;
+import me.myshows.android.model.serialization.Marshaller;
+
 /**
  * @author Whiplash
  * @date 22.06.2015
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EpisodeInformation extends AbstractEpisode {
+
+    private static final Marshaller marshaller = new JsonMarshaller();
 
     private final int id;
     private final String title;
@@ -25,14 +33,13 @@ public class EpisodeInformation extends AbstractEpisode {
     private final EpisodeRating rating;
     private final int showId;
 
-    @JsonCreator
-    public EpisodeInformation(@JsonProperty("id") int id, @JsonProperty("title") String title,
-                              @JsonProperty("sequenceNumber") int sequenceNumber, @JsonProperty("seasonNumber") int seasonNumber,
-                              @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate,
-                              @JsonProperty("shortName") String shortName, @JsonProperty("tvrageLink") String tvrageLink,
-                              @JsonProperty("image") String image, @JsonProperty("productionNumber") String productionNumber,
-                              @JsonProperty("totalWatched") int totalWatched, @JsonProperty("rating") EpisodeRating rating,
-                              @JsonProperty("showId") int showId) {
+    public EpisodeInformation(int id, String title,
+                              int sequenceNumber, int seasonNumber,
+                              int episodeNumber, String airDate,
+                              String shortName, String tvrageLink,
+                              String image, String productionNumber,
+                              int totalWatched, EpisodeRating rating,
+                              int showId) {
         super(airDate);
         this.id = id;
         this.title = title;
@@ -47,6 +54,42 @@ public class EpisodeInformation extends AbstractEpisode {
         this.totalWatched = totalWatched;
         this.rating = rating;
         this.showId = showId;
+    }
+
+    @JsonCreator
+    public EpisodeInformation(@JsonProperty("id") int id, @JsonProperty("title") String title,
+                              @JsonProperty("sequenceNumber") int sequenceNumber, @JsonProperty("seasonNumber") int seasonNumber,
+                              @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate,
+                              @JsonProperty("shortName") String shortName, @JsonProperty("tvrageLink") String tvrageLink,
+                              @JsonProperty("image") String image, @JsonProperty("productionNumber") String productionNumber,
+                              @JsonProperty("totalWatched") int totalWatched, @JsonProperty("rating") Object rating,
+                              @JsonProperty("showId") int showId) {
+        super(airDate);
+        this.id = id;
+        this.title = title;
+        this.seasonNumber = seasonNumber;
+        this.episodeNumber = episodeNumber;
+        this.airDate = airDate;
+        this.shortName = shortName;
+        this.tvrageLink = tvrageLink;
+        this.image = image;
+        this.productionNumber = productionNumber;
+        this.sequenceNumber = sequenceNumber;
+        this.totalWatched = totalWatched;
+        this.rating = processRating(rating);
+        this.showId = showId;
+    }
+
+    private EpisodeRating processRating(Object rating) {
+        if (rating instanceof Map) {
+            try {
+                byte[] data = marshaller.serialize(rating);
+                return marshaller.deserialize(data, EpisodeRating.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     @JsonProperty("id")
