@@ -226,7 +226,7 @@ public class FriendsFragment extends BaseFragment {
 
             private final UserFeed feed;
 
-            private EpisodeActionSpannable(UserFeed feed) {
+            private EpisodeActionSpannable(@NonNull UserFeed feed) {
                 this.feed = feed;
             }
 
@@ -249,7 +249,7 @@ public class FriendsFragment extends BaseFragment {
 
             private final UserFeed feed;
 
-            private ShowActionSpannable(UserFeed feed) {
+            private ShowActionSpannable(@NonNull UserFeed feed) {
                 this.feed = feed;
             }
 

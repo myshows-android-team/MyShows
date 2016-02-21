@@ -251,7 +251,7 @@ public class PersistentEntityConverter {
         return new PersistentUserShowEpisodes(userShowEpisodes.getShowId(), episodes);
     }
 
-    public EpisodeComments toCommentsInformation(PersistentEpisodeComments information) {
+    public EpisodeComments toEpisodeComments(PersistentEpisodeComments information) {
         try {
             List<Comment> comments = marshaller.deserializeList(information.getComments(), ArrayList.class, Comment.class);
             return new EpisodeComments(information.isTracking(), information.getCount(),
@@ -261,7 +261,7 @@ public class PersistentEntityConverter {
         }
     }
 
-    public PersistentEpisodeComments fromCommentsInformation(int episodeId, EpisodeComments information) {
+    public PersistentEpisodeComments fromEpisodeComments(int episodeId, EpisodeComments information) {
         try {
             byte[] comments = marshaller.serialize(information.getComments());
             return new PersistentEpisodeComments(episodeId, information.isTracking(), information.getCount(),

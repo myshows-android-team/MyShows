@@ -62,7 +62,7 @@ public class SeriesViewHolder<T extends Episode> extends AbstractExpandableItemV
         setAirDate(episode.getAirDate());
     }
 
-    private void startEpisodeActivity(Episode episode) {
+    private void startEpisodeActivity(@NonNull Episode episode) {
         Context context = itemView.getContext();
         Intent intent = new Intent(context, EpisodeActivity.class);
         intent.putExtra(EpisodeActivity.EPISODE_ID, episode.getId());

@@ -17,7 +17,7 @@ import me.myshows.android.model.serialization.Marshaller;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EpisodeInformation extends AbstractEpisode {
 
-    private static final Marshaller marshaller = new JsonMarshaller();
+    private static final Marshaller MARSHALLER = new JsonMarshaller();
 
     private final int id;
     private final String title;
@@ -83,8 +83,8 @@ public class EpisodeInformation extends AbstractEpisode {
     private EpisodeRating processRating(Object rating) {
         if (rating instanceof Map) {
             try {
-                byte[] data = marshaller.serialize(rating);
-                return marshaller.deserialize(data, EpisodeRating.class);
+                byte[] data = MARSHALLER.serialize(rating);
+                return MARSHALLER.deserialize(data, EpisodeRating.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }

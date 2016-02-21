@@ -294,13 +294,13 @@ public class MyShowsClientImpl implements MyShowsClient {
     public Observable<EpisodeComments> comments(int episodeId) {
         return Observable.<EpisodeComments>create(subscriber -> {
             EpisodeComments information = manager.selectEntity(PersistentEpisodeComments.class,
-                    CONVERTER::toCommentsInformation, new Predicate("episodeId", episodeId));
+                    CONVERTER::toEpisodeComments, new Predicate("episodeId", episodeId));
             if (information != null) {
                 subscriber.onNext(information);
             }
             api.comments(episodeId)
                     .subscribe(
-                            info -> subscriber.onNext(manager.upsertEntity(info, entity -> CONVERTER.fromCommentsInformation(episodeId, info))),
+                            info -> subscriber.onNext(manager.upsertEntity(info, entity -> CONVERTER.fromEpisodeComments(episodeId, info))),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );

@@ -29,6 +29,7 @@ import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -100,7 +101,7 @@ public class EpisodeActivity extends HomeActivity {
         fab.setLayoutParams(p);
     }
 
-    private Pair<Integer, Integer> extractAndBindEpisodeData(Intent intent) {
+    private Pair<Integer, Integer> extractAndBindEpisodeData(@NonNull Intent intent) {
         int episodeId = intent.getIntExtra(EPISODE_ID, 0);
         String episodeTitle = intent.getStringExtra(EPISODE_TITLE);
         int showId = intent.getIntExtra(SHOW_ID, 0);
@@ -111,8 +112,9 @@ public class EpisodeActivity extends HomeActivity {
     private void loadData(int episodeId, int showId) {
         Observable<Integer> userShowEpisodesObservable = client.profileEpisodesOfShow(showId)
                 .defaultIfEmpty(new UserShowEpisodes(showId, Collections.emptyList()))
+                .observeOn(Schedulers.computation())
                 .map(userShowEpisodes -> extractMyRating(userShowEpisodes, episodeId))
-                .subscribeOn(Schedulers.computation());
+                .observeOn(AndroidSchedulers.mainThread());
 
         Observable.combineLatest(client.episodeInformation(episodeId), client.comments(episodeId),
                 userShowEpisodesObservable, ActivityInformation::new)
@@ -191,7 +193,8 @@ public class EpisodeActivity extends HomeActivity {
         public final EpisodeComments comments;
         public final int myRating;
 
-        public ActivityInformation(EpisodeInformation episode, EpisodeComments comments, int myRating) {
+        public ActivityInformation(@NonNull EpisodeInformation episode,
+                                   @NonNull EpisodeComments comments, int myRating) {
             this.episode = episode;
             this.comments = comments;
             this.myRating = myRating;
