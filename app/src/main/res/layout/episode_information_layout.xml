@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/episode_information"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/MyShows.ShowScreen.TextView.Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/information" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/MyShows.ShowScreen.TextView"
+                android:id="@+id/watched"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/watched"
+                android:text="@string/no_one_watched" />
+
+            <TextView
+                style="@style/MyShows.ShowScreen.TextView"
+                android:id="@+id/air_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/ic_show_status"
+                tools:text="24.09.2009" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/MyShows.ShowScreen.TextView.Header"
+                android:id="@+id/rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/episode_empty_rating" />
+
+            <include layout="@layout/information_screen_shadow_view" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@style/MyShows.ShowScreen.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:text="@string/my_rating"
+                android:textColor="#717171" />
+
+            <RatingBar
+                style="@style/MyShows.RatingBar"
+                android:id="@+id/my_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="12dp"
+                tools:rating="4" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/MyShows.ShowScreen.TextView.Header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/view_of_people" />
+
+            <include layout="@layout/information_screen_shadow_view" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/comments_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@style/MyShows.ShowScreen.TextView"
+                android:id="@+id/comments_information"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:drawableLeft="@drawable/comment_balloon"
+                android:text="@string/empty_comments"
+                android:textColor="#717171" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="12dp"
+                android:src="@drawable/arrow"
+                tools:rating="4" />
+
+        </FrameLayout>
+
+        <include layout="@layout/information_screen_shadow_view" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

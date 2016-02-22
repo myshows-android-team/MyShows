@@ -1,5 +1,7 @@
 package me.myshows.android.ui.common;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -11,6 +13,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemVie
 
 import me.myshows.android.R;
 import me.myshows.android.model.Episode;
+import me.myshows.android.ui.activities.EpisodeActivity;
 
 /**
  * Created by warrior on 01.11.15.
@@ -47,6 +50,7 @@ public class SeriesViewHolder<T extends Episode> extends AbstractExpandableItemV
         T episode = season.get(position);
         isLast = season.size() - 1 == position;
         seriesTitle.setText(episode.getTitle());
+        itemView.setOnClickListener(v -> startEpisodeActivity(episode));
         checkBox.setOnCheckedChangeListener(null);
         checkBox.setChecked(season.isEpisodeChecked(position));
         checkBox.setOnCheckedChangeListener((v, checked) -> {
@@ -56,6 +60,15 @@ public class SeriesViewHolder<T extends Episode> extends AbstractExpandableItemV
         divider.setVisibility(isLast ? View.GONE : View.VISIBLE);
         setSeriesNumber(episode);
         setAirDate(episode.getAirDate());
+    }
+
+    private void startEpisodeActivity(@NonNull Episode episode) {
+        Context context = itemView.getContext();
+        Intent intent = new Intent(context, EpisodeActivity.class);
+        intent.putExtra(EpisodeActivity.EPISODE_ID, episode.getId());
+        intent.putExtra(EpisodeActivity.EPISODE_TITLE, episode.getTitle());
+        intent.putExtra(EpisodeActivity.SHOW_ID, episode.getShowId());
+        context.startActivity(intent);
     }
 
     public boolean isLast() {

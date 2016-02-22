@@ -46,6 +46,24 @@
     <string name="season_number">%d сезон</string>
     <string name="unknown_date">не указана</string>
 
+    <!-- Episode screen strings -->
+    <string name="information">Информация</string>
+    <string name="no_one_watched">0 посмотрело</string>
+    <plurals name="watched">
+        <item quantity="one">%d посмотрел</item>
+        <item quantity="few">%d посмотрело</item>
+        <item quantity="many">%d посмотрело</item>
+    </plurals>
+    <string name="episode_empty_rating">Никто еще не выставил рейтинг</string>
+    <string name="episode_rating">Рейтинг серии (%.2f)</string>
+    <string name="view_of_people">Реакция публики</string>
+    <string name="empty_comments">Пока еще нет комментариев</string>
+    <plurals name="read_comments">
+        <item quantity="one">Читать %d комментарий</item>
+        <item quantity="few">Читать %d комментария</item>
+        <item quantity="many">Читать %d комментариев</item>
+    </plurals>
+
     <!-- Feed screen strings -->
     <string name="m_watch_one_series">Посмотрел %1$s серию %2$s</string>
     <string name="f_watch_one_series">Посмотрела %1$s серию %2$s</string>

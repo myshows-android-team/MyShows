@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.activities.ShowActivity">
+    tools:context=".ui.activities.EpisodeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -18,16 +18,16 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginBottom="@dimen/default_padding"
             app:expandedTitleMarginEnd="72dp"
             app:expandedTitleMarginStart="@dimen/default_padding"
             app:expandedTitleMarginTop="@dimen/default_padding"
-            app:expandedTitleTextAppearance="@style/MyShows.ShowScreen.Title.TextAppearance">
+            app:expandedTitleTextAppearance="@style/MyShows.ShowScreen.Title.TextAppearance"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/show_image"
+                android:id="@+id/episode_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -51,11 +51,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    <include layout="@layout/episode_information_layout" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

@@ -13,6 +13,8 @@ import io.realm.Sort;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.MyShowsClient;
+import me.myshows.android.model.EpisodeComments;
+import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
 import me.myshows.android.model.RatingShow;
@@ -22,6 +24,8 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
+import me.myshows.android.model.persistent.PersistentEpisodeComments;
+import me.myshows.android.model.persistent.PersistentEpisodeInformation;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
 import me.myshows.android.model.persistent.PersistentRatingShow;
@@ -52,7 +56,8 @@ public class MyShowsClientImpl implements MyShowsClient {
 
     private static final String API_URL = "http://api.myshows.ru";
 
-    private static final PersistentEntityConverter CONVERTER = new PersistentEntityConverter(new JsonMarshaller());
+    private static final JsonMarshaller MARSHALLER = new JsonMarshaller();
+    private static final PersistentEntityConverter CONVERTER = new PersistentEntityConverter(MARSHALLER);
 
     private final OkHttpClient okHttpClient;
     private final ClientStorage storage;
@@ -73,7 +78,7 @@ public class MyShowsClientImpl implements MyShowsClient {
         this.api = new Retrofit.Builder()
                 .baseUrl(API_URL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(JacksonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(MARSHALLER.getObjectMapper()))
                 .client(okHttpClient)
                 .build()
                 .create(MyShowsApi.class);
@@ -231,6 +236,23 @@ public class MyShowsClientImpl implements MyShowsClient {
     }
 
     @Override
+    public Observable<EpisodeInformation> episodeInformation(int episodeId) {
+        return Observable.<EpisodeInformation>create(subscriber -> {
+            EpisodeInformation episode = manager.selectEntity(PersistentEpisodeInformation.class, CONVERTER::toEpisodeInformation,
+                    new Predicate("id", episodeId));
+            if (episode != null) {
+                subscriber.onNext(episode);
+            }
+            api.episodeInformation(episodeId)
+                    .subscribe(
+                            e -> subscriber.onNext(manager.upsertEntity(e, CONVERTER::fromEpisodeInformation)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
     public Observable<List<Feed>> friendsNews() {
         return Observable.<List<Feed>>create(subscriber -> {
             Class<PersistentFeed> clazz = PersistentFeed.class;
@@ -263,6 +285,23 @@ public class MyShowsClientImpl implements MyShowsClient {
                     })
                     .subscribe(
                             shows -> subscriber.onNext(manager.truncateAndInsertEntities(shows, PersistentRatingShow.class, CONVERTER::fromRatingShow)),
+                            e -> subscriber.onCompleted(),
+                            subscriber::onCompleted
+                    );
+        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<EpisodeComments> comments(int episodeId) {
+        return Observable.<EpisodeComments>create(subscriber -> {
+            EpisodeComments information = manager.selectEntity(PersistentEpisodeComments.class,
+                    CONVERTER::toEpisodeComments, new Predicate("episodeId", episodeId));
+            if (information != null) {
+                subscriber.onNext(information);
+            }
+            api.comments(episodeId)
+                    .subscribe(
+                            info -> subscriber.onNext(manager.upsertEntity(info, entity -> CONVERTER.fromEpisodeComments(episodeId, info))),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );

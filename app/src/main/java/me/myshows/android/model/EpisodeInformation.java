@@ -9,10 +9,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @date 22.06.2015
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShowEpisode extends AbstractEpisode {
+public class EpisodeInformation extends AbstractEpisode {
 
     private final int id;
-    private final int showId;
     private final String title;
     private final int seasonNumber;
     private final int episodeNumber;
@@ -22,16 +21,20 @@ public class ShowEpisode extends AbstractEpisode {
     private final String image;
     private final String productionNumber;
     private final int sequenceNumber;
+    private final int totalWatched;
+    private final EpisodeRating rating;
+    private final int showId;
 
     @JsonCreator
-    public ShowEpisode(@JsonProperty("id") int id, @JsonProperty("showId") int showId, @JsonProperty("title") String title,
-                       @JsonProperty("sequenceNumber") int sequenceNumber, @JsonProperty("seasonNumber") int seasonNumber,
-                       @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate,
-                       @JsonProperty("shortName") String shortName, @JsonProperty("tvrageLink") String tvrageLink,
-                       @JsonProperty("image") String image, @JsonProperty("productionNumber") String productionNumber) {
+    public EpisodeInformation(@JsonProperty("id") int id, @JsonProperty("title") String title,
+                              @JsonProperty("sequenceNumber") int sequenceNumber, @JsonProperty("seasonNumber") int seasonNumber,
+                              @JsonProperty("episodeNumber") int episodeNumber, @JsonProperty("airDate") String airDate,
+                              @JsonProperty("shortName") String shortName, @JsonProperty("tvrageLink") String tvrageLink,
+                              @JsonProperty("image") String image, @JsonProperty("productionNumber") String productionNumber,
+                              @JsonProperty("totalWatched") int totalWatched, @JsonProperty("rating") EpisodeRating rating,
+                              @JsonProperty("showId") int showId) {
         super(airDate);
         this.id = id;
-        this.showId = showId;
         this.title = title;
         this.seasonNumber = seasonNumber;
         this.episodeNumber = episodeNumber;
@@ -41,17 +44,15 @@ public class ShowEpisode extends AbstractEpisode {
         this.image = image;
         this.productionNumber = productionNumber;
         this.sequenceNumber = sequenceNumber;
+        this.totalWatched = totalWatched;
+        this.rating = rating;
+        this.showId = showId;
     }
 
     @JsonProperty("id")
     @Override
     public int getId() {
         return id;
-    }
-
-    @Override
-    public int getShowId() {
-        return showId;
     }
 
     @JsonProperty("title")
@@ -101,5 +102,20 @@ public class ShowEpisode extends AbstractEpisode {
     @JsonProperty("sequenceNumber")
     public int getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    @JsonProperty("totalWatched")
+    public int getTotalWatched() {
+        return totalWatched;
+    }
+
+    @JsonProperty("rating")
+    public EpisodeRating getRating() {
+        return rating;
+    }
+
+    @JsonProperty("showId")
+    public int getShowId() {
+        return showId;
     }
 }

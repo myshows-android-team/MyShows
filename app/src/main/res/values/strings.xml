@@ -47,6 +47,22 @@
     <string name="season_number">%d season</string>
     <string name="unknown_date">date is N/A</string>
 
+    <!-- Episode screen strings -->
+    <string name="information">Information</string>
+    <string name="no_one_watched">No one watched</string>
+    <plurals name="watched">
+        <item quantity="one">%d watched</item>
+        <item quantity="other">%d watched</item>
+    </plurals>
+    <string name="episode_empty_rating">No one rating</string>
+    <string name="episode_rating">Episode rating (%.2f)</string>
+    <string name="view_of_people">View of people</string>
+    <string name="empty_comments">There are no comments yet</string>
+    <plurals name="read_comments">
+        <item quantity="one">Read %d comment</item>
+        <item quantity="other">Read %d comments</item>
+    </plurals>
+
     <!-- Feed screen strings -->
     <string name="m_watch_one_series">Watched %1$s series of %2$s</string>
     <string name="f_watch_one_series">Watched %1$s series of %2$s</string>

@@ -35,7 +35,7 @@
             android:layout_gravity="left|center_vertical"
             android:text="@string/profile_my_series" />
 
-        <include layout="@layout/show_screen_shadow_view" />
+        <include layout="@layout/information_screen_shadow_view" />
 
     </FrameLayout>
 

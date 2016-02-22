@@ -5,11 +5,10 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class PersistentShowEpisode extends RealmObject {
+public class PersistentEpisodeInformation extends RealmObject {
 
     @PrimaryKey
     private int id;
-    private int showId;
     private String title;
     private int seasonNumber;
     private int episodeNumber;
@@ -19,13 +18,16 @@ public class PersistentShowEpisode extends RealmObject {
     private String image;
     private String productionNumber;
     private int sequenceNumber;
+    private int totalWatched;
+    private byte[] rating;
+    private int showId;
 
-    public PersistentShowEpisode() {
+    public PersistentEpisodeInformation() {
     }
 
-    public PersistentShowEpisode(int id, int showId, String title, int seasonNumber, int episodeNumber, String airDate, String shortName, String tvrageLink, String image, String productionNumber, int sequenceNumber) {
+    public PersistentEpisodeInformation(int id, String title, int seasonNumber, int episodeNumber, String airDate, String shortName, String tvrageLink, String image, String productionNumber, int sequenceNumber,
+                                        int totalWatched, byte[] rating, int showId) {
         this.id = id;
-        this.showId = showId;
         this.title = title;
         this.seasonNumber = seasonNumber;
         this.episodeNumber = episodeNumber;
@@ -35,6 +37,9 @@ public class PersistentShowEpisode extends RealmObject {
         this.image = image;
         this.productionNumber = productionNumber;
         this.sequenceNumber = sequenceNumber;
+        this.totalWatched = totalWatched;
+        this.rating = rating;
+        this.showId = showId;
     }
 
     public int getId() {
@@ -43,14 +48,6 @@ public class PersistentShowEpisode extends RealmObject {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getShowId() {
-        return showId;
-    }
-
-    public void setShowId(int showId) {
-        this.showId = showId;
     }
 
     public String getTitle() {
@@ -123,5 +120,29 @@ public class PersistentShowEpisode extends RealmObject {
 
     public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+    }
+
+    public int getTotalWatched() {
+        return totalWatched;
+    }
+
+    public void setTotalWatched(int totalWatched) {
+        this.totalWatched = totalWatched;
+    }
+
+    public byte[] getRating() {
+        return rating;
+    }
+
+    public void setRating(byte[] rating) {
+        this.rating = rating;
+    }
+
+    public int getShowId() {
+        return showId;
+    }
+
+    public void setShowId(int showId) {
+        this.showId = showId;
     }
 }

@@ -27,6 +27,8 @@
 
         <activity android:name=".ui.activities.ProfileActivity" />
 
+        <activity android:name=".ui.activities.EpisodeActivity" />
+
         <activity
             android:name=".ui.activities.SettingsActivity"
             android:theme="@style/Theme.MyShows.Settings" />
