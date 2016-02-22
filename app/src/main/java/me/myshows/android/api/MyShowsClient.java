@@ -14,6 +14,7 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import rx.Observable;
+import rx.Single;
 
 /**
  * Created by warrior on 27.06.15.
@@ -24,9 +25,9 @@ public interface MyShowsClient {
 
     void clear();
 
-    Observable<Boolean> authentication(Credentials credentials);
+    Single<Boolean> authentication(Credentials credentials);
 
-    Observable<Boolean> autoAuthentication();
+    Single<Boolean> autoAuthentication();
 
     Observable<User> profile();
 

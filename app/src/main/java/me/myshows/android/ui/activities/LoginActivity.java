@@ -30,7 +30,7 @@ import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.Credentials;
-import rx.Observable;
+import rx.Single;
 
 /**
  * @author Whiplash
@@ -151,8 +151,9 @@ public class LoginActivity extends RxAppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    private void processAuthenticationObserver(Observable<Boolean> observable) {
-        observable
+    private void processAuthenticationObserver(Single<Boolean> single) {
+        // temporary workaround because RxLifecycle doesn't support Single
+        single.toObservable()
                 .compose(bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(result -> {
                     if (result) {
