@@ -19,6 +19,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
+import rx.Single;
 
 /**
  * @author Whiplash
@@ -27,7 +28,7 @@ import rx.Observable;
 public interface MyShowsApi {
 
     @GET("/profile/login")
-    Observable<Response<ResponseBody>> login(@Query("login") String login, @Query("password") String md5Password);
+    Single<Response<ResponseBody>> login(@Query("login") String login, @Query("password") String md5Password);
 
     @GET("/profile/")
     Observable<User> profile();

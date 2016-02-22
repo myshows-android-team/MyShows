@@ -46,6 +46,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import rx.Observable;
 import rx.Scheduler;
+import rx.Single;
 import rx.schedulers.Schedulers;
 
 /**
@@ -91,26 +92,23 @@ public class MyShowsClientImpl implements MyShowsClient {
     }
 
     @Override
-    public Observable<Boolean> authentication(Credentials credentials) {
-        return Observable.create(subscriber -> api.login(credentials.getLogin(), credentials.getPasswordHash())
+    public Single<Boolean> authentication(Credentials credentials) {
+        return Single.create(subscriber -> api.login(credentials.getLogin(), credentials.getPasswordHash())
                 .subscribeOn(Schedulers.io())
                 .observeOn(observerScheduler)
                 .subscribe(
                         response -> {
                             storage.putCredentials(credentials);
-                            subscriber.onNext(true);
-                            subscriber.onCompleted();
+                            subscriber.onSuccess(true);
                         },
-                        e -> {
-                            subscriber.onNext(false);
-                            subscriber.onCompleted();
-                        }));
+                        e -> subscriber.onSuccess(false)
+                ));
     }
 
     @Override
-    public Observable<Boolean> autoAuthentication() {
+    public Single<Boolean> autoAuthentication() {
         if (!hasCredentials()) {
-            return Observable.error(new IllegalStateException("Client must have credentials to auto authentication"));
+            return Single.error(new IllegalStateException("Client must have credentials to auto authentication"));
         }
         return authentication(storage.getCredentials());
     }
