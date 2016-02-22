@@ -56,7 +56,7 @@ ext.libraries = [
         glideOkhttp                   : 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar',
 
         // rx libraries
-        rxJava                        : 'io.reactivex:rxjava:1.1.0',
+        rxJava                        : 'io.reactivex:rxjava:1.1.1',
         rxAndroid                     : 'io.reactivex:rxandroid:1.1.0',
         rxLifecycle                   : 'com.trello:rxlifecycle:' + versions.rxLifecycle,
         rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
