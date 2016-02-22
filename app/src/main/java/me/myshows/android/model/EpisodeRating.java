@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EpisodeRating {
 
-    private final int showId;
-    private final int episodeId;
     private final int r1;
     private final int r2;
     private final int r3;
@@ -21,13 +19,10 @@ public class EpisodeRating {
     private final float rating;
 
     @JsonCreator
-    public EpisodeRating(@JsonProperty("showId") int showId, @JsonProperty("episodeId") int episodeId,
-                         @JsonProperty("r1") int r1, @JsonProperty("r2") int r2,
+    public EpisodeRating(@JsonProperty("r1") int r1, @JsonProperty("r2") int r2,
                          @JsonProperty("r3") int r3, @JsonProperty("r4") int r4,
                          @JsonProperty("r5") int r5, @JsonProperty("votes") int votes,
                          @JsonProperty("rating") float rating) {
-        this.showId = showId;
-        this.episodeId = episodeId;
         this.r1 = r1;
         this.r2 = r2;
         this.r3 = r3;
@@ -35,16 +30,6 @@ public class EpisodeRating {
         this.r5 = r5;
         this.votes = votes;
         this.rating = rating;
-    }
-
-    @JsonProperty("showId")
-    public int getShowId() {
-        return showId;
-    }
-
-    @JsonProperty("episodeId")
-    public int getEpisodeId() {
-        return episodeId;
     }
 
     @JsonProperty("r1")

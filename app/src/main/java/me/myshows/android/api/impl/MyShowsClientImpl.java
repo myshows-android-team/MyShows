@@ -56,7 +56,8 @@ public class MyShowsClientImpl implements MyShowsClient {
 
     private static final String API_URL = "http://api.myshows.ru";
 
-    private static final PersistentEntityConverter CONVERTER = new PersistentEntityConverter(new JsonMarshaller());
+    private static final JsonMarshaller MARSHALLER = new JsonMarshaller();
+    private static final PersistentEntityConverter CONVERTER = new PersistentEntityConverter(MARSHALLER);
 
     private final OkHttpClient okHttpClient;
     private final ClientStorage storage;
@@ -77,7 +78,7 @@ public class MyShowsClientImpl implements MyShowsClient {
         this.api = new Retrofit.Builder()
                 .baseUrl(API_URL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(JacksonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(MARSHALLER.getObjectMapper()))
                 .client(okHttpClient)
                 .build()
                 .create(MyShowsApi.class);

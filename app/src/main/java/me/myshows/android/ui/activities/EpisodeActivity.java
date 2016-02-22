@@ -164,8 +164,8 @@ public class EpisodeActivity extends HomeActivity {
         }
     }
 
-    private void bindRating(@Nullable EpisodeRating episodeRating) {
-        if (episodeRating != null && episodeRating.getRating() != 0) {
+    private void bindRating(@NonNull EpisodeRating episodeRating) {
+        if (episodeRating.getVotes() != 0) {
             rating.setText(getString(R.string.episode_rating, episodeRating.getRating()));
         } else {
             rating.setText(getString(R.string.episode_empty_rating));

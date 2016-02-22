@@ -26,8 +26,8 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/watched"
                 style="@style/MyShows.ShowScreen.TextView"
+                android:id="@+id/watched"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -35,8 +35,8 @@
                 android:text="@string/no_one_watched" />
 
             <TextView
-                android:id="@+id/air_date"
                 style="@style/MyShows.ShowScreen.TextView"
+                android:id="@+id/air_date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -50,8 +50,8 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/rating"
                 style="@style/MyShows.ShowScreen.TextView.Header"
+                android:id="@+id/rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/episode_empty_rating" />
@@ -74,8 +74,8 @@
                 android:textColor="#717171" />
 
             <RatingBar
-                android:id="@+id/my_rating"
                 style="@style/MyShows.RatingBar"
+                android:id="@+id/my_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
@@ -105,8 +105,8 @@
             android:background="@android:color/white">
 
             <TextView
-                android:id="@+id/comments_information"
                 style="@style/MyShows.ShowScreen.TextView"
+                android:id="@+id/comments_information"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"

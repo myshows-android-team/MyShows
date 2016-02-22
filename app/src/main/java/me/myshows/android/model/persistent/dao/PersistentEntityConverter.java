@@ -251,21 +251,21 @@ public class PersistentEntityConverter {
         return new PersistentUserShowEpisodes(userShowEpisodes.getShowId(), episodes);
     }
 
-    public EpisodeComments toEpisodeComments(PersistentEpisodeComments information) {
+    public EpisodeComments toEpisodeComments(PersistentEpisodeComments episodeComments) {
         try {
-            List<Comment> comments = marshaller.deserializeList(information.getComments(), ArrayList.class, Comment.class);
-            return new EpisodeComments(information.isTracking(), information.getCount(),
-                    information.getNewCount(), information.isShow(), comments);
+            List<Comment> comments = marshaller.deserializeList(episodeComments.getComments(), ArrayList.class, Comment.class);
+            return new EpisodeComments(episodeComments.isTracking(), episodeComments.getCount(),
+                    episodeComments.getNewCount(), episodeComments.isShow(), comments);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
     }
 
-    public PersistentEpisodeComments fromEpisodeComments(int episodeId, EpisodeComments information) {
+    public PersistentEpisodeComments fromEpisodeComments(int episodeId, EpisodeComments episodeComments) {
         try {
-            byte[] comments = marshaller.serialize(information.getComments());
-            return new PersistentEpisodeComments(episodeId, information.isTracking(), information.getCount(),
-                    information.getNewCount(), information.isShow(), comments);
+            byte[] comments = marshaller.serialize(episodeComments.getComments());
+            return new PersistentEpisodeComments(episodeId, episodeComments.isTracking(), episodeComments.getCount(),
+                    episodeComments.getNewCount(), episodeComments.isShow(), comments);
         } catch (IOException e) {
             throw new RuntimeException("Unreachable state", e);
         }
