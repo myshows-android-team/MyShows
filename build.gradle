@@ -23,7 +23,7 @@ allprojects {
 
 def versions = [
         supportLibs     : '23.1.1',
-        okhttp          : '3.1.1',
+        okhttp          : '3.2.0',
         retrofit        : '2.0.0-beta4',
         parceler        : '1.0.4',
         rxLifecycle     : '0.4.0',
@@ -62,7 +62,7 @@ ext.libraries = [
         rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
 
         // database libraries
-        realm                         : 'io.realm:realm-android:0.87.4',
+        realm                         : 'io.realm:realm-android:0.87.5',
 
         // other
         parceler                      : 'org.parceler:parceler:' + versions.parceler,
