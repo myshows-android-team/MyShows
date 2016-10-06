@@ -1,5 +1,7 @@
 package me.myshows.android.api;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import me.myshows.android.api.impl.Credentials;
@@ -50,4 +52,6 @@ public interface MyShowsClient {
     Observable<List<RatingShow>> ratingShows();
 
     Observable<EpisodeComments> comments(int episodeId);
+
+    Single<Boolean> saveCheckedEpisodes(int showId, @NonNull int[] checkedEpisodes, @NonNull int[] uncheckedEpisodes);
 }

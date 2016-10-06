@@ -1,6 +1,7 @@
 package me.myshows.android.ui.common;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,12 +18,18 @@ import me.myshows.android.utils.SparseSet;
  */
 public class Season<T extends Episode> {
 
+    public interface OnEpisodeCheckChanges {
+        void onCheckChange(int episodeId, boolean checked);
+    }
+
     private final int seasonNumber;
     private final List<T> episodes;
     private final int specialEpisodesCount;
 
     private SparseSet checkedEpisodes = new SparseSet();
     private SparseSet checkedSpecialEpisodes = new SparseSet();
+
+    private OnEpisodeCheckChanges listener;
 
     private boolean expanded;
 
@@ -60,24 +67,37 @@ public class Season<T extends Episode> {
         this.checkedSpecialEpisodes = checkedSpecialEpisodes;
     }
 
+    public void setOnEpisodeCheckChangesListener(@Nullable OnEpisodeCheckChanges listener) {
+        this.listener = listener;
+    }
+
     public boolean isChecked() {
         return checkedEpisodes.size() + specialEpisodesCount == episodes.size();
     }
 
     public void setChecked(boolean checked) {
-        if (checked) {
-            for (Episode episode : episodes) {
-                if (!episode.isSpecial()) {
+        for (Episode episode : episodes) {
+            if (!episode.isSpecial()) {
+                boolean oldEpisodeState = isEpisodeChecked(episode);
+                if (checked) {
                     checkedEpisodes.add(episode.getId());
                 }
+                if (oldEpisodeState != checked && listener != null) {
+                    listener.onCheckChange(episode.getId(), checked);
+                }
             }
-        } else {
+        }
+        if (!checked) {
             checkedEpisodes.clear();
         }
     }
 
     public boolean isEpisodeChecked(int i) {
         Episode episode = episodes.get(i);
+        return isEpisodeChecked(episode);
+    }
+
+    private boolean isEpisodeChecked(@NonNull Episode episode) {
         if (episode.isSpecial()) {
             return checkedSpecialEpisodes.contains(episode.getId());
         } else {
@@ -91,6 +111,9 @@ public class Season<T extends Episode> {
             setEpisodeChecked(checkedSpecialEpisodes, episode, checked);
         } else {
             setEpisodeChecked(checkedEpisodes, episode, checked);
+        }
+        if (listener != null) {
+            listener.onCheckChange(episode.getId(), checked);
         }
     }
 

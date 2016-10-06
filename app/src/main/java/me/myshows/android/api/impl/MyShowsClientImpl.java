@@ -47,6 +47,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Single;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -55,7 +56,7 @@ import rx.schedulers.Schedulers;
  */
 public class MyShowsClientImpl implements MyShowsClient {
 
-    private static final String API_URL = "http://api.myshows.ru";
+    private static final String API_URL = "http://api.myshows.me";
 
     private static final JsonMarshaller MARSHALLER = new JsonMarshaller();
     private static final PersistentEntityConverter CONVERTER = new PersistentEntityConverter(MARSHALLER);
@@ -306,7 +307,21 @@ public class MyShowsClientImpl implements MyShowsClient {
         }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
     }
 
-    private List<Feed> generateFeeds(Map<String, List<UserFeed>> userFeeds) {
+    @Override
+    public Single<Boolean> saveCheckedEpisodes(int showId, @NonNull int[] checkedEpisodes, @NonNull int[] uncheckedEpisodes) {
+        return api.saveCheckedEpisodes(showId, join(checkedEpisodes), join(uncheckedEpisodes))
+                .map(r -> true)
+                .onErrorReturn(e -> false)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public boolean hasCredentials() {
+        return storage.getCredentials() != null;
+    }
+
+    private static List<Feed> generateFeeds(Map<String, List<UserFeed>> userFeeds) {
         List<Feed> feeds = new ArrayList<>();
         for (Map.Entry<String, List<UserFeed>> rawFeed : userFeeds.entrySet()) {
             feeds.add(new Feed(rawFeed.getKey(), rawFeed.getValue()));
@@ -314,9 +329,18 @@ public class MyShowsClientImpl implements MyShowsClient {
         return feeds;
     }
 
-    @Override
-    public boolean hasCredentials() {
-        return storage.getCredentials() != null;
+    private static String join(@NonNull int[] tokens) {
+        StringBuilder sb = new StringBuilder();
+        boolean firstTime = true;
+        for (int token : tokens) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                sb.append(",");
+            }
+            sb.append(token);
+        }
+        return sb.toString();
     }
 
     public static class Builder {

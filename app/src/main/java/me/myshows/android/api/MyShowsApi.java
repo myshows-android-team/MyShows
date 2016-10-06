@@ -16,6 +16,7 @@ import me.myshows.android.model.UserShow;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -62,4 +63,9 @@ public interface MyShowsApi {
 
     @GET("/profile/comments/episode/{episode_id}")
     Observable<EpisodeComments> comments(@Path("episode_id") int episodeId);
+
+    @POST("/profile/shows/{show_id}/episodes")
+    Single<Response<ResponseBody>> saveCheckedEpisodes(@Path("show_id") int showId,
+                                                       @Query("check") String checkedEpisodes,
+                                                       @Query("uncheck") String uncheckedEpisodes);
 }

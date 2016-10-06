@@ -15,17 +15,21 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
-import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
@@ -44,6 +48,7 @@ import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
+import me.myshows.android.ui.common.AbstractSeasonExpandableItemAdapter;
 import me.myshows.android.ui.common.Season;
 import me.myshows.android.ui.common.SeasonViewHolder;
 import me.myshows.android.ui.common.SeriesViewHolder;
@@ -53,10 +58,12 @@ import me.myshows.android.utils.Numbers;
 import me.myshows.android.utils.SparseSet;
 import rx.Observable;
 
+import static me.myshows.android.ui.common.AbstractSeasonExpandableItemAdapter.*;
+
 /**
  * Created by warrior on 19.07.15.
  */
-public class ShowActivity extends HomeActivity {
+public class ShowActivity extends HomeActivity implements OnUnsavedChangesListener {
 
     private static final String TAG = ShowActivity.class.getSimpleName();
 
@@ -82,10 +89,15 @@ public class ShowActivity extends HomeActivity {
     private TextView rating;
     private RatingBar myRating;
 
+    private ShowAdapter originalAdapter;
     private RecyclerViewExpandableItemManager expandableItemManager;
     private RecyclerView.Adapter wrappedAdapter;
 
+    private int showId;
     private UserShow userShow;
+
+    private boolean hasUnsavedChanges;
+    private boolean isLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,12 +124,11 @@ public class ShowActivity extends HomeActivity {
         rating = (TextView) showInformationView.findViewById(R.id.rating);
         myRating = (RatingBar) showInformationView.findViewById(R.id.my_rating);
 
-        int showId = extractAndBindShowData(getIntent());
+        extractAndBindShowData(getIntent());
         loadData(showId);
     }
 
-    private int extractAndBindShowData(Intent intent) {
-        int showId;
+    private void extractAndBindShowData(@NonNull Intent intent) {
         if (intent.hasExtra(USER_SHOW)) {
             userShow = Parcels.unwrap(intent.getParcelableExtra(USER_SHOW));
             bind(userShow);
@@ -127,7 +138,47 @@ public class ShowActivity extends HomeActivity {
             String showTitle = intent.getStringExtra(SHOW_TITLE);
             collapsingToolbar.setTitle(showTitle);
         }
-        return showId;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.save_menu, menu);
+        menu.findItem(R.id.loading).setActionView(new ProgressBar(this));
+        return super.onCreateOptionsMenu(menu);
+    }
+
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        Log.d(TAG, "onPrepareOptionsMenu. hasUnsavedChanges: " + hasUnsavedChanges);
+//        MenuItem saveItem = menu.findItem(R.id.save);
+//        MenuItem loadingItem = menu.findItem(R.id.loading);
+//        if (hasUnsavedChanges) {
+//            saveItem.setVisible(!isLoading);
+//            loadingItem.setVisible(isLoading);
+//        } else {
+//            saveItem.setVisible(false);
+//            loadingItem.setVisible(false);
+//        }
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected");
+        switch (item.getItemId()) {
+            case R.id.save:
+                isLoading = true;
+                invalidateOptionsMenu();
+                client.saveCheckedEpisodes(showId, originalAdapter.getUnsavedCheckedEpisodes(), originalAdapter.getUnsavedUncheckedEpisodes())
+                        .subscribe(success -> {
+                            isLoading = false;
+                            if (success) {
+                                originalAdapter.onSaveChanges();
+                            }
+                        });
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -139,6 +190,21 @@ public class ShowActivity extends HomeActivity {
             WrapperAdapterUtils.releaseAll(wrappedAdapter);
         }
         super.onDestroy();
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        if (hasUnsavedChanges) {
+//
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
+
+    @Override
+    public void onChange(boolean hasUnsavedChanges) {
+        this.hasUnsavedChanges = hasUnsavedChanges;
+        invalidateOptionsMenu();
     }
 
     private void setupRecyclerView() {
@@ -157,7 +223,7 @@ public class ShowActivity extends HomeActivity {
         Observable<UserShowEpisodes> userShowEpisodesObservable = client.profileEpisodesOfShow(showId)
                 .defaultIfEmpty(new UserShowEpisodes(showId, Collections.emptyList()));
         Observable.combineLatest(showObservable, userShowEpisodesObservable,
-                (show, episodes) -> ShowAdapter.create(showInformationView, show, episodes))
+                (show, episodes) -> ShowAdapter.create(showInformationView, show, episodes, this))
                 .compose(bindToLifecycle())
                 .subscribe(this::setAdapter);
         if (userShow == null) {
@@ -174,7 +240,7 @@ public class ShowActivity extends HomeActivity {
     }
 
     @SuppressLint("NewApi")
-    private void bind(UserShow show) {
+    private void bind(@NonNull UserShow show) {
         collapsingToolbar.setTitle(show.getTitle());
         WatchStatus watchStatus = show.getWatchStatus();
         fab.setImageResource(watchStatus.getDrawableId());
@@ -182,7 +248,7 @@ public class ShowActivity extends HomeActivity {
         myRating.setRating(show.getRating());
     }
 
-    private void bind(Show show) {
+    private void bind(@NonNull Show show) {
         collapsingToolbar.setTitle(show.getTitle());
         status.setText(show.getShowStatus().getStringId());
 
@@ -203,7 +269,8 @@ public class ShowActivity extends HomeActivity {
                 .into(showImage);
     }
 
-    private void setAdapter(ShowAdapter adapter) {
+    private void setAdapter(@NonNull ShowAdapter adapter) {
+        originalAdapter = adapter;
         expandableItemManager = new RecyclerViewExpandableItemManager(null);
         wrappedAdapter = expandableItemManager.createWrappedAdapter(adapter);
         recyclerView.setAdapter(wrappedAdapter);
@@ -225,7 +292,7 @@ public class ShowActivity extends HomeActivity {
         return Html.fromHtml(description);
     }
 
-    private static class ShowAdapter extends AbstractExpandableItemAdapter<AbstractExpandableItemViewHolder, SeriesViewHolder<ShowEpisode>> {
+    private static class ShowAdapter extends AbstractSeasonExpandableItemAdapter<AbstractExpandableItemViewHolder, SeriesViewHolder<ShowEpisode>> {
 
         private static final int SHOW_INFORMATION_TYPE = 0;
         private static final int SEASON_TYPE = 1;
@@ -242,9 +309,13 @@ public class ShowActivity extends HomeActivity {
         private final SeriesViewHolder.OnEpisodeCheckedChangeListener<ShowEpisode> seriesListener = this::onEpisodeCheckedChanged;
         private final SeasonViewHolder.OnSeasonCheckedChangeListener<ShowEpisode> seasonListener = season -> notifyDataSetChanged();
 
-        private ShowAdapter(@NonNull View showInformationView, @NonNull List<Season<ShowEpisode>> seasons) {
+        private ShowAdapter(@NonNull View showInformationView, @NonNull List<Season<ShowEpisode>> seasons, @NonNull OnUnsavedChangesListener listener) {
+            super(listener);
             this.showInformationView = showInformationView;
             this.seasons = seasons;
+            for (Season season : seasons) {
+                season.setOnEpisodeCheckChangesListener(this);
+            }
             setHasStableIds(true);
         }
 
@@ -327,6 +398,7 @@ public class ShowActivity extends HomeActivity {
         }
 
         public void onEpisodeCheckedChanged(@NonNull Season<ShowEpisode> season, int position, int adapterPosition) {
+            Log.d(TAG, "onEpisodeCheckedChanged: " + position);
             if (season.get(position).isSpecial()) {
                 notifyItemChanged(position);
             } else {
@@ -338,7 +410,8 @@ public class ShowActivity extends HomeActivity {
             return seasons.size() - groupPosition;
         }
 
-        public static ShowAdapter create(@NonNull View showInformationView, @NonNull Show show, @NonNull UserShowEpisodes watchedEpisodes) {
+        public static ShowAdapter create(@NonNull View showInformationView, @NonNull Show show,
+                                         @NonNull UserShowEpisodes watchedEpisodes, @NonNull OnUnsavedChangesListener listener) {
             List<Season<ShowEpisode>> seasons = Season.splitToSeasons(show.getEpisodes().values(), EPISODE_COMPARATOR);
             int seasonCount = seasons.size();
 
@@ -364,7 +437,7 @@ public class ShowActivity extends HomeActivity {
                 seasons.get(i).setCheckedEpisodes(checkedEpisodes[i]);
                 seasons.get(i).setCheckedSpecialEpisodes(checkedSpecialEpisodes[i]);
             }
-            return new ShowAdapter(showInformationView, seasons);
+            return new ShowAdapter(showInformationView, seasons, listener);
         }
     }
 

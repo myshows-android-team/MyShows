@@ -1,0 +1,541 @@
+{
+  "28.02.2016": [
+    {
+      "episodeId": 15689484,
+      "showId": 37432,
+      "show": "The Flash",
+      "title": "King Shark",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e15",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15689365,
+      "showId": 45,
+      "show": "Supernatural",
+      "title": "Beyond the Mat",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s11e15",
+      "action": "watch"
+    }
+  ],
+  "27.02.2016": [
+    {
+      "episodeId": 15545709,
+      "showId": 17482,
+      "show": "New Girl",
+      "title": "Wig",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s05e07",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15665522,
+      "showId": 24539,
+      "show": "Arrow",
+      "title": "Taken",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s04e15",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15684811,
+      "showId": 32058,
+      "show": "Brooklyn Nine-Nine",
+      "title": "Adrian Pimento",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s03e17",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15668088,
+      "showId": 37713,
+      "show": "Marvel's Agent Carter",
+      "title": "The Edge of Mystery",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e08",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15680883,
+      "showId": 43133,
+      "show": "Limitless",
+      "title": "Sands, Agent of Morra",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e16",
+      "action": "watch"
+    }
+  ],
+  "26.02.2016": [
+    {
+      "episodeId": 15684811,
+      "showId": 32058,
+      "show": "Brooklyn Nine-Nine",
+      "title": "Adrian Pimento",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s03e17",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15689484,
+      "showId": 37432,
+      "show": "The Flash",
+      "title": "King Shark",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e15",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15668088,
+      "showId": 37713,
+      "show": "Marvel's Agent Carter",
+      "title": "The Edge of Mystery",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e08",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15669194,
+      "showId": 43880,
+      "show": "The Shannara Chronicles",
+      "title": "Safehold",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e09",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15668087,
+      "showId": 37713,
+      "show": "Marvel's Agent Carter",
+      "title": "Monsters",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e07",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15669194,
+      "showId": 43880,
+      "show": "The Shannara Chronicles",
+      "title": "Safehold",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e09",
+      "action": "watch"
+    }
+  ],
+  "25.02.2016": [
+    {
+      "episodeId": 15487997,
+      "showId": 44983,
+      "show": "The Magicians",
+      "title": "Impractical Applications",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e06",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15669388,
+      "showId": 220,
+      "show": "Modern Family",
+      "title": "Thunk in the Trunk",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s07e13",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15545708,
+      "showId": 17482,
+      "show": "New Girl",
+      "title": "Reagan",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s05e06",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15443510,
+      "showId": 44455,
+      "show": "DC's Legends of Tomorrow",
+      "title": "Pilot, Part 1",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e01",
+      "action": "watch"
+    }
+  ],
+  "24.02.2016": [
+    {
+      "episodeId": 15491406,
+      "showId": 5317,
+      "show": "The Walking Dead",
+      "title": "The Next World",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s06e10",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15665797,
+      "showId": 32051,
+      "show": "The 100",
+      "title": "Hakeldama",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s03e05",
+      "action": "watch"
+    }
+  ],
+  "23.02.2016": [
+    {
+      "episodeId": 15688641,
+      "showId": 2,
+      "show": "The Big Bang Theory",
+      "title": "The Positive Negative Reaction",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s09e16",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15452070,
+      "showId": 17186,
+      "show": "Grimm",
+      "title": "Map of the Seven Knights",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s05e10",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15668087,
+      "showId": 37713,
+      "show": "Marvel's Agent Carter",
+      "title": "Monsters",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e07",
+      "action": "watch"
+    }
+  ],
+  "22.02.2016": [
+    {
+      "episodeId": 15688641,
+      "showId": 2,
+      "show": "The Big Bang Theory",
+      "title": "The Positive Negative Reaction",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s09e16",
+      "action": "watch"
+    }
+  ],
+  "21.02.2016": [
+    {
+      "episodeId": 15534946,
+      "showId": 37718,
+      "show": "How to Get Away with Murder",
+      "title": "She Hates Us",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e11",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15545707,
+      "showId": 17482,
+      "show": "New Girl",
+      "title": "Bob & Carol & Nick & Schmidt",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s05e05",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15700900,
+      "showId": 25619,
+      "show": "Sword Art Online",
+      "title": "Sword Art Offline: Part 3",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01 special-0",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15683122,
+      "showId": 45,
+      "show": "Supernatural",
+      "title": "The Vessel",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s11e14",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15551888,
+      "showId": 24539,
+      "show": "Arrow",
+      "title": "Code of Silence",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s04e14",
+      "action": "watch"
+    }
+  ],
+  "20.02.2016": [
+    {
+      "episodeId": 15669326,
+      "showId": 43133,
+      "show": "Limitless",
+      "title": "Undercover!",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e15",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15551279,
+      "showId": 44455,
+      "show": "DC's Legends of Tomorrow",
+      "title": "Fail-Safe",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e05",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15554384,
+      "showId": 43880,
+      "show": "The Shannara Chronicles",
+      "title": "Utopia",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e08",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15554384,
+      "showId": 43880,
+      "show": "The Shannara Chronicles",
+      "title": "Utopia",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e08",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15683128,
+      "showId": 32058,
+      "show": "Brooklyn Nine-Nine",
+      "title": "House Mouses",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s03e16",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15683128,
+      "showId": 32058,
+      "show": "Brooklyn Nine-Nine",
+      "title": "House Mouses",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s03e16",
+      "action": "watch"
+    }
+  ],
+  "19.02.2016": [
+    {
+      "episodeId": 15668086,
+      "showId": 37713,
+      "show": "Marvel's Agent Carter",
+      "title": "Life of the Party",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e06",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15457751,
+      "showId": 44645,
+      "show": "Adam Ruins Everything",
+      "title": "Adam Ruins Voting",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s01e07",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15695962,
+      "showId": 229,
+      "show": "Naruto: Shippuuden",
+      "title": "Jiraiya's Shinobi Handbook ~Tale of Naruto the Gallant~ The Shinobi Unite",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s20e23",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15551888,
+      "showId": 24539,
+      "show": "Arrow",
+      "title": "Code of Silence",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s04e14",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15680451,
+      "showId": 281,
+      "show": "American Dad",
+      "title": "N.S.A. (No Snoops Allowed)",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s12e04",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15668086,
+      "showId": 37713,
+      "show": "Marvel's Agent Carter",
+      "title": "Life of the Party",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e06",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15683246,
+      "showId": 37432,
+      "show": "The Flash",
+      "title": "Escape from Earth-2",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e14",
+      "action": "watch"
+    }
+  ],
+  "18.02.2016": [
+    {
+      "episodeId": 15529297,
+      "showId": 50,
+      "show": "The Simpsons",
+      "title": "Love Is in the N2-O2-Ar-CO2-Ne-He-CH4",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s27e13",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15683246,
+      "showId": 37432,
+      "show": "The Flash",
+      "title": "Escape from Earth-2",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e14",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15697323,
+      "showId": 25561,
+      "show": "Gravity Falls",
+      "title": "Weirdmageddon",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e21",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15482083,
+      "showId": 25561,
+      "show": "Gravity Falls",
+      "title": "Weirdmageddon (3): Take Back The Falls",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s02e20",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15671181,
+      "showId": 220,
+      "show": "Modern Family",
+      "title": "Clean for a Day",
+      "login": "Nilera",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s07e12",
+      "action": "watch"
+    },
+    {
+      "episodeId": 15545706,
+      "showId": 17482,
+      "show": "New Girl",
+      "title": "No Girl",
+      "login": "Warrior",
+      "gender": "m",
+      "episodes": 1,
+      "episode": "s05e04",
+      "action": "watch"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "login": "Warrior",
+  "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/a\/9b\/a9b746cc25d294104f7f88ce3832b870.jpg",
+  "wastedTime": 1855,
+  "gender": "m",
+  "friends": [
+    {
+      "login": "cat_by",
+      "avatar": "http:\/\/api.myshows.me\/shared\/img\/fe\/default-user-avatar-normal.png",
+      "wastedTime": 303,
+      "gender": null
+    },
+    {
+      "login": "lera_nemtseva",
+      "avatar": "http:\/\/api.myshows.me\/shared\/img\/fe\/default-user-avatar-normal.png",
+      "wastedTime": 0,
+      "gender": "f"
+    },
+    {
+      "login": "yulya3102",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/a\/58\/a58ef377d9b5b4c1f05ba8881d51a17b.jpg",
+      "wastedTime": 1017,
+      "gender": "m"
+    },
+    {
+      "login": "Tis00",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/4\/05\/40566f86755c0c79403fe6998ff42b06.jpg",
+      "wastedTime": 1777,
+      "gender": "m"
+    },
+    {
+      "login": "MyShowsTest",
+      "avatar": "http:\/\/api.myshows.me\/shared\/img\/fe\/default-user-avatar-normal.png",
+      "wastedTime": 269,
+      "gender": null
+    },
+    {
+      "login": "twothreenine",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/e\/5b\/e5b4c6e9b485ce9d523cf0045ad372d7.jpg",
+      "wastedTime": 1910,
+      "gender": "m"
+    },
+    {
+      "login": "Shersh",
+      "avatar": "http:\/\/api.myshows.me\/shared\/img\/fe\/default-user-avatar-normal.png",
+      "wastedTime": 2842,
+      "gender": "m"
+    },
+    {
+      "login": "oswiatowa",
+      "avatar": "http:\/\/api.myshows.me\/shared\/img\/fe\/default-user-avatar-normal.png",
+      "wastedTime": 334,
+      "gender": "f"
+    },
+    {
+      "login": "susak",
+      "avatar": "http:\/\/api.myshows.me\/shared\/img\/fe\/default-user-avatar-normal.png",
+      "wastedTime": 497,
+      "gender": null
+    },
+    {
+      "login": "katyatitkova",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/9\/7a\/97a0ff02743052a3c6fe6e53f62fb71d.jpg",
+      "wastedTime": 1202,
+      "gender": "f"
+    },
+    {
+      "login": "kreep",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/3\/e6\/3e6ad2975fd56dea79a5a0e54192b430.jpg",
+      "wastedTime": 1870,
+      "gender": "m"
+    },
+    {
+      "login": "a-rukin",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/1\/ce\/1ce64c49e931de80478579e88bc69462.jpg",
+      "wastedTime": 2234,
+      "gender": "m"
+    },
+    {
+      "login": "Nilera",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/5\/86\/5861c9c094a726b0d3154dc67247ec89.jpg",
+      "wastedTime": 2246,
+      "gender": "m"
+    },
+    {
+      "login": "God_Gefest",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/9\/0d\/90d477d1203c703b739664198e808138.jpg",
+      "wastedTime": 920,
+      "gender": "m"
+    },
+    {
+      "login": "IraCrystal",
+      "avatar": "http:\/\/api.myshows.me\/shared\/img\/fe\/default-user-avatar-normal.png",
+      "wastedTime": 1222,
+      "gender": "f"
+    },
+    {
+      "login": "Alonessa",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/8\/88\/88851eee7ab6922a091d9d8217460e19.jpg",
+      "wastedTime": 3555,
+      "gender": "f"
+    }
+  ],
+  "followers": [
+    {
+      "login": "Henon47",
+      "avatar": "https:\/\/media.myshows.me\/avatars\/normal\/7\/54\/754ec15672b7d1ac17d102d1a57e0f38.jpg",
+      "wastedTime": 4948,
+      "gender": "f"
+    }
+  ],
+  "stats": {
+    "watchedHours": 1854.5,
+    "remainingHours": 109.2,
+    "watchedEpisodes": 3266,
+    "remainingEpisodes": 157,
+    "totalEpisodes": 3423,
+    "totalDays": 81.8,
+    "totalHours": 1963.7,
+    "remainingDays": 4.6,
+    "watchedDays": 77.3
+  }
+}
