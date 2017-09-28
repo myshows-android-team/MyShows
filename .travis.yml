@@ -8,6 +8,12 @@ android:
     - build-tools-23.0.2
     - extra-android-m2repository
 
+branches:
+  only:
+    - staging
+    - trying
+    - master
+
 script: ./gradlew assembleDebug
 
 before_cache:
