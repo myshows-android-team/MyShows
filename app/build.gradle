@@ -3,6 +3,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'realm-android'
 
 android {
     // we use 25 sdk because advRecyclerView doesn't support 26 sdk yet
@@ -67,8 +68,6 @@ dependencies {
     compile libraries.rxAndroid
     compile libraries.rxLifecycle
     compile libraries.rxLifecycleComponents
-
-    compile libraries.realm
 
     apt libraries.parceler
     compile libraries.parcelerApi

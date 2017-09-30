@@ -1,7 +1,5 @@
 package me.myshows.android.model.persistent.dao;
 
-import android.content.Context;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +14,8 @@ public class RealmManager {
 
     private final RealmConfiguration configuration;
 
-    public RealmManager(Context context) {
-        configuration = new RealmConfiguration.Builder(context)
+    public RealmManager() {
+        configuration = new RealmConfiguration.Builder()
                 .schemaVersion(0)
                 .deleteRealmIfMigrationNeeded()
                 .build();
@@ -49,7 +47,7 @@ public class RealmManager {
         }
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(r -> {
-            r.clear(clazz);
+            r.delete(clazz);
             r.copyToRealm(persistentEntities);
         });
         realm.close();
@@ -78,7 +76,7 @@ public class RealmManager {
         Realm realm = Realm.getDefaultInstance();
         E persistentEntity = makeQuery(realm, clazz, predicates).findFirst();
         if (persistentEntity != null) {
-            persistentEntity.removeFromRealm();
+            persistentEntity.deleteFromRealm();
         }
         realm.close();
     }
