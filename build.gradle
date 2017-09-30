@@ -20,11 +20,14 @@ allprojects {
         jcenter()
         // add maven central repo because gradle can not find 'me.relex:circleindicator' in jcenter
         mavenCentral()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
 def versions = [
-        supportLibs     : '23.1.1',
+        supportLibs     : '25.4.0',
         okhttp          : '3.1.1',
         retrofit        : '2.0.0-beta4',
         parceler        : '1.0.4',
