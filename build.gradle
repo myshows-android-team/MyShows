@@ -28,11 +28,11 @@ allprojects {
 
 def versions = [
         supportLibs     : '25.4.0',
-        okhttp          : '3.1.1',
-        retrofit        : '2.0.0-beta4',
-        parceler        : '1.0.4',
+        okhttp          : '3.9.0',
+        retrofit        : '2.3.0',
+        parceler        : '1.1.9',
         rxLifecycle     : '0.4.0',
-        leakCanary      : '1.4-beta1'
+        leakCanary      : '1.5.4'
 ]
 
 ext.libraries = [
@@ -49,8 +49,8 @@ ext.libraries = [
         supportV13                    : 'com.android.support:support-v13:' + versions.supportLibs,
 
         // UI libraries
-        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.6@aar',
-        circleImageView               : 'de.hdodenhof:circleimageview:2.0.0',
+        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.6@aar',
+        circleImageView               : 'de.hdodenhof:circleimageview:2.1.0',
         circleIndicator               : 'me.relex:circleindicator:1.1.8@aar',
 
         // internet libraries
