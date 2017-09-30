@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.parceler.Parcels;
 
@@ -145,7 +146,7 @@ public class RatingsFragment extends BaseFragment {
             watchStatusIcon.setImageResource(status.getDrawableId());
             Glide.with(context)
                     .load(ratingShow)
-                    .centerCrop()
+                    .apply(RequestOptions.centerCropTransform())
                     .into(image);
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), ShowActivity.class);

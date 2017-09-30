@@ -16,6 +16,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.Collections;
 
@@ -152,7 +153,7 @@ public class EpisodeActivity extends HomeActivity {
     private void bindEpisodePreviewImage(String url) {
         Glide.with(this)
                 .load(url)
-                .centerCrop()
+                .apply(RequestOptions.centerCropTransform())
                 .into(episodeImage);
     }
 

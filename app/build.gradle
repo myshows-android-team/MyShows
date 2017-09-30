@@ -60,6 +60,7 @@ dependencies {
     implementation libraries.retrofit
     implementation libraries.retrofitRxJava
     implementation libraries.retrofitJackson
+    kapt libraries.glideCompiler
     implementation libraries.glide
     implementation libraries.glideOkhttp
 

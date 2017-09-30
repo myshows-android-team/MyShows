@@ -24,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.parceler.Parcels;
 
@@ -132,7 +134,7 @@ public class ProfileActivity extends HomeActivity {
         // TODO: we need use background which user will select
         Glide.with(this)
                 .load("http://media.myshows.me/shows/normal/d/da/da3e7aee7483129e27208bd8e36c0b64.jpg")
-                .crossFade()
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(headerImage);
     }
 
@@ -345,8 +347,8 @@ public class ProfileActivity extends HomeActivity {
             name.setText(friend.getLogin());
             Glide.with(itemView.getContext())
                     .load(friend.getAvatarUrl())
-                    .crossFade()
-                    .centerCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .apply(RequestOptions.centerCropTransform())
                     .into(avatar);
         }
     }

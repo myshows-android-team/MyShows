@@ -32,10 +32,6 @@
         <activity
             android:name=".ui.activities.SettingsActivity"
             android:theme="@style/Theme.MyShows.Settings" />
-
-        <meta-data
-            android:name="me.myshows.android.model.glide.MyShowsGlideModule"
-            android:value="GlideModule" />
     </application>
 
 </manifest>
