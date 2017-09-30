@@ -2,18 +2,13 @@ buildscript {
     ext.kotlinVersion = '1.1.51'
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:3.0.0-beta6'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + kotlinVersion
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
-        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
         classpath 'io.realm:realm-gradle-plugin:3.7.2'
     }
-
-    // Exclude the version that the android plugin depends on. see https://github.com/evant/android-retrolambda-lombok#usage
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
 allprojects {
@@ -21,9 +16,7 @@ allprojects {
         jcenter()
         // add maven central repo because gradle can not find 'me.relex:circleindicator' in jcenter
         mavenCentral()
-        maven {
-            url "https://maven.google.com"
-        }
+        google()
     }
 }
 

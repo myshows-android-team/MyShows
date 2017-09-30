@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 
 android {
@@ -41,40 +40,40 @@ android {
 }
 
 dependencies {
-    compile libraries.kotlin
+    implementation libraries.kotlin
 
-    compile libraries.appCompat
-    compile libraries.cardView
-    compile libraries.design
-    compile libraries.preferenceV14
-    compile libraries.recyclerView
-    compile libraries.supportAnnotations
-    compile libraries.supportV13
+    implementation libraries.appCompat
+    implementation libraries.cardView
+    implementation libraries.design
+    implementation libraries.preferenceV14
+    implementation libraries.recyclerView
+    implementation libraries.supportAnnotations
+    implementation libraries.supportV13
 
-    compile (libraries.advRecyclerView) { transitive = true }
-    compile libraries.circleImageView
-    compile libraries.circleIndicator
+    implementation (libraries.advRecyclerView) { transitive = true }
+    implementation libraries.circleImageView
+    implementation libraries.circleIndicator
 
-    compile libraries.okhttp
-    compile libraries.okhttpLogging
-    compile libraries.okhttpUrlConnection
-    compile libraries.retrofit
-    compile libraries.retrofitRxJava
-    compile libraries.retrofitJackson
-    compile libraries.glide
-    compile libraries.glideOkhttp
+    implementation libraries.okhttp
+    implementation libraries.okhttpLogging
+    implementation libraries.okhttpUrlConnection
+    implementation libraries.retrofit
+    implementation libraries.retrofitRxJava
+    implementation libraries.retrofitJackson
+    implementation libraries.glide
+    implementation libraries.glideOkhttp
 
-    compile libraries.rxJava
-    compile libraries.rxAndroid
-    compile libraries.rxLifecycle
-    compile libraries.rxLifecycleComponents
+    implementation libraries.rxJava
+    implementation libraries.rxAndroid
+    implementation libraries.rxLifecycle
+    implementation libraries.rxLifecycleComponents
 
-    apt libraries.parceler
-    compile libraries.parcelerApi
+    kapt libraries.parceler
+    implementation libraries.parcelerApi
 
-    compile libraries.commonsCodec
-    compile libraries.commonsIO
+    implementation libraries.commonsCodec
+    implementation libraries.commonsIO
 
-    debugCompile libraries.leakCanary
-    releaseCompile libraries.leakCanaryNoOp
+    debugImplementation libraries.leakCanary
+    releaseImplementation libraries.leakCanaryNoOp
 }
