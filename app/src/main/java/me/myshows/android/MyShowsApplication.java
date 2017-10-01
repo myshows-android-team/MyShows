@@ -9,6 +9,7 @@ import com.squareup.leakcanary.RefWatcher;
 
 import java.net.CookieManager;
 
+import io.realm.Realm;
 import me.myshows.android.api.MyShowsClient;
 import me.myshows.android.api.impl.MyShowsClientImpl;
 import me.myshows.android.api.impl.PreferenceStorage;
@@ -29,6 +30,10 @@ public class MyShowsApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+
         CookieManager cookieManager = new CookieManager();
         JavaNetCookieJar cookieJar = new JavaNetCookieJar(cookieManager);
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -38,6 +43,7 @@ public class MyShowsApplication extends Application {
                 .addInterceptor(loggingInterceptor)
                 .build();
 
+        Realm.init(this);
         client = new MyShowsClientImpl.Builder(this)
                 .client(okHttpClient)
                 .storage(new PreferenceStorage(this, cookieManager.getCookieStore()))

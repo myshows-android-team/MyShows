@@ -23,6 +23,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
@@ -199,7 +200,7 @@ public class ShowActivity extends HomeActivity {
         rating.setText(getString(R.string.rating, show.getRating()));
         Glide.with(this)
                 .load(show)
-                .centerCrop()
+                .apply(RequestOptions.centerCropTransform())
                 .into(showImage);
     }
 

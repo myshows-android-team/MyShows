@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import me.myshows.android.MyShowsApplication;
@@ -210,7 +211,7 @@ public class MainActivity extends RxAppCompatActivity {
         // TODO: we need use background which user will select
         Glide.with(this)
                 .load("http://media.myshows.me/shows/normal/d/da/da3e7aee7483129e27208bd8e36c0b64.jpg")
-                .crossFade()
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(headerBackground);
     }
 

@@ -2,17 +2,13 @@ buildscript {
     ext.kotlinVersion = '1.1.51'
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:3.0.0-beta6'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + kotlinVersion
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
-        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+        classpath 'io.realm:realm-gradle-plugin:3.7.2'
     }
-
-    // Exclude the version that the android plugin depends on. see https://github.com/evant/android-retrolambda-lombok#usage
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
 allprojects {
@@ -20,16 +16,18 @@ allprojects {
         jcenter()
         // add maven central repo because gradle can not find 'me.relex:circleindicator' in jcenter
         mavenCentral()
+        google()
     }
 }
 
 def versions = [
-        supportLibs     : '23.1.1',
-        okhttp          : '3.1.1',
-        retrofit        : '2.0.0-beta4',
-        parceler        : '1.0.4',
+        supportLibs     : '25.4.0',
+        okhttp          : '3.9.0',
+        retrofit        : '2.3.0',
+        glide           : '4.1.1',
+        parceler        : '1.1.9',
         rxLifecycle     : '0.4.0',
-        leakCanary      : '1.4-beta1'
+        leakCanary      : '1.5.4'
 ]
 
 ext.libraries = [
@@ -46,8 +44,8 @@ ext.libraries = [
         supportV13                    : 'com.android.support:support-v13:' + versions.supportLibs,
 
         // UI libraries
-        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.6@aar',
-        circleImageView               : 'de.hdodenhof:circleimageview:2.0.0',
+        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.6@aar',
+        circleImageView               : 'de.hdodenhof:circleimageview:2.1.0',
         circleIndicator               : 'me.relex:circleindicator:1.1.8@aar',
 
         // internet libraries
@@ -57,17 +55,16 @@ ext.libraries = [
         retrofit                      : 'com.squareup.retrofit2:retrofit:' + versions.retrofit,
         retrofitRxJava                : 'com.squareup.retrofit2:adapter-rxjava:' + versions.retrofit,
         retrofitJackson               : 'com.squareup.retrofit2:converter-jackson:' + versions.retrofit,
-        glide                         : 'com.github.bumptech.glide:glide:3.7.0',
-        glideOkhttp                   : 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar',
+        glide                         : 'com.github.bumptech.glide:glide:' + versions.glide,
+        glideCompiler                 : 'com.github.bumptech.glide:compiler:' + versions.glide,
+        glideOkhttp                   : 'com.github.bumptech.glide:okhttp3-integration:' + versions.glide,
+
 
         // rx libraries
         rxJava                        : 'io.reactivex:rxjava:1.1.1',
         rxAndroid                     : 'io.reactivex:rxandroid:1.1.0',
         rxLifecycle                   : 'com.trello:rxlifecycle:' + versions.rxLifecycle,
         rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
-
-        // database libraries
-        realm                         : 'io.realm:realm-android:0.87.4',
 
         // other
         parceler                      : 'org.parceler:parceler:' + versions.parceler,

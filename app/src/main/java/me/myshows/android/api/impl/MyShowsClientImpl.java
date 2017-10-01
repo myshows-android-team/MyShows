@@ -74,7 +74,7 @@ public class MyShowsClientImpl implements MyShowsClient {
         this.observerScheduler = observerScheduler;
 
         // TODO: 07.02.16 extract to constructor arg as part of storage
-        this.manager = new RealmManager(context);
+        this.manager = new RealmManager();
 
         this.api = new Retrofit.Builder()
                 .baseUrl(API_URL)

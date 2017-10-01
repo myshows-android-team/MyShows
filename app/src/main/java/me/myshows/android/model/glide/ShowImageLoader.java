@@ -1,10 +1,11 @@
 package me.myshows.android.model.glide;
 
-import android.content.Context;
-
-import com.bumptech.glide.load.model.GenericLoaderFactory;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.Options;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
+import com.bumptech.glide.load.model.MultiModelLoaderFactory;
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 
 import java.io.InputStream;
@@ -26,12 +27,12 @@ public class ShowImageLoader extends BaseGlideUrlLoader<ShowImage> {
     // TODO: find right multiplier
     private static final int MULTIPLIER = 2;
 
-    public ShowImageLoader(Context context) {
-        super(context);
+    protected ShowImageLoader(ModelLoader<GlideUrl, InputStream> concreteLoader) {
+        super(concreteLoader);
     }
 
     @Override
-    protected String getUrl(ShowImage showImage, int width, int height) {
+    protected String getUrl(ShowImage showImage, int width, int height, Options options) {
         if (showImage instanceof QualityShowImage) {
             QualityShowImage qualityShowImage = (QualityShowImage) showImage;
             if (qualityShowImage.getImages() != null && qualityShowImage.getImages().length != 0) {
@@ -43,11 +44,19 @@ public class ShowImageLoader extends BaseGlideUrlLoader<ShowImage> {
         return showImage.getImage();
     }
 
+    @Override
+    public boolean handles(ShowImage showImage) {
+        return true;
+    }
+
     public static class LoaderFactory implements ModelLoaderFactory<ShowImage, InputStream> {
 
+        // TODO: pass global okhttp client here
+        private final ModelLoaderFactory<GlideUrl, InputStream> urlLoaderFactory = new OkHttpUrlLoader.Factory();
+
         @Override
-        public ModelLoader<ShowImage, InputStream> build(Context context, GenericLoaderFactory factories) {
-            return new ShowImageLoader(context);
+        public ModelLoader<ShowImage, InputStream> build(MultiModelLoaderFactory multiFactory) {
+            return new ShowImageLoader(urlLoaderFactory.build(multiFactory));
         }
 
         @Override

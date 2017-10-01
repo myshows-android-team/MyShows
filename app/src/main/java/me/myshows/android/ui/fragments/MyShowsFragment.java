@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
@@ -315,7 +316,7 @@ public class MyShowsFragment extends BaseFragment {
             remain.setText(itemView.getResources().getQuantityString(R.plurals.remain, showData.seriesLeft, showData.seriesLeft));
             Glide.with(itemView.getContext())
                     .load(showData.show)
-                    .crossFade()
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(image);
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), ShowActivity.class);
