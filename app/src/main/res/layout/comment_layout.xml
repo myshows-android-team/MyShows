@@ -61,6 +61,16 @@
         android:textSize="14sp"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur feugiat lorem felis, eget semper risus. " />
 
+    <ImageView
+        android:id="@+id/comment_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/default_padding"
+        android:layout_marginTop="@dimen/default_half_padding"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
