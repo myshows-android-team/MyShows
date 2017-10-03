@@ -98,7 +98,7 @@
 
     <!-- Profile screen -->
     <string name="profile">Profile</string>
-    <string name="place">#%s among friends</string>
+    <string name="place">#%d among friends</string>
     <plurals name="episodes_caption">
         <item quantity="one">episode</item>
         <item quantity="other">episodes</item>
@@ -118,7 +118,7 @@
     <string name="compact_mode">Compact mode</string>
     <string name="compact_mode_description">Display show in compact mode (without images)</string>
     <string name="clear_cache">Clear cache</string>
-    <string name="clear_cache_summary">0 bytes</string>
+    <string name="clear_cache_summary" translatable="false">0 bytes</string>
     <string name="clear_cache_dialog_title">Clear cache?</string>
     <string name="clear_cache_dialog_content">The application will clear show data from you device, but you can always download it again.</string>
     <string name="clear_cache_dialog_reject">Cancel</string>

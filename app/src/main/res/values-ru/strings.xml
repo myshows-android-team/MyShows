@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Login strings -->
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
@@ -101,18 +101,18 @@
 
     <!-- Profile screen -->
     <string name="profile">Профиль</string>
-    <string name="place">#%s среди друзей</string>
-    <plurals name="episodes_caption">
+    <string name="place">#%d среди друзей</string>
+    <plurals name="episodes_caption" tools:ignore="ImpliedQuantity">
         <item quantity="one">эпизод</item>
         <item quantity="few">эпизода</item>
         <item quantity="many">эпизодов</item>
     </plurals>
-    <plurals name="days_caption">
+    <plurals name="days_caption" tools:ignore="ImpliedQuantity">
         <item quantity="one">день</item>
         <item quantity="few">дня</item>
         <item quantity="many">дней</item>
     </plurals>
-    <plurals name="hours_caption">
+    <plurals name="hours_caption" tools:ignore="ImpliedQuantity">
         <item quantity="one">час</item>
         <item quantity="few">часа</item>
         <item quantity="many">часов</item>
