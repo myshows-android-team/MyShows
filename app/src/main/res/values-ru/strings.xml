@@ -64,6 +64,12 @@
         <item quantity="many">Читать %d комментариев</item>
     </plurals>
 
+    <!-- Comments screen string -->
+    <string name="hidden_comment">Показать комментарий</string>
+    <string name="up_vote">За</string>
+    <string name="down_vote">Против</string>
+    <string name="reply">Ответить</string>
+
     <!-- Feed screen strings -->
     <string name="m_watch_one_series">Посмотрел %1$s серию %2$s</string>
     <string name="f_watch_one_series">Посмотрела %1$s серию %2$s</string>

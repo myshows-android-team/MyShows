@@ -30,6 +30,12 @@
     <color name="list_feed_gray_text">#AAAAAA</color>
     <color name="list_feed_background">#EDEDED</color>
 
+    <!-- Comment layout colors -->
+    <color name="separate_line">@color/list_feed_background</color>
+    <color name="neutral_comment">@color/list_feed_gray_text</color>
+    <color name="positive_comment">#009900</color>
+    <color name="negative_comment">#BB2200</color>
+
     <!-- Settings colors -->
     <color name="preference_fallback_accent_color">@color/accent</color>
 </resources>
