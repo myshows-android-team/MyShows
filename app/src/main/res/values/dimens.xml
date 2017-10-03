@@ -33,4 +33,9 @@
     <!-- Profile dimens -->
     <dimen name="indicator_size">8dp</dimen>
 
+    <!-- Comment layout dimens -->
+    <dimen name="comment_avatar_size">18dp</dimen>
+    <dimen name="comment_action_button_padding">12dp</dimen>
+    <dimen name="write_comment_fab_margin">@dimen/default_padding</dimen>
+
 </resources>

@@ -1,12 +1,12 @@
 package me.myshows.android.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by Whiplash on 2/9/2016.
- */
+import me.myshows.android.utils.DateUtils;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Comment {
 
@@ -27,6 +27,8 @@ public class Comment {
     private final int rating;
     private final boolean isBad;
     private final boolean isEditable;
+
+    private final long createdAtMillis;
 
     @JsonCreator
     public Comment(@JsonProperty("userCommentId") int userCommentId, @JsonProperty("showId") int showId,
@@ -55,6 +57,8 @@ public class Comment {
         this.rating = rating;
         this.isBad = isBad;
         this.isEditable = isEditable;
+
+        this.createdAtMillis = DateUtils.parseInMillisISO8601(createdAt);
     }
 
     @JsonProperty("userCommentId")
@@ -140,5 +144,10 @@ public class Comment {
     @JsonProperty("isEditable")
     public boolean isEditable() {
         return isEditable;
+    }
+
+    @JsonIgnore
+    public long getCreatedAtMillis() {
+        return createdAtMillis;
     }
 }

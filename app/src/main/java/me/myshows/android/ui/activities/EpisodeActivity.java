@@ -23,6 +23,7 @@ import java.util.Collections;
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
+import me.myshows.android.model.Episode;
 import me.myshows.android.model.EpisodeComments;
 import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.EpisodeRating;
@@ -148,6 +149,8 @@ public class EpisodeActivity extends HomeActivity {
         bindWatched(episode.getTotalWatched());
         airDate.setText(episode.getAirDate());
         bindRating(episode.getRating());
+
+        commentsLayout.setOnClickListener(v -> startCommentActivity(episode));
     }
 
     private void bindEpisodePreviewImage(String url) {
@@ -180,6 +183,13 @@ public class EpisodeActivity extends HomeActivity {
         } else {
             commentsInformation.setText(getResources().getQuantityString(R.plurals.read_comments, count, count));
         }
+    }
+
+    private void startCommentActivity(Episode episode) {
+        Intent intent = new Intent(this, CommentsActivity.class);
+        intent.putExtra(CommentsActivityKt.EPISODE_ID, episode.getId());
+        intent.putExtra(CommentsActivityKt.EPISODE_TITLE, episode.getTitle());
+        startActivity(intent);
     }
 
     private void bindWatchStatus(boolean isWatched) {
