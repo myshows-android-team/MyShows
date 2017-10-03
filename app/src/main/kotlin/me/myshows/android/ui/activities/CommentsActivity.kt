@@ -12,6 +12,7 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -115,6 +116,7 @@ private class CommentHolder(
         setDate(itemView.date, comment.createdAtMillis)
         setRating(itemView.rating, comment.rating)
         setCommentText(itemView.comment, comment.comment, comment.isBad)
+        setCommentImage(itemView.comment_image, comment.image)
 
         changeVoteState(itemView.vote_up, comment.isMyPlus, R.drawable.upvote, R.drawable.upvote_active)
         changeVoteState(itemView.vote_down, comment.isMyMinus, R.drawable.downvote, R.drawable.downvote_active)
@@ -158,6 +160,17 @@ private class CommentHolder(
         }
         textView.alpha = 1F
         textView.setOnClickListener(null)
+    }
+
+    private fun setCommentImage(imageView: ImageView, imageUrl: String?) {
+        if (imageUrl == null) {
+            imageView.visibility = View.GONE
+        } else {
+            imageView.visibility = View.VISIBLE
+            Glide.with(imageView.context)
+                    .load(imageUrl)
+                    .into(imageView)
+        }
     }
 
     private fun changeVoteState(textView: TextView, myVote: Boolean,
