@@ -61,6 +61,14 @@
         android:textSize="14sp"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur feugiat lorem felis, eget semper risus. " />
 
+    <ImageView
+        android:id="@+id/comment_attach_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/default_padding"
+        android:layout_marginTop="@dimen/default_half_padding"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,24 +77,24 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/MyShows.CommentControlButton"
             android:id="@+id/reply"
+            style="@style/MyShows.CommentControlButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/reply"
             android:text="@string/reply" />
 
         <TextView
-            style="@style/MyShows.CommentControlButton"
             android:id="@+id/vote_down"
+            style="@style/MyShows.CommentControlButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/downvote"
             android:text="@string/down_vote" />
 
         <TextView
-            style="@style/MyShows.CommentControlButton"
             android:id="@+id/vote_up"
+            style="@style/MyShows.CommentControlButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/upvote"

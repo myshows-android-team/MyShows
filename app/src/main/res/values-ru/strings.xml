@@ -69,6 +69,10 @@
     <string name="up_vote">За</string>
     <string name="down_vote">Против</string>
     <string name="reply">Ответить</string>
+    <string name="comment_hint">Ваш комментарий…</string>
+    <string name="add_comment">Написать комментарий</string>
+    <string name="post_comment">Написать</string>
+    <string name="cancel_comment">Отмена</string>
 
     <!-- Feed screen strings -->
     <string name="m_watch_one_series">Посмотрел %1$s серию %2$s</string>

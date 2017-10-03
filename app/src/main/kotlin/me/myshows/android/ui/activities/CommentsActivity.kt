@@ -1,19 +1,24 @@
 package me.myshows.android.ui.activities
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.format.DateUtils
 import android.util.Pair
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.comment_layout.view.*
@@ -41,6 +46,9 @@ class CommentsActivity : HomeActivity() {
 
     private lateinit var client: MyShowsClient
 
+    private var episodeId: Int = 0
+    private var offset: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.comments_activity)
@@ -49,10 +57,13 @@ class CommentsActivity : HomeActivity() {
 
         setupActionBar(toolbar)
         setupRecyclerView(recycler_view)
+        setupRefreshLayout(swipe_layout)
+        setupFab(new_comment)
+        setupRecyclerViewScrollBehaviour(recycler_view, swipe_layout, new_comment)
 
-        val episodeId = extractAndBindEpisodeData(intent)
-        val offset = resources.getDimensionPixelSize(R.dimen.default_padding)
-        loadData(episodeId, offset)
+        episodeId = extractAndBindEpisodeData(intent)
+        offset = resources.getDimensionPixelSize(R.dimen.default_padding)
+        loadData()
     }
 
     @SuppressLint("PrivateResource")
@@ -61,18 +72,42 @@ class CommentsActivity : HomeActivity() {
         recyclerView.setHasFixedSize(true)
     }
 
+    private fun setupRefreshLayout(swipeLayout: SwipeRefreshLayout) {
+        swipeLayout.setColorSchemeResources(R.color.primaryDark, R.color.primary)
+        swipeLayout.setOnRefreshListener { loadData() }
+    }
+
+    private fun setupFab(fab: FloatingActionButton) {
+        fab.setOnClickListener { showAddCommentDialog(this, null) }
+    }
+
+    private fun setupRecyclerViewScrollBehaviour(recyclerView: RecyclerView, swipeLayout: SwipeRefreshLayout, fab: FloatingActionButton) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                swipeLayout.isEnabled = (recyclerView.getChildAt(0)?.top ?: 0) >= 0
+                when {
+                    dy > 0 -> fab.hide()
+                    dy < 0 -> fab.show()
+                }
+            }
+        })
+    }
+
     private fun extractAndBindEpisodeData(intent: Intent): Int {
         supportActionBar?.title = intent.getStringExtra(EPISODE_TITLE)
         return intent.getIntExtra(EPISODE_ID, 0)
     }
 
-    private fun loadData(episodeId: Int, offset: Int) {
+    private fun loadData() {
         client.comments(episodeId)
                 .compose(bindToLifecycle())
                 .observeOn(Schedulers.computation())
                 .map { extractOrderedComments(it) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { recycler_view.adapter = CommentsAdapter(it, offset) }
+                .subscribe {
+                    recycler_view.adapter = CommentsAdapter(it, offset)
+                    swipe_layout.isRefreshing = false
+                }
     }
 
     private fun extractOrderedComments(information: EpisodeComments): List<Pair<Comment, Int>> {
@@ -118,7 +153,9 @@ class CommentsActivity : HomeActivity() {
             setDate(itemView.date, comment.createdAtMillis)
             setRating(itemView.rating, comment.rating)
             setCommentText(itemView.comment, comment.comment, comment.isBad)
+            setCommentImage(itemView.comment_attach_image, comment.image)
 
+            itemView.reply.setOnClickListener { showAddCommentDialog(itemView.context, comment.siteUser.login) }
             changeVoteState(itemView.vote_up, comment.isMyPlus, R.drawable.upvote, R.drawable.upvote_active)
             changeVoteState(itemView.vote_down, comment.isMyMinus, R.drawable.downvote, R.drawable.downvote_active)
         }
@@ -164,6 +201,18 @@ class CommentsActivity : HomeActivity() {
             textView.setOnClickListener(null)
         }
 
+        private fun setCommentImage(imageView: ImageView, imageUrl: String?) {
+            if (imageUrl == null) {
+                imageView.visibility = View.GONE
+            } else {
+                imageView.visibility = View.VISIBLE
+                Glide.with(imageView.context)
+                        .load(imageUrl)
+                        .apply(RequestOptions.centerCropTransform())
+                        .into(imageView)
+            }
+        }
+
         private fun changeVoteState(textView: TextView, myVote: Boolean,
                                     iconId: Int, activeIconId: Int) {
             if (myVote) {
@@ -189,5 +238,45 @@ class CommentsActivity : HomeActivity() {
                 holder.bind(comments[position], position == 0)
 
         override fun getItemCount(): Int = comments.size
+    }
+
+    companion object {
+        private fun showAddCommentDialog(context: Context, replyUsername: String?) {
+            val commentEditText = buildCommentEditText(context, replyUsername)
+
+            AlertDialog.Builder(context)
+                    .setTitle(R.string.add_comment)
+                    .setView(commentEditText)
+                    .setCancelable(true)
+                    .setPositiveButton(R.string.post_comment) { dialog, _ ->
+                        Toast.makeText(context, commentEditText.text, Toast.LENGTH_LONG).show()
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(R.string.cancel_comment) { dialog, _ -> dialog.dismiss() }
+                    .create()
+                    .show()
+        }
+
+        @SuppressLint("SetTextI18n")
+        private fun buildCommentEditText(context: Context, replyUsername: String?): EditText {
+            val marginTop = context.resources.getDimensionPixelSize(R.dimen.comment_dialog_padding_top)
+            val margin = context.resources.getDimensionPixelSize(R.dimen.comment_dialog_padding)
+
+            return EditText(context).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                )
+                background = null
+                gravity = Gravity.LEFT or Gravity.TOP
+                setPadding(margin, marginTop, margin, margin)
+                setLines(5)
+                setTextColor(ContextCompat.getColor(context, R.color.dark_gray))
+                setHint(R.string.comment_hint)
+                if (replyUsername != null) {
+                    append("@$replyUsername: ")
+                }
+            }
+        }
     }
 }
