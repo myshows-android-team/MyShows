@@ -63,6 +63,12 @@
         <item quantity="other">Read %d comments</item>
     </plurals>
 
+    <!-- Comments screen string -->
+    <string name="hidden_comment">Show this comment</string>
+    <string name="up_vote">Up Vote</string>
+    <string name="down_vote">Down Vote</string>
+    <string name="reply">Reply</string>
+
     <!-- Feed screen strings -->
     <string name="m_watch_one_series">Watched %1$s series of %2$s</string>
     <string name="f_watch_one_series">Watched %1$s series of %2$s</string>
