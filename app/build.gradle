@@ -43,6 +43,22 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+                events 'passed', 'skipped', 'failed'
+                exceptionFormat = 'full'
+            }
+            afterSuite { desc, result ->
+                if (!desc.parent) {
+                    def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                    println("\n$output\n")
+                }
+            }
+        }
     }
 }
 
@@ -87,4 +103,8 @@ dependencies {
 
     debugImplementation libraries.leakCanary
     releaseImplementation libraries.leakCanaryNoOp
+
+    testImplementation libraries.junit
+    testImplementation libraries.assertj
+    testImplementation libraries.mockwebserver
 }

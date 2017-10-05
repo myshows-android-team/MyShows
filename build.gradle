@@ -79,5 +79,10 @@ ext.libraries = [
         commonsIO                     : 'commons-io:commons-io:2.4',
 
         leakCanary                    : 'com.squareup.leakcanary:leakcanary-android:' + versions.leakCanary,
-        leakCanaryNoOp                : 'com.squareup.leakcanary:leakcanary-android-no-op:' + versions.leakCanary
+        leakCanaryNoOp                : 'com.squareup.leakcanary:leakcanary-android-no-op:' + versions.leakCanary,
+
+        // test libraries
+        junit                         : 'junit:junit:4.12',
+        mockwebserver                 : 'com.squareup.okhttp3:mockwebserver:' + versions.okhttp,
+        assertj                       : 'org.assertj:assertj-core:2.8.0'
 ]
