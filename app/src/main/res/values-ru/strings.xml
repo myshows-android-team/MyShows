@@ -18,6 +18,10 @@
     <string name="settings">Настройки</string>
     <string name="about">О программе</string>
 
+    <!-- Search menu strings -->
+    <string name="search">Поиск</string>
+    <string name="search_hint">Поиск…</string>
+
     <!-- My series strings -->
     <plurals name="remain">
         <item quantity="one">Осталась %d серия</item>
