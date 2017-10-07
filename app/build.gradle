@@ -3,18 +3,21 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     // we use 25 sdk because advRecyclerView doesn't support 26 sdk yet
     compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId 'me.myshows.android'
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
         versionName '1.0'
+
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -40,6 +43,22 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+                events 'passed', 'skipped', 'failed'
+                exceptionFormat = 'full'
+            }
+            afterSuite { desc, result ->
+                if (!desc.parent) {
+                    def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                    println("\n$output\n")
+                }
+            }
+        }
     }
 }
 
@@ -57,6 +76,9 @@ dependencies {
     implementation (libraries.advRecyclerView) { transitive = true }
     implementation libraries.circleImageView
     implementation libraries.circleIndicator
+
+    implementation libraries.jackson
+    implementation libraries.jacksonKotlin
 
     implementation libraries.okhttp
     implementation libraries.okhttpLogging
@@ -81,4 +103,8 @@ dependencies {
 
     debugImplementation libraries.leakCanary
     releaseImplementation libraries.leakCanaryNoOp
+
+    testImplementation libraries.junit
+    testImplementation libraries.assertj
+    testImplementation libraries.mockwebserver
 }
