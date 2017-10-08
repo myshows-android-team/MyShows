@@ -1,4 +1,4 @@
-package me.myshows.android.api.jsonrpc
+package me.myshows.android.api2.jsonrpc
 
 sealed class Result<out T, out E>
 

@@ -1,10 +1,11 @@
-package me.myshows.android.api.jsonrpc
+package me.myshows.android.api2.jsonrpc
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import me.myshows.android.api.BaseMockWebServerTest
+import me.myshows.android.api.jsonrpc.*
+import me.myshows.android.api2.BaseMockWebServerTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
 import okio.Buffer
