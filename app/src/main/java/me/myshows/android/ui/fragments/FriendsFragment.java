@@ -1,5 +1,6 @@
 package me.myshows.android.ui.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -56,6 +59,15 @@ public class FriendsFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
 
+    @Inject
+    MyShowsClient client;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        MyShowsApplication.getComponent(activity).inject(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,7 +87,6 @@ public class FriendsFragment extends BaseFragment {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsApplication.getMyShowsClient(getActivity());
         Observable<Map<String, String>> friendsAvatarObservable = client.profile()
                 .map(FriendsFragment::extractAvatarUrls);
         Observable.combineLatest(client.friendsNews(), friendsAvatarObservable, FriendsFragment::makeAdapter)

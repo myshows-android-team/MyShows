@@ -31,6 +31,8 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -64,10 +66,15 @@ public class ProfileActivity extends HomeActivity {
 
     private HeaderPageAdapter headerAdapter;
 
+    @Inject
+    MyShowsClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
+
+        MyShowsApplication.getComponent(this).inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setupActionBar(toolbar);
@@ -139,7 +146,6 @@ public class ProfileActivity extends HomeActivity {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsApplication.getMyShowsClient(this);
         Observable<User> profile = client.profile()
                 .doOnNext(this::onUserLoaded);
         Observable.combineLatest(profile, client.profileShows(), (user, shows) -> ProfileAdapter.create(friendLayout, shows))

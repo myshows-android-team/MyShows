@@ -1,5 +1,6 @@
 package me.myshows.android.ui.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -25,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -40,6 +43,15 @@ import rx.Observable;
 public class RatingsFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
+
+    @Inject
+    MyShowsClient client;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        MyShowsApplication.getComponent(activity).inject(this);
+    }
 
     @Nullable
     @Override
@@ -57,7 +69,6 @@ public class RatingsFragment extends BaseFragment {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsApplication.getMyShowsClient(getActivity());
         Observable<Map<Integer, UserShow>> userShowObservable = client.profileShows()
                 .map(shows -> {
                     Map<Integer, UserShow> userShows = new HashMap<>();

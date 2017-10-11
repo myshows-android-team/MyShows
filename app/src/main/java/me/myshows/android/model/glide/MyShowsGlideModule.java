@@ -9,6 +9,9 @@ import com.bumptech.glide.module.AppGlideModule;
 
 import java.io.InputStream;
 
+import me.myshows.android.MyShowsApplication;
+import okhttp3.OkHttpClient;
+
 /**
  * Created by warrior on 02.08.15.
  */
@@ -17,7 +20,8 @@ public class MyShowsGlideModule extends AppGlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
-        registry.append(ShowImage.class, InputStream.class, new ShowImageLoader.LoaderFactory());
+        OkHttpClient client = MyShowsApplication.getComponent(context).okHttpClient();
+        registry.append(ShowImage.class, InputStream.class, new ShowImageLoader.LoaderFactory(client));
     }
 
     @Override

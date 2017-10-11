@@ -7,24 +7,17 @@ import android.support.annotation.NonNull;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import java.net.CookieManager;
-
 import io.realm.Realm;
-import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.api.impl.MyShowsClientImpl;
-import me.myshows.android.api.impl.PreferenceStorage;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import rx.android.schedulers.AndroidSchedulers;
+import me.myshows.android.api.ApiModule;
 
 /**
  * Created by warrior on 05.08.15.
  */
 public class MyShowsApplication extends Application {
 
+    private AppComponent appComponent;
+
     private RefWatcher refWatcher;
-    private MyShowsClient client;
 
     @Override
     public void onCreate() {
@@ -34,30 +27,26 @@ public class MyShowsApplication extends Application {
             return;
         }
 
-        CookieManager cookieManager = new CookieManager();
-        JavaNetCookieJar cookieJar = new JavaNetCookieJar(cookieManager);
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
-                .addInterceptor(loggingInterceptor)
-                .build();
-
         Realm.init(this);
-        client = new MyShowsClientImpl.Builder(this)
-                .client(okHttpClient)
-                .storage(new PreferenceStorage(this, cookieManager.getCookieStore()))
-                .observerScheduler(AndroidSchedulers.mainThread())
-                .build();
-
         refWatcher = LeakCanary.install(this);
+        appComponent = buildComponent();
     }
 
-    public static MyShowsClient getMyShowsClient(@NonNull Context context) {
+    protected AppComponent buildComponent() {
+        return DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .netModule(new NetModule())
+                .apiModule(new ApiModule())
+                .build();
+    }
+
+    @NonNull
+    public static AppComponent getComponent(@NonNull Context context) {
         MyShowsApplication application = (MyShowsApplication) context.getApplicationContext();
-        return application.client;
+        return application.appComponent;
     }
 
+    @NonNull
     public static RefWatcher getRefWatcher(@NonNull Context context) {
         MyShowsApplication application = (MyShowsApplication) context.getApplicationContext();
         return application.refWatcher;

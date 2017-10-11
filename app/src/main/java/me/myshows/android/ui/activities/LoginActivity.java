@@ -26,6 +26,8 @@ import android.widget.Toast;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import javax.inject.Inject;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -41,25 +43,26 @@ public class LoginActivity extends RxAppCompatActivity {
     private static final String REGISTER_URL = "http://myshows.me/";
     private static final int ANIMATION_DURATION = 500;
 
-    private MyShowsClient client;
-
     private View logo;
     private ViewGroup loginLayout;
 
     private boolean needAnimate;
+
+    @Inject
+    MyShowsClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        MyShowsApplication.getComponent(this).inject(this);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
-
-        client = MyShowsApplication.getMyShowsClient(this);
 
         logo = findViewById(R.id.logo);
         loginLayout = (ViewGroup) findViewById(R.id.login_layout);

@@ -95,6 +95,9 @@ dependencies {
     implementation libraries.rxLifecycle
     implementation libraries.rxLifecycleComponents
 
+    kapt libraries.daggerProcessor
+    implementation libraries.dagger
+
     kapt libraries.parceler
     implementation libraries.parcelerApi
 
