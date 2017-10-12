@@ -1,4 +1,4 @@
-package me.myshows.android.api
+package me.myshows.android.api2
 
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
