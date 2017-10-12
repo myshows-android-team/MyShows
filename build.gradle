@@ -29,7 +29,9 @@ def versions = [
         parceler        : '1.1.9',
         rxLifecycle     : '0.4.0',
         leakCanary      : '1.5.4',
-        jackson         : '2.9.1'
+        jackson         : '2.9.1',
+        dagger          : '2.12'
+
 ]
 
 ext.libraries = [
@@ -70,6 +72,10 @@ ext.libraries = [
         rxAndroid                     : 'io.reactivex:rxandroid:1.1.0',
         rxLifecycle                   : 'com.trello:rxlifecycle:' + versions.rxLifecycle,
         rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
+
+        // dagger
+        dagger                        : 'com.google.dagger:dagger:' + versions.dagger,
+        daggerProcessor               : 'com.google.dagger:dagger-compiler:' + versions.dagger,
 
         // other
         parceler                      : 'org.parceler:parceler:' + versions.parceler,

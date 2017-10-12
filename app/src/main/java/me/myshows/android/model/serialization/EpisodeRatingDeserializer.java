@@ -20,7 +20,7 @@ public class EpisodeRatingDeserializer extends JsonDeserializer<EpisodeRating> i
 
     private final JsonDeserializer<EpisodeRating> defaultDeserializer;
 
-    protected EpisodeRatingDeserializer(JsonDeserializer<EpisodeRating> defaultDeserializer) {
+    public EpisodeRatingDeserializer(JsonDeserializer<EpisodeRating> defaultDeserializer) {
         this.defaultDeserializer = defaultDeserializer;
     }
 

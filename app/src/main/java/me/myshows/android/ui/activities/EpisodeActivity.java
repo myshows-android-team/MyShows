@@ -3,7 +3,6 @@ package me.myshows.android.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +18,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.Collections;
+
+import javax.inject.Inject;
 
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
@@ -47,8 +48,6 @@ public class EpisodeActivity extends HomeActivity {
 
     private static final int NOT_WATCHED_EPISODE_RATING = -1;
 
-    private MyShowsClient client;
-
     private ImageView episodeImage;
     private CollapsingToolbarLayout collapsingToolbar;
     private FloatingActionButton fab;
@@ -61,12 +60,15 @@ public class EpisodeActivity extends HomeActivity {
     private View commentsLayout;
     private TextView commentsInformation;
 
+    @Inject
+    MyShowsClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.episode_activity);
 
-        client = MyShowsApplication.getMyShowsClient(this);
+        MyShowsApplication.getComponent(this).inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setupActionBar(toolbar);

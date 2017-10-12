@@ -1,5 +1,6 @@
 package me.myshows.android.ui.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -33,6 +34,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -61,6 +64,15 @@ public class MyShowsFragment extends BaseFragment {
     private MyShowsAdapter originalAdapter;
     private RecyclerViewExpandableItemManager expandableItemManager;
     private RecyclerView.Adapter wrappedAdapter;
+
+    @Inject
+    MyShowsClient client;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        MyShowsApplication.getComponent(activity).inject(this);
+    }
 
     @Nullable
     @Override
@@ -96,7 +108,6 @@ public class MyShowsFragment extends BaseFragment {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsApplication.getMyShowsClient(getActivity());
         Observable<SparseArray<UserShow>> userShows = client.profileShows()
                 .map(showList -> {
                     SparseArray<UserShow> shows = new SparseArray<>(showList.size());

@@ -36,6 +36,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -68,8 +70,6 @@ public class ShowActivity extends HomeActivity {
     private static final String OPEN_P_TAG = "<p>";
     private static final String CLOSE_P_TAG = "</p>";
 
-    private MyShowsClient client;
-
     private ImageView showImage;
     private CollapsingToolbarLayout collapsingToolbar;
     private FloatingActionButton fab;
@@ -88,12 +88,15 @@ public class ShowActivity extends HomeActivity {
 
     private UserShow userShow;
 
+    @Inject
+    MyShowsClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_activity);
 
-        client = MyShowsApplication.getMyShowsClient(this);
+        MyShowsApplication.getComponent(this).inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setupActionBar(toolbar);

@@ -1,5 +1,7 @@
 package me.myshows.android.model.glide;
 
+import android.support.annotation.NonNull;
+
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -9,6 +11,8 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory;
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 
 import java.io.InputStream;
+
+import okhttp3.OkHttpClient;
 
 /**
  * Created by warrior on 23.08.15.
@@ -51,8 +55,11 @@ public class ShowImageLoader extends BaseGlideUrlLoader<ShowImage> {
 
     public static class LoaderFactory implements ModelLoaderFactory<ShowImage, InputStream> {
 
-        // TODO: pass global okhttp client here
-        private final ModelLoaderFactory<GlideUrl, InputStream> urlLoaderFactory = new OkHttpUrlLoader.Factory();
+        private final ModelLoaderFactory<GlideUrl, InputStream> urlLoaderFactory;
+
+        public LoaderFactory(@NonNull OkHttpClient client) {
+            urlLoaderFactory = new OkHttpUrlLoader.Factory(client);
+        }
 
         @Override
         public ModelLoader<ShowImage, InputStream> build(MultiModelLoaderFactory multiFactory) {

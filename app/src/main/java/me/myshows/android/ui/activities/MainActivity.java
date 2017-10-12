@@ -23,6 +23,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import javax.inject.Inject;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.R;
 import me.myshows.android.api.MyShowsClient;
@@ -64,10 +66,15 @@ public class MainActivity extends RxAppCompatActivity {
 
     private int currentItemId;
 
+    @Inject
+    MyShowsClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MyShowsApplication.getComponent(this).inject(this);
 
         fragmentManager = getFragmentManager();
         if (savedInstanceState == null) {
@@ -196,7 +203,6 @@ public class MainActivity extends RxAppCompatActivity {
     }
 
     private void loadData() {
-        MyShowsClient client = MyShowsApplication.getMyShowsClient(this);
         client.profile()
                 .compose(bindToLifecycle())
                 .subscribe(user -> {

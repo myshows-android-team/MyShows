@@ -26,6 +26,7 @@ import me.myshows.android.model.EpisodeComments
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.HashMap
 
 private const val INITIAL_NESTING_LEVEL = 1
@@ -37,13 +38,14 @@ class CommentsActivity : HomeActivity() {
 
     private val TAG = CommentsActivity::class.java.simpleName
 
-    private lateinit var client: MyShowsClient
+    @Inject
+    lateinit var client: MyShowsClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.comments_activity)
 
-        client = MyShowsApplication.getMyShowsClient(this)
+        MyShowsApplication.getComponent(this).inject(this)
 
         setupActionBar(toolbar)
         setupRecyclerView(recycler_view)

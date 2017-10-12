@@ -25,9 +25,12 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import me.myshows.android.MyShowsApplication;
 import me.myshows.android.MyShowsSettings;
 import me.myshows.android.R;
+import me.myshows.android.api.MyShowsClient;
 import rx.Completable;
 import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,6 +61,15 @@ public class SettingsFragment extends PreferenceFragment {
     private CheckBoxPreference vibrationPreference;
 
     private CompositeSubscription subscriptions;
+
+    @Inject
+    MyShowsClient client;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        MyShowsApplication.getComponent(activity).inject(this);
+    }
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -132,7 +144,6 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void signOut() {
-        MyShowsApplication.getMyShowsClient(getActivity()).clear();
         PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().clear().apply();
     }
 
