@@ -1,11 +1,13 @@
-package me.myshows.android
+package me.myshows.android.net
 
 import dagger.Module
 import dagger.Provides
+import me.myshows.android.BuildConfig
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.net.CookieManager
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -26,4 +28,9 @@ open class NetModule {
                 .addInterceptor(loggingInterceptor)
                 .build()
     }
+
+    @Named("authHost")
+    @Singleton
+    @Provides
+    open fun authHost() = AUTH_HOST
 }
