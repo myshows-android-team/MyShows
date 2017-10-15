@@ -1,4 +1,4 @@
-package me.myshows.android.api.jsonrpc
+package me.myshows.android.api2.jsonrpc
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectReader
