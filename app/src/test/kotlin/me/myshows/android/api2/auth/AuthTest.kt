@@ -2,8 +2,8 @@ package me.myshows.android.api2.auth
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import me.myshows.android.api2.BaseMockWebServerTest
-import me.myshows.android.api2.MyShowsClient
-import me.myshows.android.api2.impl.MyShowsClientImpl
+import me.myshows.android.api2.auth.MyShowsAuthClient.RefreshResult.*
+import me.myshows.android.api2.auth.impl.MyShowsAuthClientImpl
 import me.myshows.android.api2.storage.InMemoryTokenStorage
 import me.myshows.android.storage.TokenStorage
 import me.myshows.android.storage.Tokens
@@ -19,13 +19,13 @@ import java.net.HttpURLConnection
 class AuthTest : BaseMockWebServerTest() {
 
     private val tokenStorage: TokenStorage = InMemoryTokenStorage()
-    private lateinit var client: MyShowsClient
+    private lateinit var client: MyShowsAuthClient
 
     private var shouldFailRequest: Boolean = false
 
     @Before
     fun setup() {
-        client = MyShowsClientImpl(resolve("/"), OkHttpClient(), jacksonObjectMapper(), tokenStorage)
+        client = MyShowsAuthClientImpl(resolve("/"), OkHttpClient(), jacksonObjectMapper(), tokenStorage)
     }
 
     @After
@@ -57,7 +57,7 @@ class AuthTest : BaseMockWebServerTest() {
         shouldFailRequest = false
 
         val result = client.refreshBlocking()
-        assertThat(result).isEqualTo(false)
+        assertThat(result).isEqualTo(NOTHING_TO_REFRESH)
         assertThat(tokenStorage.get()).isNull()
     }
 
@@ -67,7 +67,7 @@ class AuthTest : BaseMockWebServerTest() {
         tokenStorage.put(INITIAL_TOKENS)
 
         val result = client.refreshBlocking()
-        assertThat(result).isEqualTo(true)
+        assertThat(result).isEqualTo(SUCCESS)
         checkResponseTokens()
     }
 
@@ -77,7 +77,7 @@ class AuthTest : BaseMockWebServerTest() {
         tokenStorage.put(INITIAL_TOKENS)
 
         val result = client.refreshBlocking()
-        assertThat(result).isEqualTo(false)
+        assertThat(result).isEqualTo(ERROR)
         checkInitialTokens()
     }
 
@@ -105,9 +105,10 @@ class AuthTest : BaseMockWebServerTest() {
         assertThat(refreshToken).isEqualTo(expectedRefreshToken)
     }
 
-    private fun MyShowsClient.authBlocking(): Boolean = auth("user", "password")
+    private fun MyShowsAuthClient.authBlocking(): Boolean = auth("user", "password")
             .toBlocking().value()
-    private fun MyShowsClient.refreshBlocking(): Boolean = refreshTokens().toBlocking().value()
+    private fun MyShowsAuthClient.refreshBlocking(): MyShowsAuthClient.RefreshResult =
+            refreshTokens().toBlocking().value()
 
     companion object {
         private const val INITIAL_ACCESS_TOKEN: String = "4847e7c939a210e90b6fffbcf05a2a741ce6c847"
