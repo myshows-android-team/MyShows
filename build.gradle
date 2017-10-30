@@ -71,13 +71,18 @@ ext.libraries = [
         // rx libraries
         rxJava                        : 'io.reactivex:rxjava:1.1.1',
         rxJava2                       : 'io.reactivex.rxjava2:rxjava:2.1.6',
+        rxJavaInterop                 : 'com.github.akarnokd:rxjava2-interop:0.10.9',
         rxAndroid                     : 'io.reactivex:rxandroid:1.1.0',
+        rxAndroid2                    : 'io.reactivex.rxjava2:rxandroid:2.0.1',
         rxLifecycle                   : 'com.trello:rxlifecycle:' + versions.rxLifecycle,
         rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
+        rxBinding                     : 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.0.0',
 
         // dagger
         dagger                        : 'com.google.dagger:dagger:' + versions.dagger,
         daggerProcessor               : 'com.google.dagger:dagger-compiler:' + versions.dagger,
+
+        mosbyMvi                      : 'com.hannesdorfmann.mosby3:mvi:3.0.4',
 
         // other
         parceler                      : 'org.parceler:parceler:' + versions.parceler,

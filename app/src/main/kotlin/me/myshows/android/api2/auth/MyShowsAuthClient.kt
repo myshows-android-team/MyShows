@@ -8,7 +8,7 @@ interface MyShowsAuthClient {
 
     enum class RefreshResult {
         NOTHING_TO_REFRESH,
-        SUCCESS,
-        ERROR
+        ERROR,
+        SUCCESS
     }
 }

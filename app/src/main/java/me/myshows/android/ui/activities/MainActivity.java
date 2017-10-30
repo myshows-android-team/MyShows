@@ -34,6 +34,7 @@ import me.myshows.android.ui.fragments.FriendsFragment;
 import me.myshows.android.ui.fragments.MyShowsFragment;
 import me.myshows.android.ui.fragments.RatingsFragment;
 import me.myshows.android.ui.fragments.SettingsFragment;
+import me.myshows.android.ui.login.LoginActivity;
 
 /**
  * @author Whiplash

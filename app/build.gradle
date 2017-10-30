@@ -97,12 +97,17 @@ dependencies {
 
     implementation libraries.rxJava
     implementation libraries.rxJava2
+    implementation libraries.rxJavaInterop
     implementation libraries.rxAndroid
+    implementation libraries.rxAndroid2
     implementation libraries.rxLifecycle
     implementation libraries.rxLifecycleComponents
+    implementation libraries.rxBinding
 
     kapt libraries.daggerProcessor
     implementation libraries.dagger
+
+    implementation libraries.mosbyMvi
 
     kapt libraries.parceler
     implementation libraries.parcelerApi

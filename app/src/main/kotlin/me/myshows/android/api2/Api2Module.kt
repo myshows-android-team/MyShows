@@ -1,6 +1,7 @@
 package me.myshows.android.api2
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import dagger.Module
 import dagger.Provides
 import me.myshows.android.api2.auth.MyShowsAuthClient
@@ -12,6 +13,11 @@ import javax.inject.Singleton
 
 @Module
 class Api2Module {
+
+    @Singleton
+    @Provides
+    fun objectMapper(): ObjectMapper = jacksonObjectMapper()
+
 
     @Singleton
     @Provides
