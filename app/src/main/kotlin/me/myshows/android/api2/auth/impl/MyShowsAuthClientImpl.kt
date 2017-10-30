@@ -1,6 +1,7 @@
 package me.myshows.android.api2.auth.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.reactivex.Single
 import me.myshows.android.BuildConfig
 import me.myshows.android.api2.auth.MyShowsAuth
 import me.myshows.android.api2.auth.MyShowsAuthClient
@@ -9,9 +10,8 @@ import me.myshows.android.storage.TokenStorage
 import me.myshows.android.storage.Tokens
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
-import rx.Single
 
 class MyShowsAuthClientImpl(
         authHost: String,
@@ -23,7 +23,7 @@ class MyShowsAuthClientImpl(
     private val authApi: MyShowsAuth = Retrofit.Builder()
             .baseUrl(authHost)
             .client(okHttpClient)
-            .addCallAdapterFactory(RxJavaCallAdapterFactory.createAsync())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
             .addConverterFactory(JacksonConverterFactory.create(mapper))
             .build()
             .create(MyShowsAuth::class.java)

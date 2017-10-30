@@ -105,10 +105,10 @@ class AuthTest : BaseMockWebServerTest() {
         assertThat(refreshToken).isEqualTo(expectedRefreshToken)
     }
 
-    private fun MyShowsAuthClient.authBlocking(): Boolean = auth("user", "password")
-            .toBlocking().value()
+    private fun MyShowsAuthClient.authBlocking(): Boolean =
+            auth("user", "password").blockingGet()
     private fun MyShowsAuthClient.refreshBlocking(): MyShowsAuthClient.RefreshResult =
-            refreshTokens().toBlocking().value()
+            refreshTokens().blockingGet()
 
     companion object {
         private const val INITIAL_ACCESS_TOKEN: String = "4847e7c939a210e90b6fffbcf05a2a741ce6c847"

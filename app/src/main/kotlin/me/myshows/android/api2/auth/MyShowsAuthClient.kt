@@ -1,6 +1,6 @@
 package me.myshows.android.api2.auth
 
-import rx.Single
+import io.reactivex.Single
 
 interface MyShowsAuthClient {
     fun auth(username: String, password: String): Single<Boolean>

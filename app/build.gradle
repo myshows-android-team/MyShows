@@ -88,12 +88,15 @@ dependencies {
     implementation libraries.okhttpUrlConnection
     implementation libraries.retrofit
     implementation libraries.retrofitRxJava
+    implementation libraries.retrofitRxJava2
+
     implementation libraries.retrofitJackson
     kapt libraries.glideCompiler
     implementation libraries.glide
     implementation libraries.glideOkhttp
 
     implementation libraries.rxJava
+    implementation libraries.rxJava2
     implementation libraries.rxAndroid
     implementation libraries.rxLifecycle
     implementation libraries.rxLifecycleComponents

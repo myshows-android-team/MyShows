@@ -5,7 +5,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-rc1'
+        classpath 'com.android.tools.build:gradle:3.0.0'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + kotlinVersion
         classpath 'io.realm:realm-gradle-plugin:3.7.2'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.1'
@@ -62,6 +62,7 @@ ext.libraries = [
         okhttpUrlConnection           : 'com.squareup.okhttp3:okhttp-urlconnection:' + versions.okhttp,
         retrofit                      : 'com.squareup.retrofit2:retrofit:' + versions.retrofit,
         retrofitRxJava                : 'com.squareup.retrofit2:adapter-rxjava:' + versions.retrofit,
+        retrofitRxJava2               : 'com.squareup.retrofit2:adapter-rxjava2:' + versions.retrofit,
         retrofitJackson               : 'com.squareup.retrofit2:converter-jackson:' + versions.retrofit,
         glide                         : 'com.github.bumptech.glide:glide:' + versions.glide,
         glideCompiler                 : 'com.github.bumptech.glide:compiler:' + versions.glide,
@@ -69,6 +70,7 @@ ext.libraries = [
 
         // rx libraries
         rxJava                        : 'io.reactivex:rxjava:1.1.1',
+        rxJava2                       : 'io.reactivex.rxjava2:rxjava:2.1.6',
         rxAndroid                     : 'io.reactivex:rxandroid:1.1.0',
         rxLifecycle                   : 'com.trello:rxlifecycle:' + versions.rxLifecycle,
         rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
