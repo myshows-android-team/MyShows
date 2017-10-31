@@ -6,14 +6,13 @@ apply plugin: 'realm-android'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
-    // we use 25 sdk because advRecyclerView doesn't support 26 sdk yet
-    compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.0'
 
     defaultConfig {
         applicationId 'me.myshows.android'
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName '1.0'
 
