@@ -10,17 +10,12 @@ import me.myshows.android.ui.fragments.FriendsFragment
 import me.myshows.android.ui.fragments.MyShowsFragment
 import me.myshows.android.ui.fragments.RatingsFragment
 import me.myshows.android.ui.fragments.SettingsFragment
+import me.myshows.android.ui.login.LoginPresenter
 import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = arrayOf(
-        AppModule::class,
-        NetModule::class,
-        StorageModule::class,
-        ApiModule::class,
-        Api2Module::class
-))
+@Component(modules = [AppModule::class, NetModule::class, StorageModule::class, ApiModule::class, Api2Module::class])
 interface AppComponent {
 
     // TODO: try use dagger.android
@@ -30,7 +25,6 @@ interface AppComponent {
     fun inject(activity: ShowActivity)
     fun inject(activity: CommentsActivity)
     fun inject(activity: EpisodeActivity)
-    fun inject(activity: LoginActivity)
     fun inject(activity: ProfileActivity)
 
     fun inject(fragment: FriendsFragment)
@@ -40,4 +34,6 @@ interface AppComponent {
 
     // Only for glide
     fun okHttpClient(): OkHttpClient
+
+    fun newLoginPresenter(): LoginPresenter
 }

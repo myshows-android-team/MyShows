@@ -5,3 +5,4 @@ local.properties
 build
 *.iml
 *.zip
+app/gradle.properties

@@ -7,7 +7,7 @@ apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.0'
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId 'me.myshows.android'
@@ -18,8 +18,8 @@ android {
 
         multiDexEnabled true
 
-        buildConfigField 'String', 'CLIENT_ID', "\"${System.env.CLIENT_ID}\""
-        buildConfigField 'String', 'CLIENT_SECRET', "\"${System.env.CLIENT_SECRET}\""
+        buildConfigField 'String', 'CLIENT_ID', CLIENT_ID
+        buildConfigField 'String', 'CLIENT_SECRET', CLIENT_SECRET
     }
     buildTypes {
         release {
@@ -87,18 +87,26 @@ dependencies {
     implementation libraries.okhttpUrlConnection
     implementation libraries.retrofit
     implementation libraries.retrofitRxJava
+    implementation libraries.retrofitRxJava2
+
     implementation libraries.retrofitJackson
     kapt libraries.glideCompiler
     implementation libraries.glide
     implementation libraries.glideOkhttp
 
     implementation libraries.rxJava
+    implementation libraries.rxJava2
+    implementation libraries.rxJavaInterop
     implementation libraries.rxAndroid
+    implementation libraries.rxAndroid2
     implementation libraries.rxLifecycle
     implementation libraries.rxLifecycleComponents
+    implementation libraries.rxBinding
 
     kapt libraries.daggerProcessor
     implementation libraries.dagger
+
+    implementation libraries.mosbyMvi
 
     kapt libraries.parceler
     implementation libraries.parcelerApi
