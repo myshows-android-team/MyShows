@@ -1,14 +1,14 @@
 buildscript {
-    ext.kotlinVersion = '1.1.51'
+    ext.kotlinVersion = '1.2.51'
     repositories {
         jcenter()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.1.3'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + kotlinVersion
         classpath 'io.realm:realm-gradle-plugin:3.7.2'
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.1'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.3'
     }
 }
 
@@ -22,16 +22,15 @@ allprojects {
 }
 
 def versions = [
-        supportLibs     : '25.4.0',
-        okhttp          : '3.9.0',
-        retrofit        : '2.3.0',
-        glide           : '4.1.1',
-        parceler        : '1.1.9',
+        supportLibs     : '27.1.1',
+        okhttp          : '3.11.0',
+        retrofit        : '2.4.0',
+        glide           : '4.7.1',
+        parceler        : '1.1.11',
         rxLifecycle     : '0.4.0',
-        leakCanary      : '1.5.4',
-        jackson         : '2.9.1',
-        dagger          : '2.12'
-
+        leakCanary      : '1.6.1',
+        jackson         : '2.9.6',
+        dagger          : '2.16'
 ]
 
 ext.libraries = [
@@ -48,9 +47,9 @@ ext.libraries = [
         supportV13                    : 'com.android.support:support-v13:' + versions.supportLibs,
 
         // UI libraries
-        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.10.6@aar',
-        circleImageView               : 'de.hdodenhof:circleimageview:2.1.0',
-        circleIndicator               : 'me.relex:circleindicator:1.1.8@aar',
+        advRecyclerView               : 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.11.0@aar',
+        circleImageView               : 'de.hdodenhof:circleimageview:2.2.0',
+        circleIndicator               : 'me.relex:circleindicator:1.2.2@aar',
 
         // jackson libraries
         jackson                       : 'com.fasterxml.jackson.core:jackson-databind:' + versions.jackson,
@@ -69,27 +68,27 @@ ext.libraries = [
         glideOkhttp                   : 'com.github.bumptech.glide:okhttp3-integration:' + versions.glide,
 
         // rx libraries
-        rxJava                        : 'io.reactivex:rxjava:1.1.1',
-        rxJava2                       : 'io.reactivex.rxjava2:rxjava:2.1.6',
-        rxJavaInterop                 : 'com.github.akarnokd:rxjava2-interop:0.10.9',
-        rxAndroid                     : 'io.reactivex:rxandroid:1.1.0',
-        rxAndroid2                    : 'io.reactivex.rxjava2:rxandroid:2.0.1',
+        rxJava                        : 'io.reactivex:rxjava:1.3.8',
+        rxJava2                       : 'io.reactivex.rxjava2:rxjava:2.1.17',
+        rxJavaInterop                 : 'com.github.akarnokd:rxjava2-interop:0.12.11',
+        rxAndroid                     : 'io.reactivex:rxandroid:1.2.1',
+        rxAndroid2                    : 'io.reactivex.rxjava2:rxandroid:2.0.2',
         rxLifecycle                   : 'com.trello:rxlifecycle:' + versions.rxLifecycle,
         rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
-        rxBinding                     : 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.0.0',
+        rxBinding                     : 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1',
 
         // dagger
         dagger                        : 'com.google.dagger:dagger:' + versions.dagger,
         daggerProcessor               : 'com.google.dagger:dagger-compiler:' + versions.dagger,
 
-        mosbyMvi                      : 'com.hannesdorfmann.mosby3:mvi:3.0.4',
+        mosbyMvi                      : 'com.hannesdorfmann.mosby3:mvi:3.1.0',
 
         // other
         parceler                      : 'org.parceler:parceler:' + versions.parceler,
         parcelerApi                   : 'org.parceler:parceler-api:' + versions.parceler,
 
-        commonsCodec                  : 'commons-codec:commons-codec:1.5',
-        commonsIO                     : 'commons-io:commons-io:2.4',
+        commonsCodec                  : 'commons-codec:commons-codec:1.11',
+        commonsIO                     : 'commons-io:commons-io:2.6',
 
         leakCanary                    : 'com.squareup.leakcanary:leakcanary-android:' + versions.leakCanary,
         leakCanaryNoOp                : 'com.squareup.leakcanary:leakcanary-android-no-op:' + versions.leakCanary,

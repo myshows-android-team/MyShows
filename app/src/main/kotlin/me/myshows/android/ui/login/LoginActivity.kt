@@ -40,6 +40,11 @@ class LoginActivity : MviActivity<LoginView, LoginPresenter>(), LoginView {
 
         setupNewAccountTextView(new_account)
         setEnabled(login_layout, false)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            login.setAutofillHints(View.AUTOFILL_HINT_USERNAME)
+            password.setAutofillHints(View.AUTOFILL_HINT_PASSWORD)
+        }
     }
 
     override fun loginIntent(): Observable<LoginView.Credentials> = sign_in_button.clicks()
@@ -75,9 +80,10 @@ class LoginActivity : MviActivity<LoginView, LoginPresenter>(), LoginView {
     private fun setupNewAccountTextView(view: TextView) {
         val register = getString(R.string.register)
         val newAccount = getString(R.string.new_account, register)
+
         val start = newAccount.indexOf(register)
         val end = start + register.length
-        val ss = SpannableString(newAccount)
+
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(REGISTER_URL))
@@ -89,6 +95,8 @@ class LoginActivity : MviActivity<LoginView, LoginPresenter>(), LoginView {
                 ds.isUnderlineText = true
             }
         }
+
+        val ss = SpannableString(newAccount)
         ss.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         view.setText(ss, TextView.BufferType.SPANNABLE)
         view.movementMethod = LinkMovementMethod.getInstance()
@@ -103,10 +111,9 @@ class LoginActivity : MviActivity<LoginView, LoginPresenter>(), LoginView {
         parent.isEnabled = enabled
         for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
-            if (child is ViewGroup) {
-                setEnabled(child, enabled)
-            } else {
-                child.isEnabled = enabled
+            when (child) {
+                is ViewGroup -> setEnabled(child, enabled)
+                else -> child.isEnabled = enabled
             }
         }
     }
@@ -114,13 +121,14 @@ class LoginActivity : MviActivity<LoginView, LoginPresenter>(), LoginView {
     private fun animate() {
         val logoAnimator = ObjectAnimator.ofFloat(logo, View.TRANSLATION_Y, 0f)
         val loginLayoutAnimator = ObjectAnimator.ofFloat(login_layout, View.ALPHA, 1f)
-        val animation = AnimatorSet()
-        animation.playTogether(logoAnimator, loginLayoutAnimator)
-        animation.duration = ANIMATION_DURATION
-        animation.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) = setEnabled(login_layout, true)
-        })
-        animation.start()
+
+        AnimatorSet().apply {
+            playTogether(logoAnimator, loginLayoutAnimator)
+            duration = ANIMATION_DURATION
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) = setEnabled(login_layout, true)
+            })
+        }.start()
     }
 
     companion object {

@@ -47,7 +47,7 @@ class LoginPresenter @Inject constructor(
         if (!oldClient.hasCredentials()) return Single.just(NOTHING_TO_REFRESH)
         return oldClient.autoAuthentication()
                 .toV2()
-                .map { result -> if (result) SUCCESS else ERROR }
+                .map { if (it) SUCCESS else ERROR }
     }
 }
 

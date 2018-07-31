@@ -15,13 +15,7 @@ import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = arrayOf(
-        AppModule::class,
-        NetModule::class,
-        StorageModule::class,
-        ApiModule::class,
-        Api2Module::class
-))
+@Component(modules = [AppModule::class, NetModule::class, StorageModule::class, ApiModule::class, Api2Module::class])
 interface AppComponent {
 
     // TODO: try use dagger.android
