@@ -5,7 +5,11 @@ import me.myshows.android.api.ApiModule
 import me.myshows.android.api2.Api2Module
 import me.myshows.android.net.NetModule
 import me.myshows.android.storage.StorageModule
-import me.myshows.android.ui.activities.*
+import me.myshows.android.ui.activities.EpisodeActivity
+import me.myshows.android.ui.activities.MainActivity
+import me.myshows.android.ui.activities.ProfileActivity
+import me.myshows.android.ui.activities.ShowActivity
+import me.myshows.android.ui.comments.CommentsPresenter
 import me.myshows.android.ui.fragments.FriendsFragment
 import me.myshows.android.ui.fragments.MyShowsFragment
 import me.myshows.android.ui.fragments.RatingsFragment
@@ -23,7 +27,6 @@ interface AppComponent {
 
     fun inject(activity: MainActivity)
     fun inject(activity: ShowActivity)
-    fun inject(activity: CommentsActivity)
     fun inject(activity: EpisodeActivity)
     fun inject(activity: ProfileActivity)
 
@@ -36,4 +39,5 @@ interface AppComponent {
     fun okHttpClient(): OkHttpClient
 
     fun newLoginPresenter(): LoginPresenter
+    fun newCommentsPresenter(): CommentsPresenter
 }

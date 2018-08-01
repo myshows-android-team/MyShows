@@ -102,6 +102,7 @@ dependencies {
     implementation libraries.rxLifecycle
     implementation libraries.rxLifecycleComponents
     implementation libraries.rxBinding
+    implementation libraries.rxBindingSupportV4
 
     kapt libraries.daggerProcessor
     implementation libraries.dagger

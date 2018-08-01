@@ -31,6 +31,8 @@ import me.myshows.android.model.EpisodeRating;
 import me.myshows.android.model.UserEpisode;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
+import me.myshows.android.ui.comments.CommentsActivity;
+import me.myshows.android.ui.comments.CommentsActivityKt;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

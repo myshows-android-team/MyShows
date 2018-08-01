@@ -36,7 +36,7 @@
             android:fontFamily="sans-serif-light"
             android:textColor="@color/list_feed_gray_text"
             android:textSize="16sp"
-            tools:text="4 days ago" />
+            tools:text="2016-01-30T13:49:54+0300" />
 
         <TextView
             android:id="@+id/rating"
@@ -62,13 +62,11 @@
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur feugiat lorem felis, eget semper risus. " />
 
     <ImageView
-        android:id="@+id/comment_image"
+        android:id="@+id/comment_attach_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/default_padding"
         android:layout_marginTop="@dimen/default_half_padding"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
         android:visibility="gone" />
 
     <LinearLayout
@@ -79,24 +77,24 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/MyShows.CommentControlButton"
             android:id="@+id/reply"
+            style="@style/MyShows.CommentControlButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/reply"
             android:text="@string/reply" />
 
         <TextView
-            style="@style/MyShows.CommentControlButton"
             android:id="@+id/vote_down"
+            style="@style/MyShows.CommentControlButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/downvote"
             android:text="@string/down_vote" />
 
         <TextView
-            style="@style/MyShows.CommentControlButton"
             android:id="@+id/vote_up"
+            style="@style/MyShows.CommentControlButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/upvote"

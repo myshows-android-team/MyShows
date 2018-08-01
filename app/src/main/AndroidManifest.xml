@@ -30,7 +30,7 @@
         <activity android:name=".ui.activities.EpisodeActivity" />
 
         <activity
-            android:name=".ui.activities.CommentsActivity"
+            android:name=".ui.comments.CommentsActivity"
             android:theme="@style/Theme.MyShows.Settings" />
 
         <activity

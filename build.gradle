@@ -28,6 +28,7 @@ def versions = [
         glide           : '4.7.1',
         parceler        : '1.1.11',
         rxLifecycle     : '0.4.0',
+        rxBinding       : '2.1.1',
         leakCanary      : '1.6.1',
         jackson         : '2.9.6',
         dagger          : '2.16'
@@ -75,7 +76,8 @@ ext.libraries = [
         rxAndroid2                    : 'io.reactivex.rxjava2:rxandroid:2.0.2',
         rxLifecycle                   : 'com.trello:rxlifecycle:' + versions.rxLifecycle,
         rxLifecycleComponents         : 'com.trello:rxlifecycle-components:' + versions.rxLifecycle,
-        rxBinding                     : 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1',
+        rxBinding                     : 'com.jakewharton.rxbinding2:rxbinding-kotlin:' + versions.rxBinding,
+        rxBindingSupportV4            : 'com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:' + versions.rxBinding,
 
         // dagger
         dagger                        : 'com.google.dagger:dagger:' + versions.dagger,
