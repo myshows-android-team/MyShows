@@ -1,14 +1,13 @@
 package me.myshows.android.ui.comments
 
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
-import hu.akarnokd.rxjava.interop.RxJavaInterop
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import me.myshows.android.api2.client.MyShowsClient
 import javax.inject.Inject
 
 class CommentsPresenter @Inject constructor(
-        private val oldClient: me.myshows.android.api.MyShowsClient
+        private val client: MyShowsClient
 ) : MviBasePresenter<CommentsView, CommentsViewState>() {
 
     override fun bindIntents() {
@@ -25,13 +24,9 @@ class CommentsPresenter @Inject constructor(
         subscribeViewState(allIntents, CommentsView::render)
     }
 
-    private fun loadComments(episodeId: Int): Observable<CommentsViewState> = oldClient.comments(episodeId)
+    private fun loadComments(episodeId: Int): Observable<CommentsViewState> = client.showsEpisodeComments(episodeId)
+            .toObservable()
             .map { if (it.count == 0) EmptyComments else LoadedComments(it) }
             .startWith(Loading)
             .onErrorReturn { Error(it) }
-            .toV2()
 }
-
-private fun <T> rx.Single<T>.toV2(): Single<T> = RxJavaInterop.toV2Single(this)
-
-private fun <T> rx.Observable<T>.toV2(): Observable<T> = RxJavaInterop.toV2Observable(this)

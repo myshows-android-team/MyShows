@@ -1,6 +1,6 @@
 package me.myshows.android.ui.comments
 
-import me.myshows.android.model.EpisodeComments
+import me.myshows.android.model2.EpisodeComments
 
 sealed class CommentsViewState
 

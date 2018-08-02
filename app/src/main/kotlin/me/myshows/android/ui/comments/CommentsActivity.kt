@@ -26,8 +26,8 @@ import kotlinx.android.synthetic.main.comment_layout.view.*
 import kotlinx.android.synthetic.main.comments_activity.*
 import me.myshows.android.MyShowsApplication
 import me.myshows.android.R
-import me.myshows.android.model.Comment
-import me.myshows.android.model.EpisodeComments
+import me.myshows.android.model2.Comment
+import me.myshows.android.model2.EpisodeComments
 import me.myshows.android.ui.MviHomeActivity
 import java.util.*
 import kotlin.collections.HashMap
@@ -116,7 +116,7 @@ class CommentsActivity : MviHomeActivity<CommentsView, CommentsPresenter, Commen
     private fun extractOrderedComments(information: EpisodeComments): List<CommentData> {
         val parentIdToComments = HashMap<Int, MutableList<Comment>>()
         information.comments.forEach {
-            val parentId = it.parentCommentId
+            val parentId = it.parentId ?: Comment.ROOT_ID
             val comments = parentIdToComments.getOrPut(parentId) { ArrayList() }
             comments += it
         }
@@ -127,7 +127,7 @@ class CommentsActivity : MviHomeActivity<CommentsView, CommentsPresenter, Commen
                     ?.sortedBy { it.createdAtMillis }
                     ?.forEach {
                         orderedComments += CommentData(it, nestingLevel)
-                        buildComments(it.userCommentId, nestingLevel + 1)
+                        buildComments(it.id, nestingLevel + 1)
                     }
         }
         buildComments(Comment.ROOT_ID, INITIAL_NESTING_LEVEL)
@@ -148,17 +148,17 @@ private class CommentHolder(
         itemView.setPadding(leftPadding, if (isFirst) offset else 0, 0, 0)
 
         Glide.with(itemView.context)
-                .load(comment.siteUser.avatarUrl)
+                .load(comment.user.avatar)
                 .apply(RequestOptions.centerCropTransform())
                 .into(itemView.avatar)
 
-        itemView.username.text = comment.siteUser.login
+        itemView.username.text = comment.user.login
         setDate(itemView.date, comment.createdAtMillis)
         setRating(itemView.rating, comment.rating)
         setCommentText(itemView.comment, comment.comment, comment.isBad)
         setCommentImage(itemView.comment_attach_image, comment.image)
 
-        itemView.reply.setOnClickListener { showAddCommentDialog(itemView.context, comment.siteUser.login) }
+        itemView.reply.setOnClickListener { showAddCommentDialog(itemView.context, comment.user.login) }
         changeVoteState(itemView.vote_up, comment.isMyPlus, R.drawable.upvote, R.drawable.upvote_active)
         changeVoteState(itemView.vote_down, comment.isMyMinus, R.drawable.downvote, R.drawable.downvote_active)
     }

@@ -66,7 +66,7 @@ class JsonRPCTest : BaseMockWebServerTest() {
         "/rpc" -> {
             val requestObject = request.body.into<JsonRPCRequestObject<Request>>()
             val responseObject = if (requestObject.method == METHOD_NAME) {
-                JsonRPCResponseObject(Response(requestObject.param.value))
+                JsonRPCResponseObject(Response(requestObject.params.value))
             } else {
                 JsonRPCResponseObject(null, Error(400, "Method not found", null))
             }

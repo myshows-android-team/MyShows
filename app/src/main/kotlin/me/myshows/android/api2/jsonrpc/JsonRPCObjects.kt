@@ -8,7 +8,7 @@ const val JSON_RPC_VERSION: String = "2.0"
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class JsonRPCRequestObject<out T>(
         @JsonProperty("method") val method: String,
-        @JsonProperty("param") val param: T,
+        @JsonProperty("params") val params: T,
         @JsonProperty("jsonrpc") val jsonrpc: String = JSON_RPC_VERSION,
         @JsonProperty("id") val id: Int = 1
 )
