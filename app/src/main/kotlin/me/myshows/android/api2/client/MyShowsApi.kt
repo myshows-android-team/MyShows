@@ -54,4 +54,8 @@ interface MyShowsApi {
     @JsonRPCMethod("shows.EpisodeComments")
     @POST("/v2/rpc/")
     fun showsEpisodeComments(@Body body: EpisodeId): Single<JsonRPCResult<EpisodeComments>>
+
+    @JsonRPCMethod("shows.ViewEpisodeComments")
+    @POST("/v2/rpc/")
+    fun showsViewEpisodeComments(@Body body: EpisodeId): Single<JsonRPCResult<Boolean>>
 }

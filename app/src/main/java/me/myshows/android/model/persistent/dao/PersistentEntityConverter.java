@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.realm.RealmList;
-import me.myshows.android.model.Comment;
-import me.myshows.android.model.EpisodeComments;
 import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.EpisodeRating;
 import me.myshows.android.model.Feed;
@@ -27,7 +25,6 @@ import me.myshows.android.model.UserPreview;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
 import me.myshows.android.model.WatchStatus;
-import me.myshows.android.model.persistent.PersistentEpisodeComments;
 import me.myshows.android.model.persistent.PersistentEpisodeInformation;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
@@ -249,26 +246,6 @@ public class PersistentEntityConverter {
             episodes.add(fromUserEpisode(episode));
         }
         return new PersistentUserShowEpisodes(userShowEpisodes.getShowId(), episodes);
-    }
-
-    public EpisodeComments toEpisodeComments(PersistentEpisodeComments episodeComments) {
-        try {
-            List<Comment> comments = marshaller.deserializeList(episodeComments.getComments(), ArrayList.class, Comment.class);
-            return new EpisodeComments(episodeComments.isTracking(), episodeComments.getCount(),
-                    episodeComments.getNewCount(), episodeComments.isShow(), comments);
-        } catch (IOException e) {
-            throw new RuntimeException("Unreachable state", e);
-        }
-    }
-
-    public PersistentEpisodeComments fromEpisodeComments(int episodeId, EpisodeComments episodeComments) {
-        try {
-            byte[] comments = marshaller.serialize(episodeComments.getComments());
-            return new PersistentEpisodeComments(episodeId, episodeComments.isTracking(), episodeComments.getCount(),
-                    episodeComments.getNewCount(), episodeComments.isShow(), comments);
-        } catch (IOException e) {
-            throw new RuntimeException("Unreachable state", e);
-        }
     }
 
     private Map<String, ShowEpisode> toEpisodeMap(RealmList<PersistentShowEpisode> persistentEpisodes) {

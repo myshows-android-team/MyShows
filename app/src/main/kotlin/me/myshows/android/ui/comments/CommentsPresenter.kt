@@ -27,6 +27,7 @@ class CommentsPresenter @Inject constructor(
     private fun loadComments(episodeId: Int): Observable<CommentsViewState> = client.showsEpisodeComments(episodeId)
             .toObservable()
             .map { if (it.count == 0) EmptyComments else LoadedComments(it) }
+//            .doOnNext { if (it is LoadedComments && it.episodeComments.newCount > 0) client.showsViewEpisodeComments(episodeId).subscribe() }
             .startWith(Loading)
             .onErrorReturn { Error(it) }
 }

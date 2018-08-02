@@ -60,6 +60,9 @@ class MyShowsClientImpl(
     //
     override fun showsEpisodeComments(episodeId: Int): Single<EpisodeComments> =
             api.showsEpisodeComments(EpisodeId(episodeId)).unwrap()
+
+    override fun showsViewEpisodeComments(episodeId: Int): Single<Boolean> =
+            api.showsViewEpisodeComments(EpisodeId(episodeId)).unwrap()
 }
 
 private fun <T> Single<JsonRPCResult<T>>.unwrap(): Single<T> = map { result ->

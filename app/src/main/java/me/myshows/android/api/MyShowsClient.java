@@ -3,7 +3,6 @@ package me.myshows.android.api;
 import java.util.List;
 
 import me.myshows.android.api.impl.Credentials;
-import me.myshows.android.model.EpisodeComments;
 import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
@@ -48,6 +47,4 @@ public interface MyShowsClient {
     Observable<List<Feed>> friendsNews();
 
     Observable<List<RatingShow>> ratingShows();
-
-    Observable<EpisodeComments> comments(int episodeId);
 }

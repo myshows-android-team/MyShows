@@ -122,7 +122,7 @@ public class EpisodeActivity extends HomeActivity {
                 .map(userShowEpisodes -> extractMyRating(userShowEpisodes, episodeId))
                 .observeOn(AndroidSchedulers.mainThread());
 
-        Observable.combineLatest(client.episodeInformation(episodeId), client.comments(episodeId),
+        Observable.combineLatest(client.episodeInformation(episodeId)/*, client.comments(episodeId)*/,
                 userShowEpisodesObservable, ActivityInformation::new)
                 .compose(bindToLifecycle())
                 .subscribe(this::bind);
@@ -139,7 +139,7 @@ public class EpisodeActivity extends HomeActivity {
 
     private void bind(@NonNull ActivityInformation information) {
         bindEpisode(information.episode);
-        bindComments(information.comments);
+        //bindComments(information.comments);
 
         myRating.setRating(information.myRating);
         bindWatchStatus(information.myRating != NOT_WATCHED_EPISODE_RATING);
@@ -205,13 +205,13 @@ public class EpisodeActivity extends HomeActivity {
     private static class ActivityInformation {
 
         public final EpisodeInformation episode;
-        public final EpisodeComments comments;
+        //public final EpisodeComments comments;
         public final int myRating;
 
-        public ActivityInformation(@NonNull EpisodeInformation episode,
-                                   @NonNull EpisodeComments comments, int myRating) {
+        public ActivityInformation(@NonNull EpisodeInformation episode/*,
+                                   @NonNull EpisodeComments comments*/, int myRating) {
             this.episode = episode;
-            this.comments = comments;
+            //this.comments = comments;
             this.myRating = myRating;
         }
     }

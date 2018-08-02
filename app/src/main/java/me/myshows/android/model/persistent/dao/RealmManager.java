@@ -108,7 +108,7 @@ public class RealmManager {
 
     public <T, E extends RealmObject> List<T> selectSortedEntities(Class<E> clazz, FromPersistentEntity<T, E> converter, String fieldName, Sort sort, Predicate... predicates) {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<E> results = makeQuery(realm, clazz, predicates).findAllSorted(fieldName, sort);
+        RealmResults<E> results = makeQuery(realm, clazz, predicates).sort(fieldName, sort).findAll();
         List<T> entities = null;
         if (results != null) {
             entities = new ArrayList<>();

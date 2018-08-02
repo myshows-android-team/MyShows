@@ -14,7 +14,6 @@ import io.realm.Sort;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
 import me.myshows.android.api.MyShowsClient;
-import me.myshows.android.model.EpisodeComments;
 import me.myshows.android.model.EpisodeInformation;
 import me.myshows.android.model.Feed;
 import me.myshows.android.model.NextEpisode;
@@ -25,7 +24,6 @@ import me.myshows.android.model.User;
 import me.myshows.android.model.UserFeed;
 import me.myshows.android.model.UserShow;
 import me.myshows.android.model.UserShowEpisodes;
-import me.myshows.android.model.persistent.PersistentEpisodeComments;
 import me.myshows.android.model.persistent.PersistentEpisodeInformation;
 import me.myshows.android.model.persistent.PersistentFeed;
 import me.myshows.android.model.persistent.PersistentNextEpisode;
@@ -280,23 +278,6 @@ public class MyShowsClientImpl implements MyShowsClient {
                     })
                     .subscribe(
                             shows -> subscriber.onNext(manager.truncateAndInsertEntities(shows, PersistentRatingShow.class, converter::fromRatingShow)),
-                            e -> subscriber.onCompleted(),
-                            subscriber::onCompleted
-                    );
-        }).observeOn(observerScheduler).subscribeOn(Schedulers.io());
-    }
-
-    @Override
-    public Observable<EpisodeComments> comments(int episodeId) {
-        return Observable.<EpisodeComments>create(subscriber -> {
-            EpisodeComments information = manager.selectEntity(PersistentEpisodeComments.class,
-                    converter::toEpisodeComments, new Predicate("episodeId", episodeId));
-            if (information != null) {
-                subscriber.onNext(information);
-            }
-            api.comments(episodeId)
-                    .subscribe(
-                            info -> subscriber.onNext(manager.upsertEntity(info, entity -> converter.fromEpisodeComments(episodeId, info))),
                             e -> subscriber.onCompleted(),
                             subscriber::onCompleted
                     );
