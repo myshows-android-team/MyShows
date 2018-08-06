@@ -7,9 +7,9 @@ import android.support.annotation.NonNull;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import io.realm.Realm;
 import me.myshows.android.api.ApiModule;
 import me.myshows.android.api2.Api2Module;
+import me.myshows.android.model2.Model2Module;
 import me.myshows.android.net.NetModule;
 import me.myshows.android.storage.StorageModule;
 
@@ -30,7 +30,6 @@ public class MyShowsApplication extends Application {
             return;
         }
 
-        Realm.init(this);
         refWatcher = LeakCanary.install(this);
         appComponent = buildComponent();
     }
@@ -39,6 +38,7 @@ public class MyShowsApplication extends Application {
     protected AppComponent buildComponent() {
         return DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
+                .model2Module(new Model2Module(this))
                 .netModule(new NetModule())
                 .storageModule(new StorageModule())
                 .apiModule(new ApiModule())

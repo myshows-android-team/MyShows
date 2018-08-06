@@ -95,7 +95,7 @@ class CommentsActivity : MviHomeActivity<CommentsView, CommentsPresenter, Commen
     override fun render(state: CommentsViewState) {
         when (state) {
             Loading -> renderLoading()
-            is Error -> Log.i(TAG, "Comments error")
+            is Error -> renderError(state.error)
             EmptyComments -> Log.i(TAG, "Empty comments")
             is LoadedComments -> renderComments(state.episodeComments)
         }
@@ -104,6 +104,11 @@ class CommentsActivity : MviHomeActivity<CommentsView, CommentsPresenter, Commen
     private fun renderLoading() {
         Log.i(TAG, "Comments loading")
         swipe_layout.isRefreshing = true
+    }
+
+    private fun renderError(error: Throwable) {
+        Log.i(TAG, "Comments error", error)
+        Toast.makeText(this, R.string.update_comments_error, Toast.LENGTH_LONG).show()
     }
 
     private fun renderComments(episodeComments: EpisodeComments) {

@@ -3,6 +3,7 @@ package me.myshows.android
 import dagger.Component
 import me.myshows.android.api.ApiModule
 import me.myshows.android.api2.Api2Module
+import me.myshows.android.model2.Model2Module
 import me.myshows.android.net.NetModule
 import me.myshows.android.storage.StorageModule
 import me.myshows.android.ui.activities.EpisodeActivity
@@ -19,7 +20,13 @@ import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AppModule::class, NetModule::class, StorageModule::class, ApiModule::class, Api2Module::class])
+@Component(modules = [
+    AppModule::class,
+    Model2Module::class,
+    NetModule::class,
+    StorageModule::class,
+    ApiModule::class,
+    Api2Module::class])
 interface AppComponent {
 
     // TODO: try use dagger.android

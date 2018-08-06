@@ -12,7 +12,7 @@ object Loading : CommentsViewState()
 /**
  * Returns in case of occurring an error during comments loading.
  */
-data class Error(val t: Throwable) : CommentsViewState()
+data class Error(val error: Throwable) : CommentsViewState()
 
 /**
  * Returns when an episode has no any comments.

@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import io.realm.Realm;
 import io.realm.Sort;
 import me.myshows.android.api.ClientStorage;
 import me.myshows.android.api.MyShowsApi;
@@ -82,7 +81,7 @@ public class MyShowsClientImpl implements MyShowsClient {
 
     @Override
     public void clear() {
-        Realm.deleteRealm(manager.getConfiguration());
+//        Realm.deleteRealm(manager.getConfiguration());
         storage.clear();
     }
 

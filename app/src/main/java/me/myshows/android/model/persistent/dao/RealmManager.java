@@ -4,23 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
 public class RealmManager {
-
-    private final RealmConfiguration configuration;
-
-    public RealmManager() {
-        configuration = new RealmConfiguration.Builder()
-                .schemaVersion(0)
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(configuration);
-    }
 
     public <T> T insertEntity(T entity, ToPersistentEntity<T> converter) {
         Realm realm = Realm.getDefaultInstance();
@@ -137,9 +126,5 @@ public class RealmManager {
             return query.equalTo(fieldName, (double) value);
         }
         throw new IllegalArgumentException("Unsupported value type");
-    }
-
-    public RealmConfiguration getConfiguration() {
-        return configuration;
     }
 }
