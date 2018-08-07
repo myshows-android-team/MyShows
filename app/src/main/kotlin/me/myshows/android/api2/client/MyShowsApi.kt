@@ -3,10 +3,7 @@ package me.myshows.android.api2.client
 import io.reactivex.Single
 import me.myshows.android.api2.jsonrpc.JsonRPCMethod
 import me.myshows.android.api2.jsonrpc.JsonRPCResult
-import me.myshows.android.api2.request.Empty
-import me.myshows.android.api2.request.EpisodeId
-import me.myshows.android.api2.request.ProfileLogin
-import me.myshows.android.api2.request.ShowId
+import me.myshows.android.api2.request.*
 import me.myshows.android.model2.*
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -58,4 +55,8 @@ interface MyShowsApi {
     @JsonRPCMethod("shows.ViewEpisodeComments")
     @POST("/v2/rpc/")
     fun showsViewEpisodeComments(@Body body: EpisodeId): Single<JsonRPCResult<Boolean>>
+
+    @JsonRPCMethod("shows.PostEpisodeComment")
+    @POST("/v2/rpc/")
+    fun showsPostEpisodeComment(@Body body: EpisodeComment): Single<JsonRPCResult<Comment>>
 }

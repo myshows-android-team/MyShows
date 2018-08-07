@@ -5,10 +5,7 @@ import io.reactivex.Single
 import me.myshows.android.api2.client.MyShowsApi
 import me.myshows.android.api2.client.MyShowsClient
 import me.myshows.android.api2.jsonrpc.*
-import me.myshows.android.api2.request.Empty
-import me.myshows.android.api2.request.EpisodeId
-import me.myshows.android.api2.request.ProfileLogin
-import me.myshows.android.api2.request.ShowId
+import me.myshows.android.api2.request.*
 import me.myshows.android.model2.*
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -63,6 +60,9 @@ class MyShowsClientImpl(
 
     override fun showsViewEpisodeComments(episodeId: Int): Single<Boolean> =
             api.showsViewEpisodeComments(EpisodeId(episodeId)).unwrap()
+
+    override fun showsPostEpisodeComment(episodeId: Int, text: String, commentParentId: Int): Single<Comment> =
+            api.showsPostEpisodeComment(EpisodeComment(episodeId, text, commentParentId)).unwrap()
 }
 
 private fun <T> Single<JsonRPCResult<T>>.unwrap(): Single<T> = map { result ->
