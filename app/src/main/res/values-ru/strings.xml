@@ -74,6 +74,8 @@
     <string name="post_comment">Написать</string>
     <string name="cancel_comment">Отмена</string>
     <string name="update_comments_error">Не удалось обновить комментарии</string>
+    <string name="vote_comment_error">Не удалось проголосовать за комментарий</string>
+    <string name="post_comment_error">Не удалось добавить комментарий</string>
 
     <!-- Feed screen strings -->
     <string name="m_watch_one_series">Посмотрел %1$s серию %2$s</string>

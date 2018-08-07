@@ -32,4 +32,6 @@ interface MyShowsClient {
     fun showsViewEpisodeComments(episodeId: Int): Single<Boolean>
 
     fun showsPostEpisodeComment(episodeId: Int, text: String, commentParentId: Int): Single<Comment>
+
+    fun showsVoteEpisodeComment(commentId: Int, isPositive: Boolean): Single<Int>
 }

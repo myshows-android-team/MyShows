@@ -8,10 +8,11 @@ interface CommentsView : MvpView {
     fun loadCommentsIntent(): Observable<Int>
     fun pullToRefreshIntent(): Observable<Int>
 
-    /*fun voteUpIntent()
-    fun voteDownIntent()
-    fun writeNewCommentIntent()
-    fun replyCommentIntent()*/
+    fun postCommentIntent(): Observable<CommentData>
+    fun voteIntent(): Observable<VoteData>
 
     fun render(state: CommentsViewState)
+
+    data class CommentData(val episodeId: Int, val text: String, val parentCommentId: Int)
+    data class VoteData(val episodeId: Int, val commentId: Int, val isPositive: Boolean)
 }

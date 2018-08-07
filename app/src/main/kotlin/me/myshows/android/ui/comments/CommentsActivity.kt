@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.comment_layout.view.*
 import kotlinx.android.synthetic.main.comments_activity.*
 import me.myshows.android.MyShowsApplication
@@ -44,9 +45,21 @@ class CommentsActivity : MviHomeActivity<CommentsView, CommentsPresenter, Commen
     private var episodeId: Int = 0
     private var offset: Int = 0
 
+    private lateinit var adapter: CommentsAdapter
+
+    private val commentSubject = PublishSubject.create<CommentsView.CommentData>()
+    private val voteCommentSubject = PublishSubject.create<CommentsView.VoteData>()
+
+    private var postDialog: AlertDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.comments_activity)
+
+        offset = resources.getDimensionPixelSize(R.dimen.default_padding)
+        adapter = CommentsAdapter(offset, commentSubject::onNext, voteCommentSubject::onNext) {
+            postDialog = it
+        }
 
         setupActionBar(toolbar)
         setupRecyclerView(recycler_view)
@@ -56,13 +69,13 @@ class CommentsActivity : MviHomeActivity<CommentsView, CommentsPresenter, Commen
 
         supportActionBar?.title = intent.getStringExtra(EPISODE_TITLE)
         episodeId = intent.getIntExtra(EPISODE_ID, 0)
-        offset = resources.getDimensionPixelSize(R.dimen.default_padding)
     }
 
     @SuppressLint("PrivateResource")
     private fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = adapter
     }
 
     private fun setupRefreshLayout(swipeLayout: SwipeRefreshLayout) {
@@ -70,7 +83,9 @@ class CommentsActivity : MviHomeActivity<CommentsView, CommentsPresenter, Commen
     }
 
     private fun setupFab(fab: FloatingActionButton) {
-        fab.setOnClickListener { showAddCommentDialog(this, null) }
+        fab.setOnClickListener {
+            postDialog = showAddCommentDialog(this, episodeId, Comment.ROOT_ID, null, commentSubject::onNext)
+        }
     }
 
     private fun setupRecyclerViewScrollBehaviour(recyclerView: RecyclerView, swipeLayout: SwipeRefreshLayout, fab: FloatingActionButton) {
@@ -92,63 +107,52 @@ class CommentsActivity : MviHomeActivity<CommentsView, CommentsPresenter, Commen
 
     override fun pullToRefreshIntent(): Observable<Int> = RxSwipeRefreshLayout.refreshes(swipe_layout).map { episodeId }
 
+    override fun postCommentIntent(): Observable<CommentsView.CommentData> = commentSubject
+
+    override fun voteIntent(): Observable<CommentsView.VoteData> = voteCommentSubject
+
     override fun render(state: CommentsViewState) {
         when (state) {
-            Loading -> renderLoading()
-            is Error -> renderError(state.error)
-            EmptyComments -> Log.i(TAG, "Empty comments")
-            is LoadedComments -> renderComments(state.episodeComments)
+            LoadingComments -> renderLoading()
+            is CommentsLoadError -> renderError(state.error)
+            EmptyComments -> Log.d(TAG, "Empty comments")
+            is LoadedComments -> renderComments(state.episodeComments, state.updatedComment)
         }
     }
 
     private fun renderLoading() {
-        Log.i(TAG, "Comments loading")
+        Log.d(TAG, "Comments loading")
         swipe_layout.isRefreshing = true
     }
 
-    private fun renderError(error: Throwable) {
-        Log.i(TAG, "Comments error", error)
-        Toast.makeText(this, R.string.update_comments_error, Toast.LENGTH_LONG).show()
+    private fun renderError(error: CommentsException) {
+        Log.d(TAG, "Comments error", error)
+        Toast.makeText(this, error.resourceId, Toast.LENGTH_LONG).show()
     }
 
-    private fun renderComments(episodeComments: EpisodeComments) {
-        Log.i(TAG, "Loaded comments")
-        val comments = extractOrderedComments(episodeComments)
-        recycler_view.adapter = CommentsAdapter(comments, offset)
+    private fun renderComments(episodeComments: EpisodeComments, updatedComment: Comment?) {
+        Log.d(TAG, "Loaded comments")
+        if (updatedComment != null) {
+            adapter.upsertComment(updatedComment)
+            postDialog?.dismiss()
+            postDialog = null
+        } else {
+            adapter.updateComments(episodeComments)
+        }
         swipe_layout.isRefreshing = false
-    }
-
-    private fun extractOrderedComments(information: EpisodeComments): List<CommentData> {
-        val parentIdToComments = HashMap<Int, MutableList<Comment>>()
-        information.comments.forEach {
-            val parentId = it.parentId ?: Comment.ROOT_ID
-            val comments = parentIdToComments.getOrPut(parentId) { ArrayList() }
-            comments += it
-        }
-
-        val orderedComments = ArrayList<CommentData>()
-        fun buildComments(parentId: Int, nestingLevel: Int) {
-            parentIdToComments[parentId]
-                    ?.sortedBy { it.createdAtMillis }
-                    ?.forEach {
-                        orderedComments += CommentData(it, nestingLevel)
-                        buildComments(it.id, nestingLevel + 1)
-                    }
-        }
-        buildComments(Comment.ROOT_ID, INITIAL_NESTING_LEVEL)
-        return orderedComments
     }
 }
 
-private data class CommentData(val comment: Comment, val nestingLevel: Int)
+private data class CommentLevelData(val comment: Comment, val nestingLevel: Int)
 
-private class CommentHolder(
-        itemView: View,
-        private val offset: Int
-) : RecyclerView.ViewHolder(itemView) {
+private class CommentHolder(itemView: View, private val offset: Int) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(commentData: CommentData, isFirst: Boolean) {
-        val (comment, nestedLevel) = commentData
+    fun bind(commentLevelData: CommentLevelData, isFirst: Boolean,
+             onPostComment: (CommentsView.CommentData) -> Unit,
+             onVoteComment: (CommentsView.VoteData) -> Unit,
+             onOpenDialog: (AlertDialog) -> Unit) {
+
+        val (comment, nestedLevel) = commentLevelData
         val leftPadding = offset * nestedLevel
         itemView.setPadding(leftPadding, if (isFirst) offset else 0, 0, 0)
 
@@ -163,9 +167,15 @@ private class CommentHolder(
         setCommentText(itemView.comment, comment.comment, comment.isBad)
         setCommentImage(itemView.comment_attach_image, comment.image)
 
-        itemView.reply.setOnClickListener { showAddCommentDialog(itemView.context, comment.user.login) }
-        changeVoteState(itemView.vote_up, comment.isMyPlus, R.drawable.upvote, R.drawable.upvote_active)
-        changeVoteState(itemView.vote_down, comment.isMyMinus, R.drawable.downvote, R.drawable.downvote_active)
+        itemView.reply.setOnClickListener {
+            onOpenDialog(showAddCommentDialog(itemView.context, comment.episodeId, comment.id, comment.user.login, onPostComment))
+        }
+        setVoteState(itemView.vote_up, comment.isMyPlus, R.drawable.upvote, R.drawable.upvote_active) {
+            onVoteComment(CommentsView.VoteData(comment.episodeId, comment.id, true))
+        }
+        setVoteState(itemView.vote_down, comment.isMyMinus, R.drawable.downvote, R.drawable.downvote_active) {
+            onVoteComment(CommentsView.VoteData(comment.episodeId, comment.id, false))
+        }
     }
 
     private fun setDate(textView: TextView, time: Long) {
@@ -217,20 +227,26 @@ private class CommentHolder(
         }
     }
 
-    private fun changeVoteState(textView: TextView, myVote: Boolean,
-                                iconId: Int, activeIconId: Int) {
+    private fun setVoteState(textView: TextView, myVote: Boolean,
+                             iconId: Int, activeIconId: Int, onVoteComment: (View) -> Unit) {
         if (myVote) {
             textView.setCompoundDrawablesWithIntrinsicBounds(activeIconId, 0, 0, 0)
+            textView.setOnClickListener(null)
         } else {
             textView.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0)
+            textView.setOnClickListener(onVoteComment)
         }
     }
 }
 
 private class CommentsAdapter(
-        private val comments: List<CommentData>,
-        private val offset: Int
+        private val offset: Int,
+        private val onPostComment: (CommentsView.CommentData) -> Unit,
+        private val onVoteComment: (CommentsView.VoteData) -> Unit,
+        private val onOpenDialog: (AlertDialog) -> Unit
 ) : RecyclerView.Adapter<CommentHolder>() {
+
+    private val comments: MutableList<CommentLevelData> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentHolder {
         val view = LayoutInflater.from(parent.context)
@@ -239,25 +255,78 @@ private class CommentsAdapter(
     }
 
     override fun onBindViewHolder(holder: CommentHolder, position: Int) =
-            holder.bind(comments[position], position == 0)
+            holder.bind(comments[position], position == 0, onPostComment, onVoteComment, onOpenDialog)
 
     override fun getItemCount(): Int = comments.size
+
+    fun updateComments(episodeComments: EpisodeComments) {
+        comments.clear()
+        comments += extractOrderedComments(episodeComments)
+        notifyDataSetChanged()
+    }
+
+    fun upsertComment(comment: Comment) {
+        var index = comments.indexOfFirst { it.comment.id == comment.id }
+        if (index == -1) {
+            val parentIndex = comments.indexOfFirst { it.comment.id == comment.parentId }
+            index = if (parentIndex == -1) {
+                comments += CommentLevelData(comment, INITIAL_NESTING_LEVEL)
+                comments.size - 1
+            } else {
+                comments.add(parentIndex + 1, CommentLevelData(comment, comments[parentIndex].nestingLevel + 1))
+                parentIndex + 1
+            }
+            notifyItemInserted(index)
+        } else {
+            comments[index] = CommentLevelData(comment, comments[index].nestingLevel)
+            notifyItemChanged(index)
+        }
+    }
+
+    private fun extractOrderedComments(episodeComments: EpisodeComments): List<CommentLevelData> {
+        val parentIdToComments = HashMap<Int, MutableList<Comment>>()
+        episodeComments.comments.forEach {
+            val parentId = it.parentId ?: Comment.ROOT_ID
+            val comments = parentIdToComments.getOrPut(parentId) { ArrayList() }
+            comments += it
+        }
+
+        val orderedComments = ArrayList<CommentLevelData>()
+        fun buildComments(parentId: Int, nestingLevel: Int) {
+            parentIdToComments[parentId]
+                    ?.sortedBy { it.createdAtMillis }
+                    ?.forEach {
+                        orderedComments += CommentLevelData(it, nestingLevel)
+                        buildComments(it.id, nestingLevel + 1)
+                    }
+        }
+        buildComments(Comment.ROOT_ID, INITIAL_NESTING_LEVEL)
+        return orderedComments
+    }
 }
 
-private fun showAddCommentDialog(context: Context, replyUsername: String?) {
+private fun showAddCommentDialog(context: Context, episodeId: Int,
+                                 replyCommentId: Int, replyUsername: String?,
+                                 onSuccess: (CommentsView.CommentData) -> Unit): AlertDialog {
+
     val commentEditText = buildCommentEditText(context, replyUsername)
 
-    AlertDialog.Builder(context)
+    return AlertDialog.Builder(context)
             .setTitle(R.string.add_comment)
             .setView(commentEditText)
             .setCancelable(true)
-            .setPositiveButton(R.string.post_comment) { dialog, _ ->
-                Toast.makeText(context, commentEditText.text, Toast.LENGTH_LONG).show()
-                dialog.dismiss()
-            }
+            .setPositiveButton(R.string.post_comment, null)
             .setNegativeButton(R.string.cancel_comment) { dialog, _ -> dialog.dismiss() }
             .create()
-            .show()
+            .apply {
+                setOnShowListener {
+                    getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                        val episodeComment = CommentsView.CommentData(episodeId, commentEditText.text.toString(), replyCommentId)
+                        onSuccess(episodeComment)
+                    }
+                }
+                show()
+            }
 }
 
 @SuppressLint("SetTextI18n")
@@ -276,8 +345,6 @@ private fun buildCommentEditText(context: Context, replyUsername: String?): Edit
         setLines(5)
         setTextColor(ContextCompat.getColor(context, R.color.dark_gray))
         setHint(R.string.comment_hint)
-        if (replyUsername != null) {
-            append("@$replyUsername: ")
-        }
+        if (replyUsername != null) append("@$replyUsername: ")
     }
 }

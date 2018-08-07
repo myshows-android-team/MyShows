@@ -73,6 +73,8 @@
     <string name="post_comment">Post</string>
     <string name="cancel_comment">Cancel</string>
     <string name="update_comments_error">Could not refresh comments</string>
+    <string name="vote_comment_error">Could not vote for comment</string>
+    <string name="post_comment_error">Could not post the new comment</string>
 
     <!-- Feed screen strings -->
     <string name="m_watch_one_series">Watched %1$s series of %2$s</string>

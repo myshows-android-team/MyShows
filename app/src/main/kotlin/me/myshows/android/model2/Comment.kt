@@ -19,15 +19,15 @@ data class Comment(
         @JsonProperty("createdAt") val createdAt: String,
         @JsonProperty("statusId") val statusId: Int,
 
-        @JsonProperty("isNew") val isNew: Boolean,
-        @JsonProperty("isMyPlus") val isMyPlus: Boolean,
-        @JsonProperty("isMyMinus") val isMyMinus: Boolean,
-        @JsonProperty("isMyComment") val isMyComment: Boolean,
+        @get:JsonProperty("isNew") val isNew: Boolean,
+        @get:JsonProperty("isMyPlus") val isMyPlus: Boolean,
+        @get:JsonProperty("isMyMinus") val isMyMinus: Boolean,
+        @get:JsonProperty("isMyComment") val isMyComment: Boolean,
 
         @JsonProperty("rating") val rating: Int,
 
-        @JsonProperty("isBad") val isBad: Boolean,
-        @JsonProperty("isEditable") val isEditable: Boolean,
+        @get:JsonProperty("isBad") val isBad: Boolean,
+        @get:JsonProperty("isEditable") val isEditable: Boolean,
 
         @JsonProperty("language") val language: String?,
 
